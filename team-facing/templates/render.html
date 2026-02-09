@@ -8,7 +8,15 @@
           margin: 0;
           padding: 0;
           width: 100%;
-          height: 100%;
+          height: 80%;
+        }
+        .error-output {
+            color: red;
+        }
+        pre
+        {
+            font-family: Verdana;
+            font-size: 16px;
         }
     </style>
 
@@ -27,13 +35,18 @@
 
 </head>
 <body>
-    <h1>Im a big thing</h1>
-    <p>Im a thing</p>
-    <button>Im a button</button>
+    <h1>Team Facing Page</h1>
 
     <div id="editor"></div>
 
+    <button onclick="getSubmissionCode()" id="compile" type="submit">Compile</button>
+
+    <pre class="output">{{output}}</pre>
+    <pre class="error-output">{{error_output}}</pre>
+
     <!-- Add our hello.js file (even if it's in a sub-directory -->
     <script src="{{ url_for('static', filename='hello.js') }}"></script>
+    <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
+
 </body>
 </html>
