@@ -3,7 +3,7 @@ from markupsafe import escape
 import subprocess
 
 app = Flask(__name__)
-
+print("5")
 
 @app.route("/team-facing")
 def index():
