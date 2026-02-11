@@ -40,6 +40,9 @@
     <div id="editor"></div>
 
     <button onclick="getSubmissionCode()" id="compile" type="submit">Compile</button>
+    <button onclick="onSubmission()" id="submit" type="submit">Submit</button>
+
+    <div id="submitTime" class="submit_time"></div>
 
     <pre class="output">{{output}}</pre>
     <pre class="error-output">{{error_output}}</pre>
@@ -47,6 +50,7 @@
     <!-- Add our hello.js file (even if it's in a sub-directory -->
     <script src="{{ url_for('static', filename='hello.js') }}"></script>
     <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
+    <script src="{{ url_for('static', filename='onSubmission.js') }}"></script>
 
 </body>
 </html>

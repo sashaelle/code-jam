@@ -49,4 +49,6 @@ def close():
 
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
-    print("Submit")
+    data = request.get_json()
+    code = data["code"]
+    return "submit"
