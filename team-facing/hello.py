@@ -57,4 +57,4 @@ def close():
 def submit():
     data = request.get_json()
     code = data["code"]
-    return "submit"
+    return "submitted"
