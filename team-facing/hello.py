@@ -9,6 +9,12 @@ app = Flask(__name__)
 def index():
     return render_template('render.html')
 
+@app.route("/team-facing/<int:team_number>")
+def team_facing(team_number):
+    return render_template(
+        "team_facing.html",
+        team_number=team_number
+    )
 
 @app.route("/team-facing/compile_button", methods=["POST"])
 def compile_button():
