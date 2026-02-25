@@ -34,5 +34,5 @@ window.onSubmission = function ()
     setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.textContent = "Submit";
-    }, 4000);
+    }, 5000);
 }
