@@ -1,5 +1,5 @@
-from flask import Flask, request, jsonify
-from datetime import datetime
+from flask import Flask, request, jsonify, render_template
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -9,20 +9,79 @@ scores = {} #scores[team][problem_id] = {score, wrong_submissions, teams_before,
 submissions = [] #store submissions
 submission_counter = 1 #counts the number of submissions
 
+#Store recent submissions for live feed
+recent_submissions = [] #stores recent submissions
+MAX_RECENT = 10 #defining recent submissions as the last 10
+
 #Track correct solve order per problem
 solved_order = {} #solved_order[problem_id] = [team1, team2, ...]
 
+#Keeps track of if the contest has started
+contest = {
+    "start_time": None, #no set starting time
+    "duration_minutes": 60  #how long contest is
+}
 
-#Currently, this API call returns if the judge backend is running
-@app.route("/api/time", methods=["GET"])
-def get_time():
-    #Returns timestamp & message that backend is working
+#API to start the timer for the contestents
+#No input necessary
+@app.route("/api/time/start", methods=["POST"])
+def start_contest():
+    #Returns error message if contest has already started
+    if contest["start_time"] is not None:
+        return jsonify({"error": "Contest already started"}), 400
+
+    #Sets the current time as the start time
+    contest["start_time"] = datetime.utcnow()
+
+    #Returns the message that the contest has started
     return jsonify({
-        "timestamp": datetime.utcnow().isoformat(),
-        "message": "Judge backend is running"
+        "message": "Contest started",
+        "start_time": contest["start_time"].isoformat()
     })
 
-    
+#Turns those remaining seconds into an understanding format
+def format_time(seconds):
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    return f"{hours}:{minutes:02}:{secs:02}"
+
+#API call to get the start time, end time, and time remaining
+@app.route("/api/time", methods=["GET"])
+def get_time():
+    #Returns error is contest hasn't started yet
+    if contest["start_time"] is None:
+        return jsonify({
+            "started": False,
+            "message": "Contest has not started"
+        })
+
+    #Gets the time now for start time and finds when the contest ends
+    now = datetime.utcnow()
+    end_time = contest["start_time"] + timedelta(minutes=contest["duration_minutes"])
+    remaining = end_time - now
+
+    #Finds how many seconds are remaining
+    seconds_remaining = int(remaining.total_seconds())
+
+    #If the time remaining is 0, end the contest
+    if seconds_remaining <= 0:
+        return jsonify({
+            "started": True,
+            "ended": True,
+            "time_remaining": "0:00:00"
+        })
+
+    #Return the time information after contest is started
+    return jsonify({
+        "started": True,
+        "ended": False,
+        "current_time": now.isoformat(),
+        "start_time": contest["start_time"].isoformat(),
+        "end_time": end_time.isoformat(),
+        "time_remaining_seconds": format_time(seconds_remaining)
+    })
+
 #Temporary API call where students post a submission
 #Required {team, problem_id, code}
 #Every submission is stored in submission list and updates submission_counter by 1
@@ -79,7 +138,6 @@ def submit_code():
         "timestamp": timestamp
     }), 201
 
-
 #API call that returns submissions that are waiting to be scored
 @app.route("/api/submissions", methods=["GET"])
 def get_submissions():
@@ -96,7 +154,6 @@ def get_submissions():
     #Return a list of submissions
     return jsonify(result), 200
 
-    
 #API call where judges post the result of a submission
 #Required {submission_id, correct/incorrect, feedback}
 @app.route("/api/judge/score/<int:submission_id>", methods=["POST"]) 
@@ -170,7 +227,11 @@ def judge_score(submission_id):
             "current_score": team_problem["score"], 
             "wrong_submissions": team_problem["wrong_submissions"] 
         }), 200 
-
+    
+#API call that returns the recent submissions (last 10)
+@app.route("/api/submissions/recent", methods=["GET"])
+def recent_feed():
+    return jsonify(recent_submissions)
 
 #API call that returns the scoreboard (all scores)
 @app.route("/api/scoreboard", methods=["GET"])
@@ -178,6 +239,10 @@ def scoreboard():
     #Returns the team/problem/scoring information
     return jsonify(scores)
 
+#API call that renders the HTML page for the leaderboard & recent submissions
+@app.route("/scoreboard")
+def scoreboard_page():
+    return render_template("scoreboard.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
