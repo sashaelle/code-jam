@@ -30,7 +30,11 @@ This document defines the initial API endpoints for the judge backend.
 
 ## Utilities
 **GET /api/time**
-- This API call will return the time remaining for the contest.
+- This API call will return the time remaining for the contest as well as any other relative information.
 - This API call will be created by the Judge-Facing team to show the time remaining.
+
+**POST /api/time/start**
+- This API call will start the timer for the contest.
+- This API call will be created by the Judge-Facing team to create a function that will start the contest timer.
 
 This list will be shared across teams to keep backend logic consistent.
