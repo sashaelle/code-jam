@@ -2,7 +2,7 @@
 window.onSubmission = function ()
 {
     const code = window.editor.getValue();
-    let is_feedback = false;
+    let status = false;
     const submitBtn = document.getElementById("submit");
     const submitTime = document.getElementById("submitTime");
 
@@ -19,7 +19,6 @@ window.onSubmission = function ()
 
     submitTime.textContent = `Last submitted at: ${formattedTime}`;
 
-
     fetch("/team-facing/submit", {
         method: "POST",
         headers: {
@@ -27,8 +26,12 @@ window.onSubmission = function ()
         },
         body: JSON.stringify({
             code: code,
-            is_feedback: is_feedback,
-            submitted_at: formattedTime})
+            feedback: null,
+            id: "1",
+            problem_id: "1",
+            status: pending,
+            team: "Team A",
+            timestamp: formattedTime})
     })
 
     setTimeout(() => {
