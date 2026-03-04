@@ -66,10 +66,14 @@
 </head>
 <body>
     <h1>Team Facing Page</h1>
+    <h2>Team {{ team_number or "A"}}</h2>
 
     <div id="editor"></div>
 
     <button onclick="getSubmissionCode()" id="compile" type="submit">Compile</button>
+    <button onclick="onSubmission()" id="submit" type="submit">Submit</button>
+
+    <div id="submitTime" class="submit_time"></div>
 
     <div class="bottom-sec">
         <div class="output-panel">
@@ -86,6 +90,7 @@
     <!-- Add our hello.js file (even if it's in a sub-directory -->
     <script src="{{ url_for('static', filename='hello.js') }}"></script>
     <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
+    <script src="{{ url_for('static', filename='onSubmission.js') }}"></script>
 
     <script>
         const socket = io("http://localhost:5000");
