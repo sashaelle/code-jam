@@ -20,11 +20,20 @@
 });
 }*/
 window.getSubmissionCode = function() {
-    const code = window.editor.getValue();
+    const code = window.monacoEditor.getValue();
+    localStorage.setItem("code", code);
+    console.log("Before code: ", localStorage.getItem("code"));
 
     // Clear previous output
     document.querySelector(".output").textContent = "";
     document.querySelector(".error-output").textContent = "";
+
+    // Clear terminal
+    window.clearTerminal();
+
+    // Change button to stop
+    const compileButton = document.getElementById("compile");
+    //compileButton.textContent = "Stop";
 
     // Emit the compile event with the code
     socket.emit("compile", {code: code});

@@ -1,11 +1,13 @@
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
+from localStoragePy import localStoragePy
 import subprocess
 import threading
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret!"
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+localStorage = localStoragePy('team-facing-namespace', 'text')
 
 processes = {}
 
@@ -36,13 +38,14 @@ def handle_my_custom_event(json):
 process = None
 @socketio.on('compile')
 def compile_button(data):
+    socketio.emit("compile_process")
     global process
-    fp = "submissions/submission.py"
+    fp = "submissions/submission.py" # DONT HARDCODE
     #data = request.get_json()
     code = data["code"]
+    #localStorage.setItem("code", code)
     submission_id = request.sid
     sid = request.sid
-    print("Code: ", code)
     with open(fp, "w") as f:
         f.write(code)
     #output = subprocess.run(["python", fp], capture_output=True, text=True, timeout=2)
@@ -62,8 +65,11 @@ def compile_button(data):
 
     thread = threading.Thread(target=stream_output, daemon=True)
     thread.start()
-    process.wait()
+
+    print("PROGRAM STOPPED") # Here is where the program stops
     socketio.emit("process_done")
+
+    process.wait()
 
     '''error_lines = []
     for line in process.stderr:
@@ -86,15 +92,24 @@ def stream_output(p, sid = None):
     while True:
         char = p.stdout.read1(1024)
         if not char:
+            stream_error_output(p, sid)
             break
         socketio.emit("output", char.decode("utf-8"), to=sid)
         if p.poll() is not None:
             break
 
+def stream_error_output(p, sid = None):
+    while True:
+        char = p.stderr.read1(1024)
+        if not char:
+            break
+        socketio.emit("error-output", char.decode("utf-8"), to=sid)
+        if p.poll() is not None:
+            break
+
 @socketio.on('process_done')
 def process_done():
-    print("PROCESS DONE")
-    #process.stdin.flush()
+    process.stdin.flush()
 
 @app.route("/team-facing/close")
 def close():
