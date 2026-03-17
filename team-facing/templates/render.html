@@ -4,10 +4,24 @@
     <meta charset="UTF-8">
     <title>Team Facing Page</title>
      <style>
-        html, body, #editor {
+        html, body {
           margin: 5px 0;
           padding: 0;
           width: 100%;
+          height: 80%;
+          background-color: black;
+          color: white;
+          font-family: 'Verdana', system-ui, sans-serif;
+        }
+        h1, h2, h3, p
+        {
+            text-align: center;
+        }
+        #editor
+        {
+          margin-left: 20px;
+          padding: 0;
+          width: 75%;
           height: 80%;
         }
         .error-output {
@@ -25,6 +39,13 @@
             width: 50%;
             display: flex;
             margin-right: 10px;
+        }
+        #terminal
+        {
+            height: 200px;
+            width: 75%;
+            margin-left: 20px;
+
         }
         pre
         {
@@ -45,7 +66,41 @@
         {
             color: red;
         }
+         #compile
+         {
+            margin-left: 20px;
+            font-size: 16px;
+            padding: 10px 20px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            font-weight: 700;
+            border-radius: 5px;
+            border: 2px solid green;
+            color: green;
+            background-color: #1E1E1E;
+         }
+         #compile:hover
+         {
+            color: white;
+            background-color: green;
+            cursor: pointer;
+         }
+         #terminal .xterm-viewport::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #terminal .xterm-viewport::-webkit-scrollbar-track {
+            background-color: #1e1e1e;
+        }
+
+        #terminal .xterm-viewport::-webkit-scrollbar-thumb {
+            background-color: #424242;
+            min-height: 20px;
+        }
     </style>
+
+     <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}">
+    <script src="{{ url_for('static', filename='xterm.js') }}"></script>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
@@ -68,6 +123,8 @@
     <h1>Team Facing Page</h1>
     <h2>Team {{ team_number or "A"}}</h2>
 
+    <h3>Make sure to press compile to save code!</h3>
+
     <div id="editor"></div>
 
     <button onclick="getSubmissionCode()" id="compile" type="submit">Compile</button>
@@ -80,11 +137,6 @@
             <pre class="output">{{output}}</pre>
             <pre class="error-output">{{error_output}}</pre>
         </div>
-        <div class="input-panel">
-            <input type="text" id="input-text" name="input-text" class="input-text"/>
-            <br>
-            <label for="input-text" class="input-text-label">Give input and press 'Enter'</label>
-        </div>
     </div>
 
     <!-- Add our hello.js file (even if it's in a sub-directory -->
@@ -92,37 +144,7 @@
     <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
     <script src="{{ url_for('static', filename='onSubmission.js') }}"></script>
 
-    <script>
-        const socket = io("http://localhost:5000");
-
-        socket.on("connect", function () {
-            console.log("Connected");
-        });
-
-        socket.on("output", function (line) {
-            const out = document.querySelector(".output");
-            out.textContent += line;
-            console.log("Outputting");
-        })
-
-        const textbox = document.querySelector("#input-text");
-        textbox.addEventListener("keydown", (event) => {
-            if(event.key === "Enter")
-            {
-                console.log("Getting INPUT");
-                socket.emit("input_added", textbox.value)
-                textbox.value = "";
-            }
-        });
-
-        socket.on("process_done", function() {
-            console.log("Process finished");
-        });
-
-        socket.on("disconnect", function () {
-            console.log("Disconnected");
-        })
-    </script>
+<script src="{{ url_for('static', filename='socket-code.js') }}"></script>
 
 
 

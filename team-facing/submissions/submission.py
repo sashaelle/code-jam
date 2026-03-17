@@ -1,1 +1,5 @@
-print("Hello Game Jam!")
+print("Hello game jam!")
+
+x = input("Enter: ")
+
+print(x)
