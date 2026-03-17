@@ -1,3 +1,5 @@
-print("Hello game jam!")
-x = input("Enter: ")
+print("Hello game jam!")
+
+x = input("Enter: ")
+
 print(x)
