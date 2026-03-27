@@ -9,14 +9,13 @@ const term = new Terminal({
     },
     cursorBlink: true,
  });
+window.term = term;
 
 let hasCompiled = false;
 
 const terminalBox = document.getElementById("terminal");
 
 term.open(terminalBox);
-
-editorSetup();
 
 socket.on("connect", function () {
     console.log("Connected");
@@ -32,16 +31,15 @@ socket.on("error-output", function (line) {
 })
 
 socket.on("compile_process", function () {
-    console.log("PROCESS DONE");
     hasCompiled = true;
 })
 
 socket.on("process_done", function () {
-    console.log("FINAL PROCESS");
-
     // Change button to run
-    const compileButton = document.getElementById("compile");
-    //compileButton.textContent = "Run";
+    const compileButton = document.querySelector(".stop-button");
+    compileButton.textContent = "▶ Run";
+    compileButton.classList.add("compile");
+    compileButton.classList.remove("stop-button");
 })
 
 
@@ -51,12 +49,8 @@ handleTerminalInput();
 function handleTerminalInput()
 {
     term.onData((data) => {
-        console.log("HAS COMPILED? ", hasCompiled);
         if(hasCompiled)
         {
-            console.log("RUNNING");
-
-            console.log(data);
             // Check for enter press
             // If not enter --> write to terminal
                 // If backspace --> remove
@@ -79,7 +73,6 @@ function handleTerminalInput()
                     term.write(data);
                     inputStr += data;
                 }
-                console.log(inputStr);
             }
             else // Pressed enter
             {
@@ -100,16 +93,17 @@ window.clearTerminal = function()
 function editorSetup()
 {
     console.log("REFRESH!");
-    if(localStorage.getItem("code") != null && localStorage.getItem("code") != "")
+    const storedCode = localStorage.getItem("code" + window.problemNumber)
+    if(storedCode != null && storedCode != "")
     {
         const codeBox = document.getElementById("editor");
-        const code = localStorage.getItem("code");
+        const code = storedCode;
         console.log("Code: ", code);
         setEditorValue(code);
     }
 }
 
-function setEditorValue(code) {
+window.setEditorValue = function(code) {
     if (window.monacoEditor) {
         console.log("Found editor");
         window.monacoEditor.getModel().setValue(code);
@@ -120,8 +114,10 @@ function setEditorValue(code) {
     }
 }
 
+editorSetup();
+
 socket.on("process_done", function() {
-    console.log("Process finished");
+    console.log("Code compiled");
 });
 
 socket.on("disconnect", function () {

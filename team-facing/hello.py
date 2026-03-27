@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from localStoragePy import localStoragePy
@@ -34,23 +36,24 @@ def handle_my_custom_event(json):
     emit('my response', json)
 
 
-#@app.route("/team-facing/compile_button", methods=["POST"])
 process = None
 @socketio.on('compile')
 def compile_button(data):
     socketio.emit("compile_process")
+
     global process
-    fp = "submissions/submission.py" # DONT HARDCODE
-    #data = request.get_json()
+    problem_number = data["problem_number"]
+    fp = "submissions/submission.py"
+    
+    print("Problem number: ",problem_number)
     code = data["code"]
-    #localStorage.setItem("code", code)
+
     submission_id = request.sid
     sid = request.sid
-    with open(fp, "w") as f:
-        f.write(code)
-    #output = subprocess.run(["python", fp], capture_output=True, text=True, timeout=2)
 
-    # Store somewhere
+    print(code)
+    with open(fp, "w", newline="\n") as f:
+        f.write(code)
 
     process = subprocess.Popen(["python", "-u", fp],
                                stdin=subprocess.PIPE,
@@ -110,6 +113,12 @@ def stream_error_output(p, sid = None):
 @socketio.on('process_done')
 def process_done():
     process.stdin.flush()
+
+@socketio.on('stop_process')
+def stop_process():
+    global process
+    process.terminate()
+    process.wait()
 
 @app.route("/team-facing/close")
 def close():
