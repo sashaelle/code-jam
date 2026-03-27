@@ -1,7 +1,7 @@
 
 window.onSubmission = function ()
 {
-    const code = window.editor.getValue();
+    const code = window.monacoEditor.getValue();
     let status = false;
     const submitBtn = document.getElementById("submit");
     const submitTime = document.getElementById("submitTime");
