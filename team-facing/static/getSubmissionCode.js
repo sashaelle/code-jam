@@ -35,10 +35,6 @@ window.getSubmissionCode = function() {
 
         console.log("Before code: ", localStorage.getItem("code" + window.problemNumber));
 
-        // Clear previous output
-        document.querySelector(".output").textContent = "";
-        document.querySelector(".error-output").textContent = "";
-
         // Clear terminal
         window.clearTerminal();
 
