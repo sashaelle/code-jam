@@ -1,5 +1,1 @@
-print("Hello game jam!")
-
-x = input("Enter: ")
-
-print(x)
+print("Hello Game Jam!")

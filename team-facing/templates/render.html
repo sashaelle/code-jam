@@ -3,101 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Team Facing Page</title>
-     <style>
-        html, body {
-          margin: 5px 0;
-          padding: 0;
-          width: 100%;
-          height: 80%;
-          background-color: black;
-          color: white;
-          font-family: 'Verdana', system-ui, sans-serif;
-        }
-        h1, h2, h3, p
-        {
-            text-align: center;
-        }
-        #editor
-        {
-          margin-left: 20px;
-          padding: 0;
-          width: 75%;
-          height: 80%;
-        }
-        .error-output {
-            color: red;
-        }
-        .bottom-sec
-        {
-            display: flex;
-            margin: 5px;
-        }
-        .output-panel
-        {
-            border: 1px solid black;
-            padding: 20px;
-            width: 50%;
-            display: flex;
-            margin-right: 10px;
-        }
-        #terminal
-        {
-            height: 200px;
-            width: 75%;
-            margin-left: 20px;
-
-        }
-        pre
-        {
-            font-family: Verdana;
-            font-size: 16px;
-        }
-        .input-text
-        {
-            background-color: #5c5c5c;
-            color: white;
-            border: 5px solid wheat;
-        }
-        .input-text:focus
-        {
-            border-color: red;
-        }
-        .input-text-label
-        {
-            color: red;
-        }
-         #compile
-         {
-            margin-left: 20px;
-            font-size: 16px;
-            padding: 10px 20px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-            font-weight: 700;
-            border-radius: 5px;
-            border: 2px solid green;
-            color: green;
-            background-color: #1E1E1E;
-         }
-         #compile:hover
-         {
-            color: white;
-            background-color: green;
-            cursor: pointer;
-         }
-         #terminal .xterm-viewport::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #terminal .xterm-viewport::-webkit-scrollbar-track {
-            background-color: #1e1e1e;
-        }
-
-        #terminal .xterm-viewport::-webkit-scrollbar-thumb {
-            background-color: #424242;
-            min-height: 20px;
-        }
-    </style>
 
      <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}">
     <script src="{{ url_for('static', filename='xterm.js') }}"></script>
@@ -123,12 +28,18 @@
     <h1>Team Facing Page</h1>
     <h2>Team {{ team_number or "A"}}</h2>
 
-    <h3>Make sure to press compile to save code!</h3>
+    <h3>Make sure to press run to save code!</h3>
+
+    <div class="problem-container">
+        <button class="left-problem" onclick="updateProblem(-1)">←</button>
+        <h3 class="problem-text">Problem 1</h3>
+        <button class="right-problem" onclick="updateProblem(1)">→</button>
+    </div>
 
     <div id="editor"></div>
 
-    <button onclick="getSubmissionCode()" id="compile" type="submit">Compile</button>
     <button onclick="onSubmission()" id="submit" type="submit">Submit</button>
+    <button onclick="getSubmissionCode()" class="compile" type="submit">▶ Run</button>
 
     <div id="submitTime" class="submit_time"></div>
 
@@ -140,11 +51,14 @@
     </div>
 
     <!-- Add our hello.js file (even if it's in a sub-directory -->
-    <script src="{{ url_for('static', filename='hello.js') }}"></script>
+    <script src="{{ url_for('static', filename='config.js') }}"></script>
+    <script src="{{ url_for('static', filename='monacoSetup.js') }}"></script>
     <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
     <script src="{{ url_for('static', filename='onSubmission.js') }}"></script>
+    <script src="{{ url_for('static', filename='updateProblem.js') }}"></script>
 
 <script src="{{ url_for('static', filename='socket-code.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 
 
 

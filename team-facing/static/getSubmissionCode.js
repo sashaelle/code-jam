@@ -20,21 +20,41 @@
 });
 }*/
 window.getSubmissionCode = function() {
-    const code = window.monacoEditor.getValue();
-    localStorage.setItem("code", code);
-    console.log("Before code: ", localStorage.getItem("code"));
+    let compileButton = document.querySelector(".compile");
 
-    // Clear previous output
-    document.querySelector(".output").textContent = "";
-    document.querySelector(".error-output").textContent = "";
+    if(!compileButton)
+    {
+        compileButton = document.querySelector(".stop-button");
+    }
 
-    // Clear terminal
-    window.clearTerminal();
+    if(compileButton.textContent.includes("Run"))
+    {
+        const code = window.monacoEditor.getValue();
+        console.log(code);
+        localStorage.setItem("code" + window.problemNumber, code);
 
-    // Change button to stop
-    const compileButton = document.getElementById("compile");
-    //compileButton.textContent = "Stop";
+        console.log("Before code: ", localStorage.getItem("code" + window.problemNumber));
 
-    // Emit the compile event with the code
-    socket.emit("compile", {code: code});
+        // Clear previous output
+        document.querySelector(".output").textContent = "";
+        document.querySelector(".error-output").textContent = "";
+
+        // Clear terminal
+        window.clearTerminal();
+
+        // Change button to stop
+        compileButton.textContent = "⏹ Stop";
+        compileButton.classList.add("stop-button");
+        compileButton.classList.remove("compile");
+
+        const problemStr = document.querySelector(".problem-text").textContent;
+        const num = Number(problemStr.substring(problemStr.indexOf(" ")+1, problemStr.length));
+        // Emit the compile event with the code
+        socket.emit("compile", {code: code, problem_number: num });
+    }
+    else
+    {
+        window.term.write("\n\x1b[1;31mProcess Stopped.\x1b[0m")
+        socket.emit("stop_process");
+    }
 }
