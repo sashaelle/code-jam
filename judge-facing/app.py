@@ -131,6 +131,13 @@ def submit_code():
     submissions.append(submission)
     submission_counter += 1
 
+    # Add to recent submissions
+    recent_submissions.insert(0, submission)
+
+    # Keep only most recent submissions 
+    if len(recent_submissions) > MAX_RECENT: 
+        recent_submissions.pop()
+
     #Return the message that the submission is received, the submission_id, and timestamp
     return jsonify({
         "message": "Submission received",
@@ -141,108 +148,199 @@ def submit_code():
 #API call that returns submissions that are waiting to be scored
 @app.route("/api/submissions", methods=["GET"])
 def get_submissions():
-    #Extracts the status parameter
-    status_filter = request.args.get("status")
+    result = []
 
-    #Reassigns the submission list to a variable for easier use
-    result = submissions
+    for s in submissions:
+        team = s["team"]
+        problem_id = s["problem_id"]
 
-    #Only include submissions that match the extracted status
-    if status_filter:
-        result = [s for s in result if s["status"] == status_filter]
+        entry = s.copy()
+
+        # Attach score only if judged
+        if s["status"] in ["correct", "incorrect"]:
+            team_problem = scores[team][problem_id]
+            entry["score"] = team_problem["score"]
+
+        result.append(entry)
 
     #Return a list of submissions
     return jsonify(result), 200
 
-#API call where judges post the result of a submission
-#Required {submission_id, correct/incorrect, feedback}
-@app.route("/api/judge/score/<int:submission_id>", methods=["POST"]) 
-def judge_score(submission_id): 
+#API call where judges post the result of a submission 
+#Required {submission_id, correct/incorrect, feedback} 
+@app.route("/api/judge/score/<int:submission_id>", methods=["POST"])  
+def judge_score(submission_id):  
+    #Requests the data from the json 
+    data = request.get_json()  
 
-    #Requests the data from the json
-    data = request.get_json() 
+    #Receives if submission is correct (true/false) and custom feedback 
+    correct = data.get("correct")  
+    feedback = data.get("feedback", "")  
 
-    #Receives if submission is correct (true/false) and custom feedback
-    correct = data.get("correct") 
-    feedback = data.get("feedback", "") 
+    #Returns error message if missing necessary information 
+    if correct is None:  
+        return jsonify({"error": "Missing 'correct' field"}), 400  
 
-    #Returns error message if missing necessary information
-    if correct is None: 
-        return jsonify({"error": "Missing 'correct' field"}), 400 
+    #Find the requested submission  
+    submission = next((s for s in submissions if s["id"] == submission_id), None)  
 
-    #Find the requested submission 
-    submission = next((s for s in submissions if s["id"] == submission_id), None) 
+    #Returns error message if the submission doesn't exist 
+    if not submission:  
+        return jsonify({"error": "Submission not found"}), 404  
 
-    #Returns error message if the submission doesn't exist
-    if not submission: 
-        return jsonify({"error": "Submission not found"}), 404 
-    
-    #Returns error message if the submission has been reviewed
-    if submission["status"] != "pending": 
-        return jsonify({"error": "Submission already scored"}), 400 
+    #Returns error message if the submission has been reviewed 
+    if submission["status"] != "pending":  
+        return jsonify({"error": "Submission already scored"}), 400  
 
-    #Create necessary variables
-    team = submission["team"] 
-    problem_id = submission["problem_id"] 
-    team_problem = scores[team][problem_id] 
+    #Create necessary variables 
+    team = submission["team"]  
+    problem_id = submission["problem_id"]  
+    team_problem = scores[team][problem_id]  
 
-    #If the submission is correct
-    if correct: 
-        submission["status"] = "correct" 
-        submission["feedback"] = feedback 
+    #If the submission is correct 
+    if correct:  
+        submission["status"] = "correct"  
+        submission["feedback"] = feedback  
 
-        #If the team hasn't solved this problem, mark problem as solved and add 1 to the teams_before
-        if not team_problem["solved"]: 
-            team_problem["solved"] = True 
-            team_problem["teams_before"] = len(solved_order[problem_id]) 
- 
-            #Create variable of how many teams answered before & remove a point from the final score
-            penalty = team_problem["teams_before"] 
-            team_problem["score"] = max(0, team_problem["score"] - penalty) 
+        #If the team hasn't solved this problem, mark problem as solved and add 1 to the teams_before 
+        if not team_problem["solved"]:  
+            team_problem["solved"] = True  
+            team_problem["teams_before"] = len(solved_order[problem_id])  
 
-            #Add the solved submission to the solved_order list
-            solved_order[problem_id].append(team) 
+            #Create variable of how many teams answered before & remove a point from the final score 
+            penalty = team_problem["teams_before"]  
+            team_problem["score"] = max(0, team_problem["score"] - penalty)  
 
-        #Return the submission_id, that the submission is correct, their final score, and how many teams answered that problem correctly before
-        return jsonify({ 
-            "submission_id": submission_id, 
-            "result": "correct", 
-            "final_score": team_problem["score"], 
-            "teams_solved_before": team_problem["teams_before"]
+            #Add the solved submission to the solved_order list 
+            solved_order[problem_id].append(team)  
+
+        #Return the submission_id, that the submission is correct, their final score, and how many teams answered that problem correctly before 
+        return jsonify({  
+            "submission_id": submission_id,  
+            "result": "correct",  
+            "final_score": team_problem["score"],  
+            "teams_solved_before": team_problem["teams_before"] 
+        }), 200  
+
+    #If the submission is incorrect 
+    else:  
+        submission["status"] = "incorrect"  
+        submission["feedback"] = feedback  
+
+        #Add to wrong submission counter & remove a point from the final score 
+        team_problem["wrong_submissions"] += 1  
+        team_problem["score"] = max(0, team_problem["score"] - 1)  
+
+        #Return the submission_id, that the submission is incorrect, their current score, and how many wrong submission that team submitted 
+        return jsonify({  
+            "submission_id": submission_id,  
+            "result": "incorrect",  
+            "current_score": team_problem["score"],  
+            "wrong_submissions": team_problem["wrong_submissions"]
         }), 200 
-    
-    #If the submission is incorrect
-    else: 
-        submission["status"] = "incorrect" 
-        submission["feedback"] = feedback 
 
-        #Add to wrong submission counter & remove a point from the final score
-        team_problem["wrong_submissions"] += 1 
-        team_problem["score"] = max(0, team_problem["score"] - 1) 
+#API call where judges see the submission and its information
+@app.route("/api/judge/submission/<int:submission_id>", methods=["GET"])
+def get_submission(submission_id):
+    #Search for the submission based on its submission_id
+    submission = next((s for s in submissions if s["id"] == submission_id), None)
 
-        #Return the submission_id, that the submission is incorrect, their current score, and how many wrong submission that team submitted
-        return jsonify({ 
-            "submission_id": submission_id, 
-            "result": "incorrect", 
-            "current_score": team_problem["score"], 
-            "wrong_submissions": team_problem["wrong_submissions"] 
-        }), 200 
+    #Error message if the submission isn't found
+    if not submission:
+        return jsonify({"error": "Submission not found"}), 404
+
+    return jsonify(submission), 200
+
+#API call where judges get the recommended score of a submission 
+@app.route("/api/judge/recommend_score/<int:submission_id>")
+def recommend_score(submission_id):
+    #Search for the submission based on its submission_id
+    submission = next((s for s in submissions if s["id"] == submission_id), None)
+
+    #Error message if the submission isn't found
+    if not submission:
+        return jsonify({"error": "Submission not found"}), 404
+
+    team = submission["team"]
+    problem_id = submission["problem_id"]
+    team_problem = scores[team][problem_id]
+
+    #Return the recommended score for the submission and the reasoning why
+    return jsonify({
+        "score": team_problem["score"],
+        "wrong_submissions": team_problem["wrong_submissions"],
+        "teams_before": team_problem["teams_before"]
+    })
+
+#API call where judges post the final score of a submission 
+#Required {final_score} 
+@app.route("/api/judge/final_score/<int:submission_id>", methods=["POST"])
+def overwrite_final_score(submission_id):
+    data = request.get_json()
+    final_score = data.get("final_score")
+
+    #Error message if the the final score is invalid
+    if final_score is None or final_score < 0:
+        return jsonify({"error": "Invalid final_score"}), 400
+
+    #Find the submission
+    submission = next((s for s in submissions if s["id"] == submission_id), None)
+    if not submission:
+        return jsonify({"error": "Submission not found"}), 404
+
+    team = submission["team"]
+    problem_id = submission["problem_id"]
+    team_problem = scores[team][problem_id]
+
+    #Update the final score
+    team_problem["score"] = final_score
+
+    #Mark the submission as reviewed if not already
+    submission["status"] = "correct"
+    submission["final_score_overwritten"] = True
+
+    return jsonify({"submission_id": submission_id, "final_score": final_score}), 200  
     
 #API call that returns the recent submissions (last 10)
 @app.route("/api/submissions/recent", methods=["GET"])
 def recent_feed():
-    return jsonify(recent_submissions)
+    recent = []
+
+    #Only returns the 10 most recent submissions that aren't 'pending'
+    for s in recent_submissions:
+        if s["status"] in ["correct", "incorrect"]:
+            team = s["team"]
+            problem_id = s["problem_id"]
+            team_problem = scores[team][problem_id]
+
+            recent.append({
+                "team": team,
+                "problem_id": problem_id,
+                "status": s["status"],
+                "score": team_problem["score"] if s["status"] == "correct" else 0,
+                "timestamp": s["timestamp"]
+            })
+    return jsonify(recent)
 
 #API call that returns the scoreboard (all scores)
 @app.route("/api/scoreboard", methods=["GET"])
 def scoreboard():
-    #Returns the team/problem/scoring information
     return jsonify(scores)
 
 #API call that renders the HTML page for the leaderboard & recent submissions
 @app.route("/scoreboard")
 def scoreboard_page():
     return render_template("scoreboard.html")
+
+#API call that renders the HTML page for the submissions
+@app.route("/submissions")
+def submissions_page():
+    return render_template("submissions.html")
+
+#API call that renders the HTML page for the judges scoring the submissions
+@app.route("/scoring")
+def scoring_page():
+    return render_template("scoring.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
