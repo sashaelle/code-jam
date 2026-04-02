@@ -18,7 +18,18 @@ const terminalBox = document.getElementById("terminal");
 term.open(terminalBox);
 
 socket.on("connect", function () {
+
     console.log("Connected");
+});
+
+socket.on("clear_local_storage", () => {
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith("problem_")) {
+            localStorage.removeItem(key);
+        }
+    });
+
+    console.log("Local storage cleared");
 });
 
 socket.on("output", function (line) {

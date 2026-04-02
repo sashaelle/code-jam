@@ -20,6 +20,8 @@ def index():
 @socketio.on("connect")
 def handle_connect():
     print("Client has been connected")
+    #Remove after database is connected
+    emit("clear_local_storage")
 
 # On refresh --> disconnect
 @socketio.on("disconnect")
