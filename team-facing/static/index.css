@@ -102,6 +102,25 @@ pre
     background-color: green;
     cursor: pointer;
  }
+ .submit
+ {
+    margin-left: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 2px solid blue;
+    color: blue;
+    background-color: #1E1E1E;
+ }
+  .submit:hover
+ {
+    color: white;
+    background-color: blue;
+    cursor: pointer;
+ }
  .problem-container
  {
     display: flex;
