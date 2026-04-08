@@ -1,6 +1,5 @@
 @page
 @{
-    Layout = "_AppLayout";
     ViewData["Title"] = "Submission";
 }
 
@@ -9,10 +8,6 @@
     <!-- TOP BAR -->
     <header class="team-topbar">
         <div class="team-topbar-left">&gt;&gt; TEAM 1</div>
-
-        <div class="team-topbar-right">
-            <a class="team-navlink" asp-page="/Team">&lt;&lt; BACK TO TEAM</a>
-        </div>
     </header>
 
     <!-- CONTENT GRID -->
@@ -45,9 +40,19 @@
                                     <option>Tab 3</option>
                                 </select>
                             </div>
-                         </div>
+                        </div>
 
-                        <!-- SUBMISSION PREVIEW -->
+                        <div class="mt-4">
+                            <button class="btn team-btn-submit w-100" type="button">
+                                - = &nbsp; SUBMIT TO JUDGES &nbsp; = -
+                            </button>
+
+                            <div class="text-muted mt-2 submission-note">
+                                Submission bundle: Team #, Problem #, Selected Tab, Code from Tab (not implemented).
+                            </div>
+                        </div>
+
+                        <!-- OPTIONAL: what gets sent (purely visual) -->
                         <div class="mt-4">
                             <div class="panel-title center" style="margin-bottom: 10px;">SUBMISSION PREVIEW</div>
                             <div class="mono-pre submission-preview">
@@ -58,23 +63,12 @@ TIMESTAMP: --:--:--
 
 CODE:
 [Code from selected tab will appear here]
-                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
             </div>
-
-            <!-- SUBMIT BUTTON MOVED UNDER PREVIEW -->
-            <div class="mt-4">
-                <button class="btn team-btn-submit w-100" type="button">
-                    - = &nbsp; SUBMIT TO JUDGES &nbsp; = -
-                </button>
-
-                <div class="text-muted mt-2 submission-note">
-                    Submission bundle: Team #, Problem #, Selected Tab, Code from Tab (not implemented).
-                </div>
-            </div>
-
-        </div>
-    </section>
-</div>
 
             <!-- RIGHT COLUMN: SCOREBOARD -->
             <div class="col-12 col-lg-5">
