@@ -12,7 +12,7 @@ builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Index";
+        options.LoginPath = "/Login";
         options.AccessDeniedPath = "/Error";
     });
 
