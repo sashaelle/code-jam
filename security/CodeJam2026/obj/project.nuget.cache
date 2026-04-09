@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "YN13CVroWFM=",
+  "dgSpecHash": "Qg7rU5hjwOQ=",
   "success": true,
-  "projectFilePath": "/Users/JaydenJimenez/Desktop/2026 Coursework/Senior Seminar /Code Jam (Group Project)/InvestorPrototype/InvestorPrototype.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\sasha\\Documents\\GitHub\\code-jam\\security\\CodeJam2026\\CodeJam2026.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\sasha\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512"
+  ],
   "logs": []
 }
