@@ -8,7 +8,7 @@ RUN dotnet restore
 
 # Copy everything else
 COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish InvestorPrototype.csproj -c Release -o /app/publish
 
 # ---------- RUNTIME STAGE ----------
 FROM mcr.microsoft.com/dotnet/aspnet:8.0

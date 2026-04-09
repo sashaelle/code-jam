@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict kHnx1X2FsLs6P2lbmTXKmlZ1hjSeH3Crcd3OyNWEECE23TFVnv1UTGssduZOSbT
+\restrict vE5ERTsux0skSw8BatZcS51cLr1EJiDxZG06ILgWbJUuMwABDu5L4YHfaslEGmh
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
 
--- Started on 2026-04-02 23:59:24
+-- Started on 2026-04-08 11:49:14
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -54,7 +54,7 @@ CREATE TABLE public.accounts (
     role character varying(10) NOT NULL,
     is_active boolean DEFAULT true NOT NULL,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    CONSTRAINT accounts_role_check CHECK (((role)::text = ANY ((ARRAY['team'::character varying, 'judge'::character varying])::text[])))
+    CONSTRAINT accounts_role_check CHECK (((role)::text = ANY ((ARRAY['team'::character varying, 'judge'::character varying, 'admin'::character varying])::text[])))
 );
 
 
@@ -128,6 +128,10 @@ ALTER TABLE public.teams ALTER COLUMN team_id ADD GENERATED ALWAYS AS IDENTITY (
 --
 
 COPY public.accounts (account_id, username, password_hash, role, is_active, created_at) FROM stdin;
+06f3bd78-b88c-4c2c-9d19-3114023de1a1	admin_test	hash	admin	t	2026-04-08 11:21:55.795204
+36b43eb0-916c-4063-8212-be09f1fea8bd	team1	codejamteam	team	t	2026-04-08 11:41:13.481365
+1b934f24-0dc0-48c3-be10-a2e9efb64e85	judge	codejamjudge	judge	t	2026-04-08 11:41:13.481365
+93c64e76-f579-488a-8b59-b9be4d773c02	admin	codejamadmin	admin	t	2026-04-08 11:41:13.481365
 \.
 
 
@@ -138,6 +142,7 @@ COPY public.accounts (account_id, username, password_hash, role, is_active, crea
 --
 
 COPY public.judges (judge_id, account_id, display_name, created_at) FROM stdin;
+1	1b934f24-0dc0-48c3-be10-a2e9efb64e85	Judge 1	2026-04-08 11:44:05.573549
 \.
 
 
@@ -148,6 +153,7 @@ COPY public.judges (judge_id, account_id, display_name, created_at) FROM stdin;
 --
 
 COPY public.teams (team_id, account_id, team_number, team_name, created_at) FROM stdin;
+1	36b43eb0-916c-4063-8212-be09f1fea8bd	team_1	Team 1	2026-04-08 11:43:03.373876
 \.
 
 
@@ -157,7 +163,7 @@ COPY public.teams (team_id, account_id, team_number, team_name, created_at) FROM
 -- Name: judges_judge_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.judges_judge_id_seq', 1, false);
+SELECT pg_catalog.setval('public.judges_judge_id_seq', 1, true);
 
 
 --
@@ -166,7 +172,7 @@ SELECT pg_catalog.setval('public.judges_judge_id_seq', 1, false);
 -- Name: teams_team_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.teams_team_id_seq', 1, false);
+SELECT pg_catalog.setval('public.teams_team_id_seq', 1, true);
 
 
 --
@@ -250,11 +256,11 @@ ALTER TABLE ONLY public.teams
     ADD CONSTRAINT fk_teams_account FOREIGN KEY (account_id) REFERENCES public.accounts(account_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-04-02 23:59:25
+-- Completed on 2026-04-08 11:49:15
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict kHnx1X2FsLs6P2lbmTXKmlZ1hjSeH3Crcd3OyNWEECE23TFVnv1UTGssduZOSbT
+\unrestrict vE5ERTsux0skSw8BatZcS51cLr1EJiDxZG06ILgWbJUuMwABDu5L4YHfaslEGmh
 
