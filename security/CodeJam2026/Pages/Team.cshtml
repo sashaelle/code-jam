@@ -9,10 +9,13 @@
 
     <!-- TOP BAR -->
     <header class="team-topbar">
-        <div class="team-topbar-left">&gt;&gt; TEAM 1</div>
-
+        <div class="team-topbar-left">&gt;&gt; @Model.teamName.ToUpper()</div>
         <div class="team-topbar-right">
-            <a class="team-navlink" asp-page="/Submission">Submission</a>
+            <a class="team-navlink"
+               asp-page="/Submission"
+               asp-route-teamName="@Model.teamName">
+                SUBMISSION
+            </a>
         </div>
     </header>
 

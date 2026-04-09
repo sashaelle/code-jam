@@ -1,5 +1,7 @@
-@page
+@page "{teamName}"
+@model CodeJam2026.Pages.SubmissionModel
 @{
+    Layout = "_AppLayout";
     ViewData["Title"] = "Submission";
 }
 
@@ -7,7 +9,13 @@
 
     <!-- TOP BAR -->
     <header class="team-topbar">
-        <div class="team-topbar-left">&gt;&gt; TEAM 1</div>
+        <div class="team-topbar-left">
+            <a asp-page="/Team"
+               asp-route-teamName="@Model.TeamName"
+               class="back-link">
+                &lt;&lt; BACK TO TEAM
+            </a>
+        </div>
     </header>
 
     <!-- CONTENT GRID -->
@@ -56,7 +64,7 @@
                         <div class="mt-4">
                             <div class="panel-title center" style="margin-bottom: 10px;">SUBMISSION PREVIEW</div>
                             <div class="mono-pre submission-preview">
-TEAM: 1
+TEAM: @Model.TeamName
 PROBLEM: #
 TAB: Tab #
 TIMESTAMP: --:--:--
