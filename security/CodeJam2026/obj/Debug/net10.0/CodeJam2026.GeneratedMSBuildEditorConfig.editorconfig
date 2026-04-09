@@ -11,73 +11,73 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CodeJam2026
 build_property.RootNamespace = CodeJam2026
-build_property.ProjectDir = C:\Users\sasha\Documents\GitHub\code-jam\security\CodeJam2026\
+build_property.ProjectDir = /Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\sasha\Documents\GitHub\code-jam\security\CodeJam2026
+build_property.MSBuildProjectDirectory = /Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Controls.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udHJvbHMuY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Controls.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29udHJvbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Judge.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSnVkZ2UuY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Judge.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSnVkZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Login.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpdmFjeS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Scoreboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NvcmVib2FyZC5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Scoreboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2NvcmVib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_AppLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9BcHBMYXlvdXQuY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_AppLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19BcHBMYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_LoginLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9Mb2dpbkxheW91dC5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_LoginLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19Mb2dpbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Submission.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3VibWlzc2lvbi5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Submission.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU3VibWlzc2lvbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Team.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhbS5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Team.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVGVhbS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_LoginLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0xvZ2luTGF5b3V0LmNzaHRtbA==
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_LoginLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0xvZ2luTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/sasha/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-rp8f5jmjct
+[/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-56eolcgn3g

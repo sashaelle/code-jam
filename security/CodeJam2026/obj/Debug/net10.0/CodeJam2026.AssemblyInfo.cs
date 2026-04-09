@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CodeJam2026")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+25365435bbb1a746df5a012ab9ff5a233488a357")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4ee8c0d42930fe116f4e086284eef6d0b39d7bca")]
 [assembly: System.Reflection.AssemblyProductAttribute("CodeJam2026")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CodeJam2026")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
