@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict vE5ERTsux0skSw8BatZcS51cLr1EJiDxZG06ILgWbJUuMwABDu5L4YHfaslEGmh
+\restrict ZyLXamdT9ewz5q2kfPklpEf7pFzwZehDtMh3eLeEEF43mUhEfx4fNbcMWJCy4Hb
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
 
--- Started on 2026-04-08 11:49:14
+-- Started on 2026-04-09 10:53:34
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -129,9 +129,9 @@ ALTER TABLE public.teams ALTER COLUMN team_id ADD GENERATED ALWAYS AS IDENTITY (
 
 COPY public.accounts (account_id, username, password_hash, role, is_active, created_at) FROM stdin;
 06f3bd78-b88c-4c2c-9d19-3114023de1a1	admin_test	hash	admin	t	2026-04-08 11:21:55.795204
-36b43eb0-916c-4063-8212-be09f1fea8bd	team1	codejamteam	team	t	2026-04-08 11:41:13.481365
 1b934f24-0dc0-48c3-be10-a2e9efb64e85	judge	codejamjudge	judge	t	2026-04-08 11:41:13.481365
 93c64e76-f579-488a-8b59-b9be4d773c02	admin	codejamadmin	admin	t	2026-04-08 11:41:13.481365
+36b43eb0-916c-4063-8212-be09f1fea8bd	Team1	codejamteam	team	t	2026-04-08 11:41:13.481365
 \.
 
 
@@ -256,11 +256,11 @@ ALTER TABLE ONLY public.teams
     ADD CONSTRAINT fk_teams_account FOREIGN KEY (account_id) REFERENCES public.accounts(account_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-04-08 11:49:15
+-- Completed on 2026-04-09 10:53:36
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict vE5ERTsux0skSw8BatZcS51cLr1EJiDxZG06ILgWbJUuMwABDu5L4YHfaslEGmh
+\unrestrict ZyLXamdT9ewz5q2kfPklpEf7pFzwZehDtMh3eLeEEF43mUhEfx4fNbcMWJCy4Hb
 
