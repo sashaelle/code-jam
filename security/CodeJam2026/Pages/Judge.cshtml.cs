@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace InvestorPrototype.Pages;
+namespace CodeJam2026.Pages;
 
 [Authorize(Roles = "Admin")]
 public class JudgeModel : PageModel
