@@ -8,12 +8,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 
 INSERT INTO accounts (username, password_hash, role, is_active)
 VALUES
-    ('Team1', 'team1pass', 'team', true),
-    ('Team2', 'team2pass', 'team', true),
-    ('Team3', 'team3pass', 'team', true),
-    ('Team4', 'team4pass', 'team', true),
-    ('Admin', 'adminpass', 'admin', true),
-    ('judge', 'adminpass', 'judge', true)
+    ('Admin', 'adminpass', 'admin', true)
 ON CONFLICT (username) DO UPDATE
 SET
     password_hash = EXCLUDED.password_hash,

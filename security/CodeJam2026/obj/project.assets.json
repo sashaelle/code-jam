@@ -1,50 +1,16 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {
-      "Npgsql/10.0.2": {
-        "type": "package",
-        "compile": {
-          "lib/net10.0/Npgsql.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net10.0/Npgsql.dll": {
-            "related": ".xml"
-          }
-        }
-      }
-    }
+    "net10.0": {}
   },
-  "libraries": {
-    "Npgsql/10.0.2": {
-      "sha512": "q5RfBI+wywJSFUNDE1L4ZbHEHCFTblo8Uf6A6oe4feOUFYiUQXyAf9GBh5qEZpvJaHiEbpBPkQumjEhXCJxdrg==",
-      "type": "package",
-      "path": "npgsql/10.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/net10.0/Npgsql.dll",
-        "lib/net10.0/Npgsql.xml",
-        "lib/net8.0/Npgsql.dll",
-        "lib/net8.0/Npgsql.xml",
-        "lib/net9.0/Npgsql.dll",
-        "lib/net9.0/Npgsql.xml",
-        "npgsql.10.0.2.nupkg.sha512",
-        "npgsql.nuspec",
-        "postgresql.png"
-      ]
-    }
-  },
+  "libraries": {},
   "projectFileDependencyGroups": {
     "net10.0": [
       "Npgsql >= 10.0.2"
     ]
   },
   "packageFolders": {
-    "/Users/patricksmith/.nuget/packages/": {}
+    "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget": {}
   },
   "project": {
     "version": "1.0.0",
@@ -52,7 +18,7 @@
       "projectUniqueName": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
       "projectName": "CodeJam2026",
       "projectPath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
-      "packagesPath": "/Users/patricksmith/.nuget/packages/",
+      "packagesPath": "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget",
       "outputPath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
@@ -527,5 +493,12 @@
         }
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Permission denied (127.0.0.1:59834)\n  Permission denied"
+    }
+  ]
 }

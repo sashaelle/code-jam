@@ -805,3 +805,109 @@ body {
   letter-spacing: 2px;
   text-transform: uppercase;
 }
+
+/* Generate Team Passwords section */
+.controls-generate-block,
+.controls-accounts-block {
+  border: 3px solid #ffffff;
+  background: #050505;
+  padding: 14px;
+}
+
+.controls-generate-form {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.controls-generate-input-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  gap: 6px;
+}
+
+.controls-generate-label {
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.controls-generate-input {
+  height: 44px;
+  border: 3px solid #ffffff;
+  background: #bfbfbf;
+  color: #111;
+  padding: 6px 10px;
+  border-radius: 0;
+}
+
+.controls-generate-input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #ffffff;
+}
+
+.controls-generate-btn {
+  height: 44px;
+  padding: 0 18px;
+}
+
+.controls-generate-error {
+  width: 100%;
+  color: #ff5757;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  margin-bottom: 0;
+}
+
+.controls-generate-success {
+  color: #66ff99;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.5px;
+}
+
+.controls-accounts-title-row {
+  margin-bottom: 10px;
+}
+
+.controls-accounts-title {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.controls-accounts-empty {
+  color: #d7d7d7;
+  margin: 0;
+}
+
+.controls-accounts-table {
+  margin-bottom: 0;
+  border: 2px solid #ffffff;
+}
+
+.controls-accounts-table thead th {
+  background: #111;
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.controls-accounts-table tbody td {
+  background: #1a1a1a;
+  color: #f4f4f4;
+  border-top: 1px solid #2f2f2f;
+}
+
+.controls-accounts-table tbody tr:nth-child(even) td {
+  background: #131313;
+}

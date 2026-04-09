@@ -22,8 +22,11 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
 
-    public void OnGet()
+    public List<string> LoginUsers { get; private set; } = [];
+
+    public async Task OnGetAsync()
     {
+        await LoadLoginUsersAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -31,6 +34,7 @@ public class LoginModel : PageModel
         if (string.IsNullOrWhiteSpace(SelectedUser))
         {
             ModelState.AddModelError("", "Please select a team.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -51,6 +55,7 @@ public class LoginModel : PageModel
         if (!await reader.ReadAsync())
         {
             ModelState.AddModelError("", "User not found.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -61,6 +66,7 @@ public class LoginModel : PageModel
         if (string.IsNullOrWhiteSpace(expectedPassword) || Password != expectedPassword)
         {
             ModelState.AddModelError("", "Incorrect password.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -99,5 +105,31 @@ public class LoginModel : PageModel
         }
 
         return RedirectToPage("/Team", new { teamName = username });
+    }
+
+    private async Task LoadLoginUsersAsync()
+    {
+        LoginUsers = [];
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            SELECT username
+            FROM accounts
+            WHERE is_active = true
+              AND role IN ('team', 'admin')
+            ORDER BY
+              CASE WHEN role = 'admin' THEN 1 ELSE 0 END,
+              username;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            LoginUsers.Add(reader.GetString(0));
+        }
     }
 }
