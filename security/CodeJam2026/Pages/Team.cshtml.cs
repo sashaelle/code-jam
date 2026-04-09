@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace InvestorPrototype.Pages;
+namespace CodeJam2026.Pages;
 
 [Authorize(Roles = "Team")]
 public class TeamModel : PageModel

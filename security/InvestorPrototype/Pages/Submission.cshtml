@@ -10,9 +10,12 @@
     <!-- TOP BAR -->
     <header class="team-topbar">
         <div class="team-topbar-left">
-            <a class="team-navlink" asp-page="/Team" asp-route-teamName="@Model.TeamName">&lt;&lt; BACK TO TEAM</a>
+            <a asp-page="/Team"
+               asp-route-teamName="@Model.TeamName"
+               class="back-link">
+                &lt;&lt; BACK TO TEAM
+            </a>
         </div>
-        <div class="team-topbar-right">SUBMISSION</div>
     </header>
 
     <!-- CONTENT GRID -->
@@ -61,7 +64,7 @@
                         <div class="mt-4">
                             <div class="panel-title center" style="margin-bottom: 10px;">SUBMISSION PREVIEW</div>
                             <div class="mono-pre submission-preview">
-TEAM: 1
+TEAM: @Model.TeamName
 PROBLEM: #
 TAB: Tab #
 TIMESTAMP: --:--:--

@@ -1,6 +1,7 @@
 @page "{teamName}"
 @model TeamModel
 @{
+    Layout = "_AppLayout";
     ViewData["Title"] = "Team";
 }
 
@@ -9,6 +10,13 @@
     <!-- TOP BAR -->
     <header class="team-topbar">
         <div class="team-topbar-left">&gt;&gt; @Model.teamName.ToUpper()</div>
+        <div class="team-topbar-right">
+            <a class="team-navlink"
+               asp-page="/Submission"
+               asp-route-teamName="@Model.teamName">
+                SUBMISSION
+            </a>
+        </div>
     </header>
 
     <!-- CONTENT GRID -->
