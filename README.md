@@ -99,8 +99,8 @@ This repository was developed as part of a senior seminar course project at DeSa
 
 #### Database
 
-- Colin Coff - **Sub-Team Leader**
-- Joseph Stocklin
+- Joseph Stocklin - **Sub-Team Leader**
+- Colin Coff
 
 ## Acknowledgments
 
