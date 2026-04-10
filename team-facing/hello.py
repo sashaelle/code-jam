@@ -1,5 +1,6 @@
+from importlib.resources import path
 import os
-
+import shutil
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from localStoragePy import localStoragePy
@@ -37,13 +38,20 @@ def handle_my_custom_event(json):
 
 
 process = None
+is_stopped = False
+current_language = None
 @socketio.on('compile')
 def compile_button(data):
     socketio.emit("compile_process")
 
-    global process
+    global process, is_stopped
+    global current_language
     problem_number = data["problem_number"]
-    fp = "submissions/submission.py"
+    current_language = data["language"]
+    is_stopped = False
+
+    # File path for the submission code
+    fp = f"submissions/submission{current_language}"
     
     print("Problem number: ",problem_number)
     code = data["code"]
@@ -55,24 +63,34 @@ def compile_button(data):
     with open(fp, "w", newline="\n") as f:
         f.write(code)
 
-    process = subprocess.Popen(["python", "-u", fp],
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               text=False,
-                               bufsize=1)
+    # if java, run a subprocess for javac
+    # run popen for java
+    if current_language == ".java":
+        subprocess.run(["javac", fp])
+        process = subprocess.Popen(["java", fp],
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   text=True,
+                                   bufsize=0)
+    elif current_language == ".py":
+        process = subprocess.Popen(["python", "-u", fp],
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   text=False,
+                                   bufsize=1)
 
     processes[submission_id] = process
 
-    stream_output(process, sid)
-
-    thread = threading.Thread(target=stream_output, daemon=True)
+    thread = threading.Thread(target=stream_output, args=(current_language, process, sid), daemon=True)
     thread.start()
+    
+    process.wait()
 
     print("PROGRAM STOPPED") # Here is where the program stops
     socketio.emit("process_done")
 
-    process.wait()
 
     '''error_lines = []
     for line in process.stderr:
@@ -82,31 +100,55 @@ def compile_button(data):
 
 @socketio.on('input_added')
 def input_added(data):
+    global current_language
     sid = request.sid
     process_input = processes.get(sid)
     print("Output Process: ", process_input.stdout)
     print("Input Process: ", process_input.stdin)
-    output_data = (data + "\n").encode("utf-8")
+    output_data = ""
+
+    if current_language == ".java":
+        output_data = (data + "\n")
+    elif current_language == ".py":
+        output_data = (data + "\n").encode("utf-8")
+
     process_input.stdin.write(output_data)
     process_input.stdin.flush()
-    stream_output(process_input, sid)
+    stream_output(current_language, process_input, sid)
 
-def stream_output(p, sid = None):
+def stream_output(current_language, p, sid = None):
     while True:
-        char = p.stdout.read1(1024)
-        if not char:
-            stream_error_output(p, sid)
+        if is_stopped:
             break
-        socketio.emit("output", char.decode("utf-8"), to=sid)
+        char = ""
+        if current_language == ".java":
+            char = p.stdout.read(1)
+            if char == "\n":
+                char = "\n\r"
+            socketio.emit("output", char, to=sid)
+        elif current_language == ".py":
+            char = p.stdout.read1(1024)
+            socketio.emit("output", char.decode("utf-8"), to=sid)
+        if not char or char == "":
+            stream_error_output(current_language, p, sid)
+            break
         if p.poll() is not None:
             break
 
-def stream_error_output(p, sid = None):
+def stream_error_output(current_language, p, sid = None):
+    print("Current error language: ", current_language)
+    char = ""
+    if current_language == ".java":
+        process.wait()
+        char = p.stderr.read()
+        char = char.replace("\n", "\n\r")
+        if char and is_stopped == False:
+            socketio.emit("error-output", char, to=sid)
     while True:
-        char = p.stderr.read1(1024)
-        if not char:
-            break
-        socketio.emit("error-output", char.decode("utf-8"), to=sid)
+        if current_language == ".py":
+            if is_stopped == False:
+                char = p.stderr.read1(1024)
+                socketio.emit("error-output", char.decode("utf-8"), to=sid)
         if p.poll() is not None:
             break
 
@@ -116,9 +158,20 @@ def process_done():
 
 @socketio.on('stop_process')
 def stop_process():
-    global process
-    process.terminate()
+    global process, is_stopped
+    is_stopped = True
+
+    process.stdin.close()
+    process.stdout.close()
+    process.kill()
     process.wait()
+
+    print("Process killed.")
+    # Clear the submission folder
+    path = "submissions"
+    shutil.rmtree(path)
+    os.makedirs(path)
+    print("Submission folder cleared")
 
 @app.route("/team-facing/close")
 def close():

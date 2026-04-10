@@ -40,6 +40,7 @@ socket.on("process_done", function () {
     compileButton.textContent = "▶ Run";
     compileButton.classList.add("compile");
     compileButton.classList.remove("stop-button");
+    socket.emit("stop_process");
 })
 
 
@@ -93,6 +94,11 @@ window.clearTerminal = function()
 function editorSetup()
 {
     console.log("REFRESH!");
+
+     if (!window.monacoEditor) {
+        setTimeout(() => editorSetup(), 100); // Retry until Monaco is ready
+        return;
+    }
     const storedCode = localStorage.getItem("code" + window.problemNumber)
     if(storedCode != null && storedCode != "")
     {
@@ -100,6 +106,25 @@ function editorSetup()
         const code = storedCode;
         console.log("Code: ", code);
         setEditorValue(code);
+    }
+
+    const language = localStorage.getItem("language");
+    if(language != null)
+    {
+        console.log("Language not null: ", language);
+        monaco.editor.setModelLanguage(window.monacoEditor.getModel(), language);
+
+        // Check for other language
+        if (language == "python")
+        {
+            window.CURRENT_LANGUAGE = ".py";
+        } else if (language == "java")
+        {
+            window.CURRENT_LANGUAGE = ".java";
+        } else if (language == "cpp")
+        {
+            window.CURRENT_LANGUAGE = ".cpp";
+        }
     }
 }
 

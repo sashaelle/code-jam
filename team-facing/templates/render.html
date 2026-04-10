@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Team Facing Page</title>
 
-     <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}">
     <script src="{{ url_for('static', filename='xterm.js') }}"></script>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
@@ -35,6 +35,14 @@
         <h3 class="problem-text">Problem 1</h3>
         <button class="right-problem" onclick="updateProblem(1)">→</button>
     </div>
+
+    <label for="languages">Choose a language:</label>
+    <select id="languages" name="languages">
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="cpp">C++</option>
+    </select>
+
 
     <div id="editor"></div>
 
