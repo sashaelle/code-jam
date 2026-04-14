@@ -28,9 +28,5 @@ Thumbs.db
 # Environment / local settings
 .env
 
-# Optional: generated database files
-# Uncomment if you do NOT want db dumps tracked
-# *.sql
-
 # VS Code
 .vscode/
