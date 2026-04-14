@@ -7,3 +7,8 @@ window.HOST_ADDRESS = HOST_ADDRESS;
 window.problemNumber = 1;
 
 window.DEFAULT_CODE = `print("Hello Game Jam!")`;
+
+window.EXTENSION_PYTHON = ".py";
+window.EXTENSION_JAVA = ".java";
+
+window.CURRENT_LANGUAGE = ".py";

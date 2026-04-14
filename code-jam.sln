@@ -4,7 +4,7 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "security", "security", "{4FD5FBA0-2B6D-9AF0-80AB-924D53C1394D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJam2026", "security\CodeJam2026\CodeJam2026.csproj", "{A6573BB1-C4D1-58D6-7AAF-B08B4C6BC1CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJam2026", "CodeJam2026\CodeJam2026.csproj", "{A6573BB1-C4D1-58D6-7AAF-B08B4C6BC1CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
