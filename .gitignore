@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# JetBrains
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# .NET build output
+bin/
+obj/
+
+# Visual Studio / user-specific files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# OS junk
+Thumbs.db
+
+# Environment / local settings
+.env
+
+# Optional: generated database files
+# Uncomment if you do NOT want db dumps tracked
+# *.sql
+
+# VS Code
+.vscode/
