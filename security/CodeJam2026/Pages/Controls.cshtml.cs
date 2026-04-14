@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,6 +10,7 @@ namespace CodeJam2026.Pages;
 [Authorize(Roles = "Judge,Admin")]
 public class ControlsModel : PageModel
 {
+    private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
 
     public ControlsModel(IConfiguration configuration)
@@ -97,7 +99,10 @@ public class ControlsModel : PageModel
             SELECT username, password_hash
             FROM accounts
             WHERE role = 'team' AND is_active = true
-            ORDER BY username;";
+            ORDER BY
+              regexp_replace(username, '\d+$', ''),
+              COALESCE(NULLIF(substring(username from '\d+$'), '')::int, 2147483647),
+              username;";
 
         await using var cmd = new NpgsqlCommand(sql, connection);
         await using var reader = await cmd.ExecuteReaderAsync();
@@ -110,6 +115,12 @@ public class ControlsModel : PageModel
                 Password = reader.GetString(1)
             });
         }
+
+        TeamCredentials = TeamCredentials
+            .OrderBy(static credential => GetSortPrefix(credential.Username))
+            .ThenBy(static credential => GetSortNumber(credential.Username))
+            .ThenBy(static credential => credential.Username, StringComparer.OrdinalIgnoreCase)
+            .ToList();
     }
 
     private static string GeneratePassword(int length)
@@ -131,5 +142,20 @@ public class ControlsModel : PageModel
     {
         public string Username { get; set; } = "";
         public string Password { get; set; } = "";
+    }
+
+    private static string GetSortPrefix(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        var prefixLength = match.Success ? username.Length - match.Value.Length : username.Length;
+        return username[..prefixLength];
+    }
+
+    private static int GetSortNumber(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        return match.Success && int.TryParse(match.Value, out var number)
+            ? number
+            : int.MaxValue;
     }
 }

@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace CodeJam2026.Pages;
 
 public class LoginModel : PageModel
 {
+    private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
 
     public LoginModel(IConfiguration configuration)
@@ -121,7 +123,9 @@ public class LoginModel : PageModel
             WHERE is_active = true
               AND role IN ('team', 'admin')
             ORDER BY
-              CASE WHEN role = 'admin' THEN 1 ELSE 0 END,
+              CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+              regexp_replace(username, '\d+$', ''),
+              COALESCE(NULLIF(substring(username from '\d+$'), '')::int, 2147483647),
               username;";
 
         await using var cmd = new NpgsqlCommand(sql, connection);
@@ -131,5 +135,30 @@ public class LoginModel : PageModel
         {
             LoginUsers.Add(reader.GetString(0));
         }
+
+        LoginUsers = LoginUsers
+            .OrderBy(static username => IsAdminUser(username) ? 0 : 1)
+            .ThenBy(static username => GetSortPrefix(username))
+            .ThenBy(static username => GetSortNumber(username))
+            .ThenBy(static username => username, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static bool IsAdminUser(string username) =>
+        string.Equals(username, "admin", StringComparison.OrdinalIgnoreCase);
+
+    private static string GetSortPrefix(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        var prefixLength = match.Success ? username.Length - match.Value.Length : username.Length;
+        return username[..prefixLength];
+    }
+
+    private static int GetSortNumber(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        return match.Success && int.TryParse(match.Value, out var number)
+            ? number
+            : int.MaxValue;
     }
 }

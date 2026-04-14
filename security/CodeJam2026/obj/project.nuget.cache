@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "C7db/OcuJVo=",
+  "dgSpecHash": "rwW71ld7bOw=",
   "success": false,
   "projectFilePath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
   "expectedPackageFiles": [],
@@ -8,7 +8,7 @@
     {
       "code": "NU1301",
       "level": "Error",
-      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Permission denied (127.0.0.1:59834)\n  Permission denied",
+      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Permission denied (127.0.0.1:64528)\n  Permission denied",
       "projectPath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
       "filePath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
       "targetGraphs": []

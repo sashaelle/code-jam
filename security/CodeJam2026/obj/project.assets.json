@@ -10,7 +10,7 @@
     ]
   },
   "packageFolders": {
-    "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget": {}
+    "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/d17df31011f4b3f06c13796f5f39c83c/nuget": {}
   },
   "project": {
     "version": "1.0.0",
@@ -18,7 +18,7 @@
       "projectUniqueName": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
       "projectName": "CodeJam2026",
       "projectPath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/CodeJam2026.csproj",
-      "packagesPath": "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget",
+      "packagesPath": "/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/d17df31011f4b3f06c13796f5f39c83c/nuget",
       "outputPath": "/Users/patricksmith/Documents/GitHub/code-jam/security/CodeJam2026/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
@@ -498,7 +498,7 @@
     {
       "code": "NU1301",
       "level": "Error",
-      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Permission denied (127.0.0.1:59834)\n  Permission denied"
+      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.\n  Permission denied (127.0.0.1:64528)\n  Permission denied"
     }
   ]
 }

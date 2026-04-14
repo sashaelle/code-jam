@@ -4,12 +4,12 @@
     <RestoreSuccess Condition=" '$(RestoreSuccess)' == '' ">True</RestoreSuccess>
     <RestoreTool Condition=" '$(RestoreTool)' == '' ">NuGet</RestoreTool>
     <ProjectAssetsFile Condition=" '$(ProjectAssetsFile)' == '' ">$(MSBuildThisFileDirectory)project.assets.json</ProjectAssetsFile>
-    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget</NuGetPackageRoot>
-    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget</NuGetPackageFolders>
+    <NuGetPackageRoot Condition=" '$(NuGetPackageRoot)' == '' ">/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/d17df31011f4b3f06c13796f5f39c83c/nuget</NuGetPackageRoot>
+    <NuGetPackageFolders Condition=" '$(NuGetPackageFolders)' == '' ">/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/d17df31011f4b3f06c13796f5f39c83c/nuget</NuGetPackageFolders>
     <NuGetProjectStyle Condition=" '$(NuGetProjectStyle)' == '' ">PackageReference</NuGetProjectStyle>
     <NuGetToolVersion Condition=" '$(NuGetToolVersion)' == '' ">7.0.0</NuGetToolVersion>
   </PropertyGroup>
   <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <SourceRoot Include="/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/64fa113fd76b41591a4648b687d990d7/nuget/" />
+    <SourceRoot Include="/var/folders/hp/2r2yb7yj0yb8mdjrqd7bsv080000gn/T/cursor-sandbox-cache/d17df31011f4b3f06c13796f5f39c83c/nuget/" />
   </ItemGroup>
 </Project>
