@@ -66,19 +66,35 @@ public class ControlsModel : PageModel
             await deleteCmd.ExecuteNonQueryAsync();
         }
 
-        const string insertSql = @"
+        const string insertAccountSql = @"
             INSERT INTO accounts (username, password_hash, role, is_active)
-            VALUES (@username, @password, 'team', true);";
+            VALUES (@username, @password, 'team', true)
+            RETURNING account_id;";
+
+        const string insertTeamSql = @"
+            INSERT INTO teams (account_id, team_number, team_name)
+            VALUES (@accountId, @teamNumber, @teamName);";
 
         for (var i = 1; i <= TeamCount; i++)
         {
             var username = $"Team{i}";
             var password = GeneratePassword(12);
 
-            await using var insertCmd = new NpgsqlCommand(insertSql, connection, transaction);
-            insertCmd.Parameters.AddWithValue("@username", username);
-            insertCmd.Parameters.AddWithValue("@password", password);
-            await insertCmd.ExecuteNonQueryAsync();
+            await using var insertAccountCmd = new NpgsqlCommand(insertAccountSql, connection, transaction);
+            insertAccountCmd.Parameters.AddWithValue("@username", username);
+            insertAccountCmd.Parameters.AddWithValue("@password", password);
+
+            var accountIdObj = await insertAccountCmd.ExecuteScalarAsync();
+            if (accountIdObj is not Guid accountId)
+            {
+                throw new InvalidOperationException($"Failed to create account ID for {username}.");
+            }
+
+            await using var insertTeamCmd = new NpgsqlCommand(insertTeamSql, connection, transaction);
+            insertTeamCmd.Parameters.AddWithValue("@accountId", accountId);
+            insertTeamCmd.Parameters.AddWithValue("@teamNumber", $"team_{i}");
+            insertTeamCmd.Parameters.AddWithValue("@teamName", $"Team {i}");
+            await insertTeamCmd.ExecuteNonQueryAsync();
         }
 
         await transaction.CommitAsync();
