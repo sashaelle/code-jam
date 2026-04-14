@@ -33,9 +33,9 @@ public class ControlsModel : PageModel
 
     public async Task<IActionResult> OnPostGenerateTeamsAsync()
     {
-        if (TeamCount < 1 || TeamCount > 100)
+        if (TeamCount < 1 || TeamCount > 20)
         {
-            ModelState.AddModelError(string.Empty, "Please enter a team count between 1 and 100.");
+            ModelState.AddModelError(string.Empty, "Please enter a team count between 1 and 20.");
             await LoadTeamCredentialsAsync();
             return Page();
         }
