@@ -24,8 +24,10 @@
                     <div class="login-label mono">Team</div>
                     <select asp-for="SelectedUser" class="login-input mono">
                         <option value="">Select Team</option>
-                        <option value="Team1">Team1</option>
-                        <option value="judge">Admin</option>
+                        @foreach (var user in Model.LoginUsers)
+                        {
+                            <option value="@user">@user</option>
+                        }
                     </select>
                 </div>
 

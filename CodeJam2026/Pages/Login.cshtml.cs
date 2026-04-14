@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,7 @@ namespace CodeJam2026.Pages;
 
 public class LoginModel : PageModel
 {
+    private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
 
     public LoginModel(IConfiguration configuration)
@@ -22,8 +24,11 @@ public class LoginModel : PageModel
     [BindProperty]
     public string Password { get; set; } = "";
 
-    public void OnGet()
+    public List<string> LoginUsers { get; private set; } = [];
+
+    public async Task OnGetAsync()
     {
+        await LoadLoginUsersAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
@@ -31,6 +36,7 @@ public class LoginModel : PageModel
         if (string.IsNullOrWhiteSpace(SelectedUser))
         {
             ModelState.AddModelError("", "Please select a team.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -51,6 +57,7 @@ public class LoginModel : PageModel
         if (!await reader.ReadAsync())
         {
             ModelState.AddModelError("", "User not found.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -61,6 +68,7 @@ public class LoginModel : PageModel
         if (string.IsNullOrWhiteSpace(expectedPassword) || Password != expectedPassword)
         {
             ModelState.AddModelError("", "Incorrect password.");
+            await LoadLoginUsersAsync();
             return Page();
         }
 
@@ -99,5 +107,58 @@ public class LoginModel : PageModel
         }
 
         return RedirectToPage("/Team", new { teamName = username });
+    }
+
+    private async Task LoadLoginUsersAsync()
+    {
+        LoginUsers = [];
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            SELECT username
+            FROM accounts
+            WHERE is_active = true
+              AND role IN ('team', 'admin')
+            ORDER BY
+              CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+              regexp_replace(username, '\d+$', ''),
+              COALESCE(NULLIF(substring(username from '\d+$'), '')::int, 2147483647),
+              username;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            LoginUsers.Add(reader.GetString(0));
+        }
+
+        LoginUsers = LoginUsers
+            .OrderBy(static username => IsAdminUser(username) ? 0 : 1)
+            .ThenBy(static username => GetSortPrefix(username))
+            .ThenBy(static username => GetSortNumber(username))
+            .ThenBy(static username => username, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
+    private static bool IsAdminUser(string username) =>
+        string.Equals(username, "admin", StringComparison.OrdinalIgnoreCase);
+
+    private static string GetSortPrefix(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        var prefixLength = match.Success ? username.Length - match.Value.Length : username.Length;
+        return username[..prefixLength];
+    }
+
+    private static int GetSortNumber(string username)
+    {
+        var match = TrailingNumberRegex.Match(username);
+        return match.Success && int.TryParse(match.Value, out var number)
+            ? number
+            : int.MaxValue;
     }
 }
