@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict ZAnNt7JPPSNCDxueiThsg9M9BQ5HGkXpM2SlYJ7Xi6bgCItXnr4MzAeufLvL85C
+\restrict w8d923hRco2LULPkMqaQp3hMJ0osYM5eXdgjAlhk5lqDE2fTgso3y0JbteLAXx0
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
 
--- Started on 2026-04-16 00:44:25
+-- Started on 2026-04-16 01:02:30
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -174,7 +174,7 @@ CREATE TABLE public.teams (
     team_id integer NOT NULL,
     account_id integer NOT NULL,
     team_name character varying(20) NOT NULL,
-    creaed_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP CONSTRAINT teams_creaed_at_not_null NOT NULL,
     team_number text NOT NULL
 );
 
@@ -325,7 +325,7 @@ COPY public.submissions (submission_id, team_id, problem_id, submission_code, ju
 -- Data for Name: teams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.teams (team_id, account_id, team_name, creaed_at, team_number) FROM stdin;
+COPY public.teams (team_id, account_id, team_name, created_at, team_number) FROM stdin;
 13	20	Team 1	2026-04-16 00:43:30.978212	team_1
 \.
 
@@ -502,11 +502,11 @@ ALTER TABLE ONLY public.test_cases
     ADD CONSTRAINT test_cases_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES public.problems(problem_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-04-16 00:44:26
+-- Completed on 2026-04-16 01:02:31
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ZAnNt7JPPSNCDxueiThsg9M9BQ5HGkXpM2SlYJ7Xi6bgCItXnr4MzAeufLvL85C
+\unrestrict w8d923hRco2LULPkMqaQp3hMJ0osYM5eXdgjAlhk5lqDE2fTgso3y0JbteLAXx0
 
