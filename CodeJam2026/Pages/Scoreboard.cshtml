@@ -1,5 +1,5 @@
-
 @page
+@model CodeJam2026.Pages.ScoreboardModel
 @{
     ViewData["Title"] = "Scoreboard";
     Layout = "_AppLayout";
@@ -7,7 +7,6 @@
 
 <div class="scoreboard-page">
 
-    <!-- TOP BAR -->
     <header class="scoreboard-header">
         <div class="scoreboard-header-left">&gt;&gt; CODE JAM</div>
         <div class="judge-header-right">
@@ -17,140 +16,95 @@
         </div>
     </header>
 
-<div class="container-fluid scoreboard-content">
-    <div class="row g-3">
+    <div class="container-fluid scoreboard-content">
+        <div class="row g-3">
 
-        <!-- LEFT: SCORE BOARD PANEL -->
-        <div class="col-12 col-lg-8">
-            <section class="panel panel-scoreboard">
-                <div class="scoreboard-title">SCORE BOARD</div>
-                <div class="scoreboard-divider">========</div>
+            <div class="col-12 col-lg-8">
+                <section class="panel panel-scoreboard">
+                    <div class="scoreboard-title">SCORE BOARD</div>
+                    <div class="scoreboard-divider">========</div>
 
-                <div class="scoreboard-rows">
-                    <div class="scoreboard-row highlight-yellow">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row highlight-orange">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                    <div class="scoreboard-row">
-                        TEAM NAME# | RANK # | POINT #
-                    </div>
-                </div>
+                    <div class="scoreboard-rows">
+                        <div class="scoreboard-row highlight-yellow">
+                            TEAM NAME | POINTS
+                        </div>
 
-                <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
+                        @if (Model.Entries.Any())
+                        {
+                            @foreach (var entry in Model.Entries)
+                            {
+                                <div class="scoreboard-row">
+                                    @entry.TeamNumber | @entry.TotalPoints
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="scoreboard-row">
+                                NO TEAMS OR SUBMISSIONS FOUND
+                            </div>
+                        }
+                    </div>
 
-                <div class="scoreboard-time">
-                    <div class="scoreboard-time-label">Current Time</div>
-                    <div class="scoreboard-time-value">00:00</div>
-                </div>
-            </section>
+                    <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
+
+                    <div class="scoreboard-time">
+                        <div class="scoreboard-time-label">Current Time</div>
+                        <div class="scoreboard-time-value">@Model.CurrentTimeDisplay</div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <section class="sb-panel sb-feed">
+
+                    @if (Model.RecentSubmissions.Any())
+                    {
+                        @foreach (var item in Model.RecentSubmissions)
+                        {
+                            <div class="sb-feed-row">
+                                <div class="sb-team">@item.TeamName&gt;&gt;</div>
+                                <div class="sb-meta">
+                                    QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm")
+                                </div>
+                                <div class="sb-valid">
+                                    <span class="sb-valid-label">VALIDITY</span>
+
+                                    @if (item.IsCorrect)
+                                    {
+                                        <span class="sb-valid-green">CORRECT</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="sb-valid-red">INCORRECT</span>
+                                    }
+                                </div>
+                                <div class="sb-divider"></div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="sb-feed-row">
+                            <div class="sb-team">NO SUBMISSIONS YET</div>
+                            <div class="sb-divider"></div>
+                        </div>
+                    }
+
+                    <div class="sb-dots mono-pre">...</div>
+
+                    <div class="sb-notes">
+                        <div class="sb-note-line">
+                            Have the team instance pop up at the bottom and scroll the rest upward
+                        </div>
+                        <div class="sb-note-line">
+                            The dots appear when the Judges are sending a question verification through
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+
         </div>
-
-        <!-- RIGHT: EVENT FEED -->
-        <div class="col-12 col-lg-4">
-            <section class="sb-panel sb-feed">
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-feed-row">
-                    <div class="sb-team">TEAM NAME&gt;&gt;</div>
-                    <div class="sb-meta">QUESTION #, TIMESTAMP.</div>
-                    <div class="sb-valid">
-                        <span class="sb-valid-label">VALIDITY</span>
-                        <span class="sb-valid-red">(Red for incorrect)</span>
-                        <span class="sb-valid-green">(Green for correct)</span>
-                    </div>
-                    <div class="sb-divider"></div>
-                </div>
-
-                <div class="sb-dots mono-pre">...</div>
-
-                <div class="sb-notes">
-                    <div class="sb-note-line">
-                        Have the team instance pop up at the bottom and scroll the rest upward
-                    </div>
-                    <div class="sb-note-line">
-                        The dots appear when the Judges are sending a question verification through
-                    </div>
-                </div>
-
-            </section>
-        </div>
-
     </div>
 </div>
