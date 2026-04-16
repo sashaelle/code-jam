@@ -44,20 +44,6 @@ public class ControlsModel : PageModel
         await using var connection = new NpgsqlConnection(connString);
         await connection.OpenAsync();
 
-        const string ensureTableSql = @"
-            CREATE TABLE IF NOT EXISTS accounts (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(100) NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                role VARCHAR(20) NOT NULL,
-                is_active BOOLEAN NOT NULL DEFAULT true
-            );";
-
-        await using (var ensureCmd = new NpgsqlCommand(ensureTableSql, connection))
-        {
-            await ensureCmd.ExecuteNonQueryAsync();
-        }
-
         await using var transaction = await connection.BeginTransactionAsync();
 
         const string deleteTeamsSql = "DELETE FROM accounts WHERE role = 'team';";
@@ -73,7 +59,7 @@ public class ControlsModel : PageModel
 
         const string insertTeamSql = @"
             INSERT INTO teams (account_id, team_number, team_name)
-            VALUES (@accountId, @teamNumber, @team_name);";
+            VALUES (@accountId, @teamNumber, @teamName);";
 
         for (var i = 1; i <= TeamCount; i++)
         {
