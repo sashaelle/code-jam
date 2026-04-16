@@ -6,113 +6,87 @@
 }
 
 <div class="team-page">
-
-    <!-- TOP BAR -->
-    <header class="team-topbar">
-        <div class="team-topbar-left">&gt;&gt; @Model.teamName.ToUpper()</div>
-        <div class="team-topbar-right">
-            <a class="team-navlink"
-               asp-page="/Submission"
-               asp-route-teamName="@Model.teamName">
-                SUBMISSION
-            </a>
-        </div>
-    </header>
-
-    <!-- CONTENT GRID -->
     <div class="container-fluid team-content">
-        <div class="row g-3">
-
-            <!-- LEFT COLUMN: IDE + OUTPUT -->
-            <div class="col-12 col-lg-7">
-
-                <!-- CODING INTERFACE -->
+        <div class="row h-100">
+            <div class="col-12 col-lg-9 d-flex flex-column">
                 <section class="panel panel-tall">
-                    <div class="panel-title">CODING INTERFACE</div>
-                    <div class="panel-text red">
-                        Here is where participants will write code.
+                    <div class="problem-header">
+                        <h3 class="save-note">Make sure to press run to save code!</h3>
+
+                        <div class="problem-container">
+                            <button type="button" class="problem-nav-btn" onclick="updateProblem(-1)">←</button>
+                            <h3 class="problem-text">Problem 1</h3>
+                            <button type="button" class="problem-nav-btn" onclick="updateProblem(1)">→</button>
+                        </div>
                     </div>
 
-                    <div class="panel-body mono-pre">
-import random
-
-def simulate_spell(num_dice, num_sides):
-    total = 0
-
-    for _ in range(num_dice):
-        roll = random.randint(1, num_sides)
-        total += roll
-
-    return total
-
-
-# Example usage
-damage = simulate_spell(3, 6)
-print("Spell dealt", damage, "damage!")
+                    <div class="team-editor-toolbar">
+                        <label for="languages" class="team-label">Language:</label>
+                        <select id="languages" name="languages" class="team-select">
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                        </select>
                     </div>
+
+                    <div id="editor" class="team-editor"></div>
+
+                    <div class="team-action-row">
+                        <button onclick="getSubmissionCode()" class="compile" type="button">▶ Run</button>
+                        <button onclick="onSubmission()" id="submit" class="submit" type="button">✓ Submit</button>
+                    </div>
+
+                    <div id="submitTime" class="submit_time"></div>
                 </section>
 
-                <!-- CODING OUTPUT -->
-                <section class="panel panel-short mt-3">
+                <section class="panel panel-short mt-2">
                     <div class="panel-title">Terminal</div>
-                    <div class="panel-text red">
-                        This is where the participants will be able to see code output or errors.
-                    </div>
-
-                    <div class="panel-body mono-pre">
-Spell dealt 11 damage!
-                    </div>
+                    <div id="terminal" class="team-terminal"></div>
                 </section>
             </div>
 
-            <!-- RIGHT COLUMN: SCOREBOARD -->
-            <div class="col-12 col-lg-5">
-                <section class="panel panel-scoreboard">
-                    <div class="scoreboard-title">SCORE BOARD</div>
-                    <div class="scoreboard-divider">========</div>
+            <div class="col-12 col-lg-3 d-flex flex-column">
+                <section class="panel panel-tall feedback-panel">
+                    <div class="feedback-team-name">@Model.teamName.ToUpper()</div>
+                    <div class="feedback-title">Feedback</div>
 
-                    <div class="scoreboard-rows">
-                        <div class="scoreboard-row highlight-yellow">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row highlight-orange">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                        <div class="scoreboard-row">
-                            TEAM NAME#1 | RANK # | POINT #
-                        </div>
-                    </div>
+                    <div class="feedback-body">
+                        <div class="feedback-problem-label">Current Problem:</div>
+                        <div class="feedback-problem-name">Problem 1</div>
 
-                    <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
+                        <div class="feedback-divider"></div>
 
-                    <div class="scoreboard-time">
-                        <div class="scoreboard-time-label">Current Time</div>
-                        <div class="scoreboard-time-value">00:00</div>
+                        <div class="feedback-section-label">Judge Feedback</div>
+                        <div class="feedback-message">
+                            No feedback yet for this problem.
+                        </div>
                     </div>
                 </section>
             </div>
-
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+    <script>
+        require.config({
+            paths: {
+                vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs"
+            }
+        });
+
+        require(["vs/editor/editor.main"], function () {
+            window.monacoEditor = monaco.editor.create(document.getElementById("editor"), {
+                value: [
+                    "# Write your solution here",
+                    "",
+                    "print('Hello, Code Jam')"
+                ].join("\n"),
+                language: "python",
+                theme: "vs-dark",
+                automaticLayout: true
+            });
+        });
+    </script>
+}
