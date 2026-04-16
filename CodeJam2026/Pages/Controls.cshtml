@@ -32,9 +32,9 @@
                         <button class="btn judge-btn controls-generate-btn" type="submit">Generate Teams</button>
                         <div asp-validation-summary="All" class="controls-generate-error mt-2"></div>
                     </form>
-                    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+                    @if (!string.IsNullOrWhiteSpace(Model.GenerateTeamsStatusMessage))
                     {
-                        <div class="controls-generate-success mt-2">@Model.StatusMessage</div>
+                        <div class="controls-generate-success mt-2">@Model.GenerateTeamsStatusMessage</div>
                     }
                 </section>
 
@@ -70,6 +70,44 @@
                     }
                 </section>
 
+                @if (User.IsInRole("Admin"))
+                {
+                    <section class="controls-block controls-password-block mb-4">
+                        <div class="controls-accounts-title-row mb-2">
+                            <strong class="controls-accounts-title">Change Account Password</strong>
+                        </div>
+
+                        <form method="post" asp-page-handler="ChangePassword" class="controls-password-form">
+                            <div class="controls-generate-input-wrap controls-password-input-wrap">
+                                <label asp-for="SelectedAccountUsername" class="controls-generate-label mono">Account</label>
+                                <select asp-for="SelectedAccountUsername" class="controls-generate-input controls-password-select mono">
+                                    <option value="">-- Select account --</option>
+                                    @foreach (var username in Model.AllAccountUsernames)
+                                    {
+                                        <option value="@username">@username</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="controls-generate-input-wrap controls-password-input-wrap">
+                                <label asp-for="NewPassword" class="controls-generate-label mono">New password</label>
+                                <input asp-for="NewPassword" class="controls-generate-input controls-password-input mono" type="text" autocomplete="new-password" />
+                            </div>
+
+                            <button class="btn judge-btn controls-generate-btn controls-password-btn" type="submit">
+                                Change Password
+                            </button>
+
+                            @if (!string.IsNullOrWhiteSpace(Model.ChangePasswordStatusMessage))
+                            {
+                                <div class="controls-generate-success controls-password-success">@Model.ChangePasswordStatusMessage</div>
+                            }
+
+                            <div asp-validation-summary="All" class="controls-generate-error mt-2"></div>
+                        </form>
+                    </section>
+                }
+
             </div>
 
             <!-- CENTER DIVIDER -->
@@ -86,6 +124,7 @@
                     <button class="ctrl-big" type="button">OPTION 3</button>
                     <button class="ctrl-big" type="button">CLEAR DATABASE</button>
                 </div>
+
             </div>
 
         </div>
