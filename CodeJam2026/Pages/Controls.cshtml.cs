@@ -73,7 +73,7 @@ public class ControlsModel : PageModel
 
         const string insertTeamSql = @"
             INSERT INTO teams (account_id, team_number, team_name)
-            VALUES (@accountId, @teamNumber, @teamName);";
+            VALUES (@accountId, @teamNumber, @team_name);";
 
         for (var i = 1; i <= TeamCount; i++)
         {
@@ -85,7 +85,7 @@ public class ControlsModel : PageModel
             insertAccountCmd.Parameters.AddWithValue("@password", password);
 
             var accountIdObj = await insertAccountCmd.ExecuteScalarAsync();
-            if (accountIdObj is not Guid accountId)
+            if (accountIdObj is not int accountId)
             {
                 throw new InvalidOperationException($"Failed to create account ID for {username}.");
             }
