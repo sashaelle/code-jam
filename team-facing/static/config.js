@@ -1,7 +1,7 @@
 const MAX_PROBLEMS = 10;
 window.MAX_PROBLEMS = MAX_PROBLEMS;
 
-const HOST_ADDRESS = "http://localhost:5000";
+const HOST_ADDRESS = "http://localhost:5001";
 window.HOST_ADDRESS = HOST_ADDRESS;
 
 window.problemNumber = 1;

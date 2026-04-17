@@ -1,5 +1,5 @@
 // Socket
-const socket = io("http://localhost:5000");
+const socket = io(window.HOST_ADDRESS);
 
 // Terminal
 const term = new Terminal({
