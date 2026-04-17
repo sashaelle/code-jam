@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict ZyLXamdT9ewz5q2kfPklpEf7pFzwZehDtMh3eLeEEF43mUhEfx4fNbcMWJCy4Hb
-
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
 
@@ -12,7 +10,6 @@
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -262,5 +259,4 @@ ALTER TABLE ONLY public.teams
 -- PostgreSQL database dump complete
 --
 
-\unrestrict ZyLXamdT9ewz5q2kfPklpEf7pFzwZehDtMh3eLeEEF43mUhEfx4fNbcMWJCy4Hb
 

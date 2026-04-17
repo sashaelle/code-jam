@@ -17,6 +17,8 @@ h1, h2, h3, p
   padding: 0;
   width: 75%;
   height: 80%;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 .error-output {
     color: red;
@@ -40,6 +42,7 @@ h1, h2, h3, p
     height: 200px;
     width: 75%;
     margin-left: 20px;
+    margin-top: 5px;
 }
 #terminal .xterm
 {
@@ -203,6 +206,7 @@ pre
     background-color: #1E1E1E;
     font-size: 24px;
     padding: 5px 20px;
+    border-radius: 3px;
  }
  .problem-container button:hover
  {
@@ -215,6 +219,19 @@ pre
  {
     margin: 0px 20px;
     text-align: center;
+ }
+ #language-label
+ {
+    color: white;
+    margin-left: 20px;
+    font-size: 16px;
+ }
+ #languages
+ {
+    background-color: #1E1E1E;
+    border: 1px solid white;
+    border-radius: 3px;
+    color: white;
  }
  #terminal .xterm-viewport::-webkit-scrollbar {
     width: 8px;
