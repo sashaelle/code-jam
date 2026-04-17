@@ -48,10 +48,12 @@ socket.on("compile_process", function () {
 socket.on("process_done", function () {
     // Change button to run
     const compileButton = document.querySelector(".stop-button");
+    if (!compileButton) {
+        return;
+    }
     compileButton.textContent = "▶ Run";
     compileButton.classList.add("compile");
     compileButton.classList.remove("stop-button");
-    socket.emit("stop_process");
 })
 
 

@@ -5,6 +5,8 @@
     ViewData["Title"] = "Team";
 }
 
+<link rel="stylesheet" href="http://localhost:5001/static/xterm.css">
+
 <div class="team-page">
     <div class="container-fluid team-content">
         <div class="row h-100">
@@ -68,6 +70,8 @@
 </div>
 
 @section Scripts {
+    <script src="http://localhost:5001/static/xterm.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <script>
         require.config({
@@ -89,4 +93,9 @@
             });
         });
     </script>
+    <script src="http://localhost:5001/static/config.js"></script>
+    <script src="http://localhost:5001/static/getSubmissionCode.js"></script>
+    <script src="http://localhost:5001/static/onSubmission.js"></script>
+    <script src="http://localhost:5001/static/updateProblem.js"></script>
+    <script src="http://localhost:5001/static/socket-code.js"></script>
 }

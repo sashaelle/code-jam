@@ -1,7 +1,8 @@
 from importlib.resources import path
 import os
 import shutil
-from flask import Flask, render_template, request
+import re
+from flask import Flask, render_template, request, redirect, jsonify
 from flask_socketio import SocketIO, emit
 from localStoragePy import localStoragePy
 import subprocess
@@ -48,7 +49,7 @@ is_stopped = False
 current_language = None
 @socketio.on('compile')
 def compile_button(data):
-    socketio.emit("compile_process")
+    socketio.emit("compile_process", to=request.sid)
 
     global process, is_stopped
     global current_language
@@ -57,10 +58,20 @@ def compile_button(data):
     is_stopped = False
 
     # File path for the submission code
+    os.makedirs("submissions", exist_ok=True)
+    code = data["code"]
+    java_class_name = None
+
     fp = f"submissions/submission{current_language}"
+    if current_language == ".java":
+        class_match = re.search(r"\b(?:public\s+)?class\s+([A-Za-z_][A-Za-z0-9_]*)", code)
+        if class_match:
+            java_class_name = class_match.group(1)
+            if re.search(r"\bpublic\s+class\s+" + re.escape(java_class_name) + r"\b", code):
+                fp = f"submissions/{java_class_name}.java"
+
     print("File path: ", fp)
     print("Problem number: ",problem_number)
-    code = data["code"]
 
     submission_id = request.sid
     sid = request.sid
@@ -72,8 +83,14 @@ def compile_button(data):
     # if java, run a subprocess for javac
     # run popen for java
     if current_language == ".java":
-        subprocess.run(["javac", fp])
-        process = subprocess.Popen(["java", fp],
+        compile_result = subprocess.run(["javac", fp], capture_output=True, text=True)
+        if compile_result.returncode != 0:
+            socketio.emit("error-output", compile_result.stderr.replace("\n", "\n\r"), to=sid)
+            socketio.emit("process_done", to=sid)
+            return
+
+        class_name = java_class_name or os.path.splitext(os.path.basename(fp))[0]
+        process = subprocess.Popen(["java", "-cp", "submissions", class_name],
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
@@ -84,7 +101,7 @@ def compile_button(data):
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE,
-                                   text=False,
+                                   text=True,
                                    bufsize=1)
     elif current_language == ".js":
         process = subprocess.Popen(["node", fp],
@@ -128,7 +145,7 @@ def compile_button(data):
     process.wait()
 
     print("PROGRAM STOPPED") # Here is where the program stops
-    socketio.emit("process_done")
+    socketio.emit("process_done", to=sid)
 
 
     '''error_lines = []
@@ -142,29 +159,14 @@ def input_added(data):
     global current_language
     sid = request.sid
     process_input = processes.get(sid)
+    if process_input is None or process_input.poll() is not None:
+        return
     print("Output Process: ", process_input.stdout)
     print("Input Process: ", process_input.stdin)
-    output_data = ""
-
-    if current_language == ".java":
-        output_data = (data + "\n")
-    elif current_language == ".py":
-        output_data = (data + "\n").encode("utf-8")
-    elif current_language == ".js":
-        output_data = (data + "\n")
-    elif current_language == ".cpp":
-        output_data = (data + "\n").encode("utf-8")
+    output_data = data + "\n"
 
     process_input.stdin.write(output_data)
     process_input.stdin.flush()
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
-    stream_output(current_language, process_input, sid)
     stream_output(current_language, process_input, sid)
 
 def stream_output(current_language, p, sid = None):
@@ -178,18 +180,20 @@ def stream_output(current_language, p, sid = None):
                 char = "\n\r"
             socketio.emit("output", char, to=sid)
         elif current_language == ".py":
-            char = p.stdout.read1(1024)
-            socketio.emit("output", char.decode("utf-8"), to=sid)
+            char = p.stdout.read(1)
+            if char == "\n":
+                char = "\n\r"
+            socketio.emit("output", char, to=sid)
         elif current_language == ".js":
             char = p.stdout.read(1)
             if char == "\n":
                 char = "\n\r"
             socketio.emit("output", char, to=sid)
         elif current_language == ".cpp":
-            char = p.stdout.read1(1024)
+            char = p.stdout.read(1)
             if is_stopped:
                 break
-            socketio.emit("output", char.decode("utf-8"), to=sid)
+            socketio.emit("output", char, to=sid)
         if not char or char == "":
             stream_error_output(current_language, p, sid)
             break
@@ -214,12 +218,12 @@ def stream_error_output(current_language, p, sid = None):
     while True:
         if current_language == ".cpp":
             if is_stopped == False:
-                char = p.stderr.read1(1024)
-                socketio.emit("error-output", char.decode("utf-8"), to=sid)
+                char = p.stderr.read()
+                socketio.emit("error-output", char, to=sid)
         elif current_language == ".py":
             if is_stopped == False:
-                char = p.stderr.read1(1024)
-                socketio.emit("error-output", char.decode("utf-8"), to=sid)
+                char = p.stderr.read()
+                socketio.emit("error-output", char, to=sid)
         if p.poll() is not None:
             break
 
