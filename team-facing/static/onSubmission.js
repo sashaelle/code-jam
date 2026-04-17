@@ -1,5 +1,12 @@
 
-window.onSubmission = function ()
+window.onSubmission = function () {
+
+    showConfirmPopup(() => {
+        executeSubmission();
+    });
+};
+
+window.executeSubmission = function ()
 {
     const code = window.monacoEditor.getValue();
     const submitBtn = document.getElementById("submit");
@@ -44,17 +51,40 @@ window.onSubmission = function ()
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            code: code,
-            feedback: null,
-            id: "1",
+            submission_id: "1",
+            team_id: null,
             problem_id: problemNum,
+            submission_code: code,
+            judge_feedback: null,
+            points: null,
+            language: window.CURRENT_LANGUAGE,
             status: "pending",
-            team: "Team A",
-            timestamp: formattedTime})
+            timestamp: null})
     })
-
-    setTimeout(() => {
+    //DEBUG - enables the button shortly after submission
+    /*setTimeout(() => {
         submitBtn.disabled = false;
         submitBtn.textContent = "✓ Submit";
-    }, 4000);
+    }, 4000);*/
 }
+
+window.showConfirmPopup = function (onConfirm) {
+    const popup = document.getElementById("confirmPopup");
+
+    popup.style.display = "block";
+
+    const yesBtn = document.getElementById("confirmYes");
+    const noBtn = document.getElementById("confirmNo");
+
+    yesBtn.onclick = null;
+    noBtn.onclick = null;
+
+    yesBtn.onclick = () => {
+        popup.style.display = "none";
+        if (onConfirm) onConfirm();
+    };
+
+    noBtn.onclick = () => {
+        popup.style.display = "none";
+    };
+};

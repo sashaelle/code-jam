@@ -53,6 +53,14 @@
 
     <div id="terminal"></div>
 
+    <div id="confirmPopup" style="display:none;" class="popup">
+        <div class="popup-content">
+            <p>Are you sure you want to submit?</p>
+            <button id="confirmYes">Yes</button>
+            <button id="confirmNo">Cancel</button>
+        </div>
+    </div>
+
     <!-- Add our hello.js file (even if it's in a sub-directory -->
     <script src="{{ url_for('static', filename='config.js') }}"></script>
     <script src="{{ url_for('static', filename='monacoSetup.js') }}"></script>

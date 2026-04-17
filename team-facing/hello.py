@@ -21,7 +21,7 @@ def index():
 @socketio.on("connect")
 def handle_connect():
     print("Client has been connected")
-    #Remove after database is connected
+    #IMPORTANT - Remove after database is connected
     emit("clear_local_storage")
 
 # On refresh --> disconnect
@@ -38,7 +38,6 @@ def handle_disconnect():
 def handle_my_custom_event(json):
     emit('my response', json)
 
-
 process = None
 is_stopped = False
 current_language = None
@@ -54,7 +53,6 @@ def compile_button(data):
 
     # File path for the submission code
     fp = f"submissions/submission{current_language}"
-    
     print("Problem number: ",problem_number)
     code = data["code"]
 
@@ -181,7 +179,9 @@ def close():
 
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
-    print("Submit")
+    data = request.json
+    print("Received submission:", data)
+    return "Submitted"
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)

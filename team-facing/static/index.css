@@ -121,6 +121,73 @@ pre
     background-color: blue;
     cursor: pointer;
  }
+ .popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 999999;
+ }
+
+ .popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background: black;
+    padding: 20px;
+    border-radius: 5px;
+    border: 2px white;
+
+    min-width: 300px;
+    text-align: center;
+ }
+
+ .popup-content p {
+    color: white;
+    font-family: 'Verdana', system-ui, sans-serif;
+ }
+
+ #confirmYes {
+    margin-left: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 2px solid green;
+    color: green;
+    background-color: black;
+ }
+
+ #confirmYes:hover {
+    color: white;
+    background-color: green;
+    cursor: pointer;
+ }
+
+ #confirmNo {
+    margin-left: 20px;
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-weight: 700;
+    border-radius: 5px;
+    border: 2px solid red;
+    color: red;
+    background-color: black;
+
+ }
+
+ #confirmNo:hover {
+    color: white;
+    background-color: red;
+    cursor: pointer;
+ }
+
  .problem-container
  {
     display: flex;
