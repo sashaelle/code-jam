@@ -241,7 +241,7 @@ def close():
 
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
-    return "Submitted"
+    return "Submit"
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
