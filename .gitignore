@@ -31,3 +31,6 @@ Thumbs.db
 # VS Code
 .vscode/
 .DS_Store
+
+team-facing/history/*
+.history/*
