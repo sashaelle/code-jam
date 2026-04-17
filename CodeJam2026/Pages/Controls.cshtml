@@ -1,0 +1,124 @@
+@page
+@model ControlsModel
+@{
+    ViewData["Title"] = "Controls";
+    Layout = "_AppLayout";
+}
+
+<div class="controls-page">
+
+    <!-- TOP BAR -->
+    <header class="controls-header">
+        <div class="controls-header-left">ADMIN OPTIONS/DEBUG</div>
+        <div class="judge-header-right">
+            <a class="judge-navlink" asp-page="/Judge">&lt;&lt; BACK TO JUDGE</a>
+            <span class="judge-sep">|</span>
+            <a class="judge-navlink" asp-page="/Scoreboard">SCOREBOARD</a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <div class="container-fluid controls-content">
+        <div class="row g-3">
+
+            <!-- LEFT SIDE -->
+            <div class="col-12 col-lg-7">
+                <section class="controls-block controls-generate-block mb-4">
+                    <form method="post" asp-page-handler="GenerateTeams" class="controls-generate-form">
+                        <div class="controls-generate-input-wrap">
+                            <label class="controls-generate-label mono" asp-for="TeamCount">Number of teams</label>
+                            <input asp-for="TeamCount" class="controls-generate-input mono" type="number" min="1" max="100" />
+                        </div>
+                        <button class="btn judge-btn controls-generate-btn" type="submit">Generate Teams</button>
+                        <div asp-validation-summary="All" class="controls-generate-error mt-2"></div>
+                    </form>
+                    @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+                    {
+                        <div class="controls-generate-success mt-2">@Model.StatusMessage</div>
+                    }
+                </section>
+
+                <section class="controls-block controls-accounts-block mb-4">
+                    <div class="controls-row controls-accounts-title-row mb-2">
+                        <strong class="controls-accounts-title">Generated Team Accounts</strong>
+                    </div>
+                    @if (Model.TeamCredentials.Count == 0)
+                    {
+                        <div class="mono controls-accounts-empty">No team accounts found.</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm controls-accounts-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Password</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var account in Model.TeamCredentials)
+                                    {
+                                        <tr>
+                                            <td class="mono">@account.Username</td>
+                                            <td class="mono">@account.Password</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </section>
+
+                <!-- TEAM SELECTOR BLOCK -->
+                <section class="controls-block">
+                    <div class="controls-row">
+                        <button class="ctrl-arrow" type="button">&lt;</button>
+
+                        <div class="ctrl-display">
+                            <span class="ctrl-display-text">&gt;&gt; TEAM # &lt;&lt;</span>
+                        </div>
+
+                        <button class="ctrl-arrow" type="button">&gt;</button>
+                    </div>
+
+                    <div class="controls-row mt-2">
+                        <button class="ctrl-small" type="button">+1 Score</button>
+                        <button class="ctrl-small" type="button">-1 Score</button>
+                    </div>
+                </section>
+
+                <!-- OPTIONS SELECTOR BLOCK -->
+                <section class="controls-block mt-5">
+                    <div class="controls-row">
+                        <button class="ctrl-arrow" type="button">&lt;</button>
+
+                        <div class="ctrl-display">
+                            <span class="ctrl-display-text">&gt;&gt; Options &lt;&lt;</span>
+                        </div>
+
+                        <button class="ctrl-arrow" type="button">&gt;</button>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- CENTER DIVIDER -->
+            <div class="d-none d-lg-flex col-lg-1 justify-content-center">
+                <div class="controls-divider"></div>
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="col-12 col-lg-4">
+                <div class="controls-right-stack">
+                    <button class="ctrl-big" type="button">HIDE SCOREBOARD</button>
+                    <button class="ctrl-big" type="button">OPTION 1</button>
+                    <button class="ctrl-big" type="button">OPTION 2</button>
+                    <button class="ctrl-big" type="button">OPTION 3</button>
+                    <button class="ctrl-big" type="button">CLEAR DATABASE</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
