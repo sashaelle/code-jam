@@ -35,12 +35,12 @@ public class ScoreboardModel : PageModel
 
         const string sql = """
             SELECT
-                t.team_number,
+                t.team_name,
                 COALESCE(SUM(s.points), 0) AS total_points
             FROM teams t
             LEFT JOIN submissions s ON s.team_id = t.team_id
-            GROUP BY t.team_id, t.team_number
-            ORDER BY total_points DESC, t.team_number ASC;
+            GROUP BY t.team_id, t.team_name 
+            ORDER BY total_points DESC, t.team_name ASC;
             """;
 
         await using var cmd = new NpgsqlCommand(sql, connection);
@@ -50,7 +50,7 @@ public class ScoreboardModel : PageModel
         {
             Entries.Add(new ScoreboardEntry
             {
-                TeamNumber = reader.GetString(0),
+                TeamName = reader.GetString(0),
                 TotalPoints = reader.GetInt32(1)
             });
         }
@@ -94,7 +94,7 @@ public class ScoreboardModel : PageModel
 
     public class ScoreboardEntry
     {
-        public string TeamNumber { get; set; } = "";
+        public string TeamName { get; set; } = "";
         public int TotalPoints { get; set; }
     }
 
