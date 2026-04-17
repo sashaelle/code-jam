@@ -32,4 +32,27 @@ window.updateProblem = function(inc)
     }
 
     window.setEditorValue(codeToAdd);
+
+    const submitBtn = document.getElementById("submit");
+    const submitTime = document.getElementById("submitTime");
+
+    const storageKey = `problem_${problemNumber}_status`;
+    const status = localStorage.getItem(storageKey);
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "✓ Submit";
+    submitTime.textContent = "";
+
+    if (status === "pending") {
+       submitBtn.disabled = true;
+      submitBtn.textContent = "Waiting for Feedback...";
+    }
+    else if (status === "correct") {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "✓ Submit";
+    }
+    else if (status === "incorrect") {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "✓ Submit";
+    }
 }

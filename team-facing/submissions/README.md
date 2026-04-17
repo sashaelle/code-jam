@@ -1,1 +1,0 @@
-Submissions folder is necessary.
