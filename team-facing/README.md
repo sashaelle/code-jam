@@ -38,11 +38,11 @@ g++ --version
 ## Running the App
 ```bash
 cd team-facing
-python app.py
+py -m flask --app app run 
 ```
 The command might also be:
 ```bash
-py app.py
+python -m flask --app app run 
 ```
 
 
