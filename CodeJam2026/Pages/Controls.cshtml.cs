@@ -23,12 +23,24 @@ public class ControlsModel : PageModel
 
     public List<TeamCredential> TeamCredentials { get; private set; } = [];
 
+    public List<string> AllAccountUsernames { get; private set; } = [];
+
+    [BindProperty]
+    public string SelectedAccountUsername { get; set; } = "";
+
+    [BindProperty]
+    public string NewPassword { get; set; } = "";
+
     [TempData]
-    public string StatusMessage { get; set; } = "";
+    public string GenerateTeamsStatusMessage { get; set; } = "";
+
+    [TempData]
+    public string ChangePasswordStatusMessage { get; set; } = "";
 
     public async Task OnGetAsync()
     {
         await LoadTeamCredentialsAsync();
+        await LoadAllAccountUsernamesAsync();
     }
 
     public async Task<IActionResult> OnPostGenerateTeamsAsync()
@@ -99,8 +111,66 @@ public class ControlsModel : PageModel
 
         await transaction.CommitAsync();
 
-        StatusMessage = $"Generated {TeamCount} team account(s).";
+        GenerateTeamsStatusMessage = $"Generated {TeamCount} team account(s).";
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostChangePasswordAsync()
+    {
+        if (!User.IsInRole("Admin"))
+        {
+            ChangePasswordStatusMessage = "Only admins can change passwords.";
+            await LoadTeamCredentialsAsync();
+            await LoadAllAccountUsernamesAsync();
+            return Page();
+        }
+
+        if (string.IsNullOrWhiteSpace(SelectedAccountUsername))
+        {
+            ModelState.AddModelError(string.Empty, "Please select an account.");
+        }
+
+        if (string.IsNullOrWhiteSpace(NewPassword))
+        {
+            ModelState.AddModelError(string.Empty, "Please enter a new password.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await LoadTeamCredentialsAsync();
+            await LoadAllAccountUsernamesAsync();
+            return Page();
+        }
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            UPDATE accounts
+            SET password_hash = @password
+            WHERE username = @username;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        cmd.Parameters.AddWithValue("@password", NewPassword);
+        cmd.Parameters.AddWithValue("@username", SelectedAccountUsername);
+
+        var rows = await cmd.ExecuteNonQueryAsync();
+        if (rows == 0)
+        {
+            ChangePasswordStatusMessage = $"No account found for username '{SelectedAccountUsername}'.";
+        }
+        else
+        {
+            ChangePasswordStatusMessage = $"Password updated for '{SelectedAccountUsername}'.";
+        }
+
+        SelectedAccountUsername = "";
+        NewPassword = "";
+
+        await LoadTeamCredentialsAsync();
+        await LoadAllAccountUsernamesAsync();
+        return Page();
     }
 
     private async Task LoadTeamCredentialsAsync()
@@ -137,6 +207,34 @@ public class ControlsModel : PageModel
             .ThenBy(static credential => GetSortNumber(credential.Username))
             .ThenBy(static credential => credential.Username, StringComparer.OrdinalIgnoreCase)
             .ToList();
+    }
+
+    private async Task LoadAllAccountUsernamesAsync()
+    {
+        AllAccountUsernames = [];
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            SELECT username
+            FROM accounts
+            WHERE is_active = true
+              AND role IN ('judge', 'admin')
+            ORDER BY
+              CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+              regexp_replace(username, '\d+$', ''),
+              COALESCE(NULLIF(substring(username from '\d+$'), '')::int, 2147483647),
+              username;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            AllAccountUsernames.Add(reader.GetString(0));
+        }
     }
 
     private static string GeneratePassword(int length)
