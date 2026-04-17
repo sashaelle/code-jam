@@ -56,20 +56,6 @@ public class ControlsModel : PageModel
         await using var connection = new NpgsqlConnection(connString);
         await connection.OpenAsync();
 
-        const string ensureTableSql = @"
-            CREATE TABLE IF NOT EXISTS accounts (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(100) NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                role VARCHAR(20) NOT NULL,
-                is_active BOOLEAN NOT NULL DEFAULT true
-            );";
-
-        await using (var ensureCmd = new NpgsqlCommand(ensureTableSql, connection))
-        {
-            await ensureCmd.ExecuteNonQueryAsync();
-        }
-
         await using var transaction = await connection.BeginTransactionAsync();
 
         const string deleteTeamsSql = "DELETE FROM accounts WHERE role = 'team';";
@@ -97,7 +83,7 @@ public class ControlsModel : PageModel
             insertAccountCmd.Parameters.AddWithValue("@password", password);
 
             var accountIdObj = await insertAccountCmd.ExecuteScalarAsync();
-            if (accountIdObj is not Guid accountId)
+            if (accountIdObj is not int accountId)
             {
                 throw new InvalidOperationException($"Failed to create account ID for {username}.");
             }

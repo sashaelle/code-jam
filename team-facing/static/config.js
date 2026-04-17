@@ -10,5 +10,7 @@ window.DEFAULT_CODE = `print("Hello Game Jam!")`;
 
 window.EXTENSION_PYTHON = ".py";
 window.EXTENSION_JAVA = ".java";
+window.EXTENSION_JS = ".js";
+window.EXTENSION_CPP = ".cpp";
 
 window.CURRENT_LANGUAGE = ".py";
