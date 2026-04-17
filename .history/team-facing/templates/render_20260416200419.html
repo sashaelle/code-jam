@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Facing Page</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='xterm.css') }}">
+    <script src="{{ url_for('static', filename='xterm.js') }}"></script>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+
+    <!-- RequireJS -->
+    <!-- Monaco requires a module loader (AMD) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
+
+    <script>
+        // Monaco loads files in a vs folder, setting the path for Cloudflare to host
+        require.config({
+          paths: {
+            vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs"
+          }
+        });
+    </script>
+
+</head>
+<body>
+    <h1>Team Facing Page</h1>
+    <h2>Team {{ team_number or "A"}}</h2>
+
+    <h3>Make sure to press run to save code!</h3>
+
+    <div class="problem-container">
+        <button class="left-problem" onclick="updateProblem(-1)">←</button>
+        <h3 class="problem-text">Problem 1</h3>
+        <button class="right-problem" onclick="updateProblem(1)">→</button>
+    </div>
+
+    <label id="language-label" for="languages">Choose a language:</label>
+    <select id="languages" name="languages">
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="cpp">C++</option>
+        <option value="cpp">C++</option>
+    </select>
+
+
+    <div id="editor"></div>
+
+    <button onclick="getSubmissionCode()" class="compile" type="submit">▶ Run</button>
+    <button onclick="onSubmission()" id="submit" class="submit" type="submit">✓ Submit</button>
+
+    <div id="submitTime" class="submit_time"></div>
+
+    <div id="terminal"></div>
+
+    <!-- Add our hello.js file (even if it's in a sub-directory -->
+    <script src="{{ url_for('static', filename='config.js') }}"></script>
+    <script src="{{ url_for('static', filename='monacoSetup.js') }}"></script>
+    <script src="{{ url_for('static', filename='getSubmissionCode.js') }}"></script>
+    <script src="{{ url_for('static', filename='onSubmission.js') }}"></script>
+    <script src="{{ url_for('static', filename='updateProblem.js') }}"></script>
+
+<script src="{{ url_for('static', filename='socket-code.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+
+
+
+
+
+</body>
+</html>
