@@ -129,7 +129,7 @@ pre
     inset: 0;
     background: rgba(0, 0, 0, 0.5);
     display: none;
-    z-index: 999999;
+    z-index: 99;
  }
 
  .popup-content {
@@ -141,13 +141,14 @@ pre
     background: black;
     padding: 20px;
     border-radius: 5px;
-    border: 2px white;
+    border: 3px white;
 
     min-width: 300px;
     text-align: center;
  }
 
  .popup-content p {
+
     color: white;
     font-family: 'Verdana', system-ui, sans-serif;
  }

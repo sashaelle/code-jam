@@ -42,7 +42,7 @@ window.executeSubmission = function ()
         minute: "2-digit",
         second: "2-digit"
     });
-
+    //Time
     //submitTime.textContent = `Last submitted at: ${formattedTime}`;
 
     fetch("/team-facing/submit", {
