@@ -883,6 +883,12 @@ body {
   padding: 14px;
 }
 
+.controls-password-block {
+  border: 3px solid #ffffff;
+  background: #050505;
+  padding: 14px;
+}
+
 .controls-generate-form {
   display: flex;
   align-items: end;
@@ -890,11 +896,22 @@ body {
   flex-wrap: wrap;
 }
 
+.controls-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .controls-generate-input-wrap {
   display: flex;
   flex-direction: column;
   min-width: 260px;
   gap: 6px;
+}
+
+.controls-password-input-wrap {
+  width: 100%;
+  min-width: 0;
 }
 
 .controls-generate-label {
@@ -920,9 +937,36 @@ body {
   border-color: #ffffff;
 }
 
+.controls-password-select {
+  width: 100%;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #111 50%),
+    linear-gradient(135deg, #111 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 4px),
+    calc(100% - 12px) calc(50% - 4px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.controls-password-input {
+  width: 100%;
+}
+
 .controls-generate-btn {
   height: 44px;
   padding: 0 18px;
+}
+
+.controls-password-btn {
+  align-self: flex-start;
+}
+
+.controls-password-success {
+  width: 100%;
+  margin-top: -2px;
 }
 
 .controls-generate-error {

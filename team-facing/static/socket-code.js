@@ -1,5 +1,5 @@
 // Socket
-const socket = io("http://localhost:5000");
+const socket = io(window.HOST_ADDRESS);
 
 // Terminal
 const term = new Terminal({
@@ -129,12 +129,18 @@ function editorSetup()
         if (language == "python")
         {
             window.CURRENT_LANGUAGE = ".py";
-        } else if (language == "java")
+        } 
+        else if (language == "java")
         {
             window.CURRENT_LANGUAGE = ".java";
-        } else if (language == "cpp")
+        } 
+        else if (language == "cpp")
         {
             window.CURRENT_LANGUAGE = ".cpp";
+        }
+        else if (language == "javascript")
+        {
+            window.CURRENT_LANGUAGE = ".js";
         }
     }
 }

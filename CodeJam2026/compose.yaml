@@ -12,6 +12,8 @@ services:
     volumes:
       - aspnet_keys:/root/.aspnet/DataProtection-Keys
 
+
+
   db:
     image: postgres:16
     environment:

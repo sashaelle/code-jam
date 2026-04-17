@@ -18,6 +18,10 @@ processes = {}
 def index():
     return render_template('render.html')
 
+@app.route("/")
+def root():
+    return redirect("/team-facing")
+
 @socketio.on("connect")
 def handle_connect():
     print("Client has been connected")
@@ -54,7 +58,7 @@ def compile_button(data):
 
     # File path for the submission code
     fp = f"submissions/submission{current_language}"
-    
+    print("File path: ", fp)
     print("Problem number: ",problem_number)
     code = data["code"]
 
@@ -82,6 +86,39 @@ def compile_button(data):
                                    stderr=subprocess.PIPE,
                                    text=False,
                                    bufsize=1)
+    elif current_language == ".js":
+        process = subprocess.Popen(["node", fp],
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   text=True,
+                                   bufsize=0)
+    elif current_language == ".cpp":
+        # Set up a clean environment with the MinGW bin directory in the PATH
+        clean_env = os.environ.copy()
+        clean_env["PATH"] = r"C:\MinGW\bin;" + clean_env["PATH"]
+
+        result = subprocess.run(
+            [r"C:\MinGW\bin\g++.exe", fp, "-o", "submissions/submission"],
+            capture_output=True,
+            text=True,
+            env=clean_env
+        )
+
+        if result.returncode != 0:
+            socketio.emit("error-output", result.stderr.replace("\n", "\n\r"), to=sid)
+            socketio.emit("process_done")
+            return
+
+        process = subprocess.Popen(
+            ["submissions/submission"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=False,
+            bufsize=1,
+            env=clean_env
+        )
 
     processes[submission_id] = process
 
@@ -113,9 +150,21 @@ def input_added(data):
         output_data = (data + "\n")
     elif current_language == ".py":
         output_data = (data + "\n").encode("utf-8")
+    elif current_language == ".js":
+        output_data = (data + "\n")
+    elif current_language == ".cpp":
+        output_data = (data + "\n").encode("utf-8")
 
     process_input.stdin.write(output_data)
     process_input.stdin.flush()
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
     stream_output(current_language, process_input, sid)
 
 def stream_output(current_language, p, sid = None):
@@ -130,6 +179,16 @@ def stream_output(current_language, p, sid = None):
             socketio.emit("output", char, to=sid)
         elif current_language == ".py":
             char = p.stdout.read1(1024)
+            socketio.emit("output", char.decode("utf-8"), to=sid)
+        elif current_language == ".js":
+            char = p.stdout.read(1)
+            if char == "\n":
+                char = "\n\r"
+            socketio.emit("output", char, to=sid)
+        elif current_language == ".cpp":
+            char = p.stdout.read1(1024)
+            if is_stopped:
+                break
             socketio.emit("output", char.decode("utf-8"), to=sid)
         if not char or char == "":
             stream_error_output(current_language, p, sid)
@@ -146,8 +205,18 @@ def stream_error_output(current_language, p, sid = None):
         char = char.replace("\n", "\n\r")
         if char and is_stopped == False:
             socketio.emit("error-output", char, to=sid)
+    elif current_language == ".js":
+        process.wait()
+        char = p.stderr.read()
+        char = char.replace("\n", "\n\r")
+        if char and is_stopped == False:
+            socketio.emit("error-output", char, to=sid)
     while True:
-        if current_language == ".py":
+        if current_language == ".cpp":
+            if is_stopped == False:
+                char = p.stderr.read1(1024)
+                socketio.emit("error-output", char.decode("utf-8"), to=sid)
+        elif current_language == ".py":
             if is_stopped == False:
                 char = p.stderr.read1(1024)
                 socketio.emit("error-output", char.decode("utf-8"), to=sid)
@@ -162,6 +231,9 @@ def process_done():
 def stop_process():
     global process, is_stopped
     is_stopped = True
+
+    if process is None:
+        return
 
     process.stdin.close()
     process.stdout.close()
@@ -182,6 +254,7 @@ def close():
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
     print("Submit")
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", port=5001, debug=True, allow_unsafe_werkzeug=True)
