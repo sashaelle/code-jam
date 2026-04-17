@@ -27,13 +27,15 @@
 
                 <!-- WRITTEN CODE INTERFACE -->
                 <section class="judge-panel judge-panel-code">
-                    <div class="judge-panel-title">Written Code Interface</div>
+                    <div class="judge-panel-title">Submission Code</div>
                     <div class="judge-panel-sub red">
                         This is the display for the code that the participants write.<br />
                         Sent
                     </div>
 
-                    <div class="judge-panel-body mono-pre">
+                    <textarea id="judge-code-box"
+                                class="judge-code-box mono-pre"
+                                spellcheck="false">
 CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
 CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
@@ -43,7 +45,7 @@ CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
 CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
-                    </div>
+                    </textarea>
                 </section>
 
                 <!-- INPUT / OUTPUT WINDOW -->
@@ -112,7 +114,7 @@ CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
 
                     <div class="row g-2 mt-3">
                         <div class="col-4">
-                            <button class="btn judge-btn w-100" type="button">Run</button>
+                            <button id="judge-run-btn" class="btn judge-btn w-100" type="button">Run</button>
                         </div>
                         <div class="col-4">
                             <button class="btn judge-btn w-100" type="button">Score</button>
