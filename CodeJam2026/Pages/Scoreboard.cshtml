@@ -67,19 +67,6 @@
                                 <div class="sb-meta">
                                     QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm")
                                 </div>
-                                <div class="sb-valid">
-                                    <span class="sb-valid-label">VALIDITY</span>
-
-                                    @if (item.IsCorrect)
-                                    {
-                                        <span class="sb-valid-green">CORRECT</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="sb-valid-red">INCORRECT</span>
-                                    }
-                                </div>
-                                <div class="sb-divider"></div>
                             </div>
                         }
                     }
@@ -90,18 +77,6 @@
                             <div class="sb-divider"></div>
                         </div>
                     }
-
-                    <div class="sb-dots mono-pre">...</div>
-
-                    <div class="sb-notes">
-                        <div class="sb-note-line">
-                            Have the team instance pop up at the bottom and scroll the rest upward
-                        </div>
-                        <div class="sb-note-line">
-                            The dots appear when the Judges are sending a question verification through
-                        </div>
-                    </div>
-
                 </section>
             </div>
 
