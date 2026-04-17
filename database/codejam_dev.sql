@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict w8d923hRco2LULPkMqaQp3hMJ0osYM5eXdgjAlhk5lqDE2fTgso3y0JbteLAXx0
+\restrict 1EFuevz1GCBgfPL3rbaNOddcV2rWvoGd0t52yo2bgNtmOhspZcSjT0YAbLSioWj
 
 -- Dumped from database version 18.3
 -- Dumped by pg_dump version 18.3
 
--- Started on 2026-04-16 01:02:30
+-- Started on 2026-04-17 01:10:02
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -295,7 +295,10 @@ ALTER TABLE ONLY public.test_cases ALTER COLUMN test_case_id SET DEFAULT nextval
 
 COPY public.accounts (account_id, username, password_hash, role, is_active, created_at) FROM stdin;
 1	admin	codejamadmin	admin	t	2026-04-16 00:33:37.523929
-20	Team1	xZhoQjm54@%C	team	t	2026-04-16 00:43:30.978212
+21	Team1	3JiE%u8YrFM$	team	t	2026-04-16 02:12:17.927904
+22	Team2	dF4QX#bvyT%L	team	t	2026-04-16 02:12:17.927904
+23	Team3	8JmjtbYWV7sf	team	t	2026-04-16 02:12:17.927904
+24	Team4	NVL#p3BVRurb	team	t	2026-04-16 02:12:17.927904
 \.
 
 
@@ -306,6 +309,11 @@ COPY public.accounts (account_id, username, password_hash, role, is_active, crea
 --
 
 COPY public.problems (problem_id, problem_num) FROM stdin;
+1	1
+2	2
+3	3
+4	4
+5	5
 \.
 
 
@@ -316,6 +324,12 @@ COPY public.problems (problem_id, problem_num) FROM stdin;
 --
 
 COPY public.submissions (submission_id, team_id, problem_id, submission_code, judge_feedback, points, "timestamp") FROM stdin;
+3	14	1	code	\N	20	2026-04-16 02:16:49.887056
+4	14	2	code	\N	15	2026-04-16 02:16:49.887056
+5	14	3	code	\N	10	2026-04-16 02:16:49.887056
+6	15	1	code	\N	20	2026-04-16 02:16:49.887056
+7	15	2	code	\N	15	2026-04-16 02:16:49.887056
+8	16	1	code	\N	20	2026-04-16 02:16:49.887056
 \.
 
 
@@ -326,7 +340,10 @@ COPY public.submissions (submission_id, team_id, problem_id, submission_code, ju
 --
 
 COPY public.teams (team_id, account_id, team_name, created_at, team_number) FROM stdin;
-13	20	Team 1	2026-04-16 00:43:30.978212	team_1
+14	21	Team 1	2026-04-16 02:12:17.927904	team_1
+15	22	Team 2	2026-04-16 02:12:17.927904	team_2
+16	23	Team 3	2026-04-16 02:12:17.927904	team_3
+17	24	Team 4	2026-04-16 02:12:17.927904	team_4
 \.
 
 
@@ -337,6 +354,9 @@ COPY public.teams (team_id, account_id, team_name, created_at, team_number) FROM
 --
 
 COPY public.test_cases (test_case_id, problem_id, test_case_num, input_text, expected_output) FROM stdin;
+5	5	1	1d4-8	-5.5
+6	5	2	6d7	24.0
+7	5	3	123d456+789	28894.5
 \.
 
 
@@ -346,7 +366,7 @@ COPY public.test_cases (test_case_id, problem_id, test_case_num, input_text, exp
 -- Name: accounts_account_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.accounts_account_id_seq', 20, true);
+SELECT pg_catalog.setval('public.accounts_account_id_seq', 24, true);
 
 
 --
@@ -355,7 +375,7 @@ SELECT pg_catalog.setval('public.accounts_account_id_seq', 20, true);
 -- Name: problems_problem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.problems_problem_id_seq', 1, false);
+SELECT pg_catalog.setval('public.problems_problem_id_seq', 6, true);
 
 
 --
@@ -364,7 +384,7 @@ SELECT pg_catalog.setval('public.problems_problem_id_seq', 1, false);
 -- Name: submissions_submission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.submissions_submission_id_seq', 1, false);
+SELECT pg_catalog.setval('public.submissions_submission_id_seq', 14, true);
 
 
 --
@@ -373,7 +393,7 @@ SELECT pg_catalog.setval('public.submissions_submission_id_seq', 1, false);
 -- Name: teams_team_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.teams_team_id_seq', 13, true);
+SELECT pg_catalog.setval('public.teams_team_id_seq', 25, true);
 
 
 --
@@ -502,11 +522,11 @@ ALTER TABLE ONLY public.test_cases
     ADD CONSTRAINT test_cases_problem_id_fkey FOREIGN KEY (problem_id) REFERENCES public.problems(problem_id) ON DELETE CASCADE;
 
 
--- Completed on 2026-04-16 01:02:31
+-- Completed on 2026-04-17 01:10:02
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict w8d923hRco2LULPkMqaQp3hMJ0osYM5eXdgjAlhk5lqDE2fTgso3y0JbteLAXx0
+\unrestrict 1EFuevz1GCBgfPL3rbaNOddcV2rWvoGd0t52yo2bgNtmOhspZcSjT0YAbLSioWj
 
