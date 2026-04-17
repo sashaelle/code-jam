@@ -18,6 +18,10 @@ processes = {}
 def index():
     return render_template('render.html')
 
+@app.route("/")
+def root():
+    return redirect("/team-facing")
+
 @socketio.on("connect")
 def handle_connect():
     print("Client has been connected")
@@ -117,6 +121,14 @@ def input_added(data):
     process_input.stdin.write(output_data)
     process_input.stdin.flush()
     stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
+    stream_output(current_language, process_input, sid)
 
 def stream_output(current_language, p, sid = None):
     while True:
@@ -128,6 +140,12 @@ def stream_output(current_language, p, sid = None):
             if char == "\n":
                 char = "\n\r"
             socketio.emit("output", char, to=sid)
+        elif current_language == ".py":
+            char = p.stdout.read1(1024)
+            socketio.emit("output", char.decode("utf-8"), to=sid)
+        elif current_language == ".py":
+            char = p.stdout.read1(1024)
+            socketio.emit("output", char.decode("utf-8"), to=sid)
         elif current_language == ".py":
             char = p.stdout.read1(1024)
             socketio.emit("output", char.decode("utf-8"), to=sid)
@@ -182,6 +200,7 @@ def close():
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
     print("Submit")
+    return jsonify({"ok": True})
 
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", port=5001, debug=True, allow_unsafe_werkzeug=True)
