@@ -80,27 +80,7 @@ CODE OUTPUT  CODE OUTPUT  CODE OUTPUT
                         This is the display that the judges use to select the code that they are to test based on submission.
                     </div>
 
-                    <div class="judge-queue mono-pre">
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-
-Team Name/# | Question number | TimeStamp
-                    </div>
+                    <div id="submissionQueue" class="judge-queue"></div>
                 </section>
 
                 <!-- FEEDBACK WINDOW -->
@@ -134,3 +114,10 @@ CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        window.judgeApiUrl = '@Url.Content("~/api/Judge")';
+    </script>
+    <script src="~/js/judge/judgeQueue.js" asp-append-version="true"></script>
+}

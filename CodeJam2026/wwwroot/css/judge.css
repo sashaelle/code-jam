@@ -97,6 +97,23 @@
   margin: 0;
   max-height: 360px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.queue-item {
+  width: 100%;
+  background: #000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  text-align: left;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.queue-item:hover {
+  background: #111111;
 }
 
 /* Feedback textarea */
@@ -109,4 +126,19 @@
   resize: none;
   padding: 0;
   margin: 0;
+}
+
+.queue-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.queue-item-in-progress {
+  border-color: #ffcc00;
+  color: #ffcc00;
+}
+
+.queue-item-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
