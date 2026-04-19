@@ -19,7 +19,7 @@ window.onSubmission = async function () {
     submitBtn.textContent = "Submitting...";
 
     try {
-        const response = await fetch("/api/Submissions", {
+        const response = await fetch(window.submissionApiUrl, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
