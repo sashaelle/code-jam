@@ -5,14 +5,18 @@
     Layout = "_AppLayout";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/scoreboard.css" asp-append-version="true" />
+}
+
 <div class="scoreboard-page">
 
     <header class="scoreboard-header">
         <div class="scoreboard-header-left">&gt;&gt; CODE JAM</div>
-        <div class="judge-header-right">
-            <a class="judge-navlink" asp-page="/Judge">&lt;&lt; BACK TO JUDGE</a>
-            <span class="judge-sep">|</span>
-            <a class="judge-navlink" asp-page="/Controls">CONTROLS</a>
+        <div class="scoreboard-header-right">
+            <a class="app-navlink" asp-page="/Judge">&lt;&lt; BACK TO JUDGE</a>
+            <span class="app-navsep">|</span>
+            <a class="app-navlink" asp-page="/Controls">CONTROLS</a>
         </div>
     </header>
 

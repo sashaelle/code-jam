@@ -1,0 +1,224 @@
+/* =========================
+   SCOREBOARD PAGE
+   ========================= */
+
+.scoreboard-page {
+  background: #000;
+  min-height: 100vh;
+  padding: 12px;
+}
+
+/* Top bar */
+.scoreboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 3px solid #ffffff;
+}
+
+.scoreboard-header-left {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.scoreboard-header-right {
+  color: #ff0000;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.scoreboard-content {
+  padding: 16px 16px 24px 16px;
+}
+
+/* SCOREBOARD PANEL (pixel/terminal style) */
+.panel-scoreboard {
+  background: #000;
+  border: 3px solid #ffffff;
+  padding: 22px 20px;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scoreboard-title {
+  color: #fff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+  font-size: 48px;
+  letter-spacing: 4px;
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+/* "========" line */
+.scoreboard-divider {
+  color: #fff;
+  text-align: center;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 18px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.scoreboard-rows {
+  width: 100%;
+  text-align: center;
+  flex: 1;
+}
+
+/* Row styling */
+.scoreboard-row {
+  color: #cfcfcf;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 26px;
+  letter-spacing: 1px;
+  padding: 10px 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.highlight-yellow {
+  color: #e8e84a;
+}
+.highlight-orange {
+  color: #ff9a2e;
+}
+
+/* Bottom "+-+-+-" divider */
+.scoreboard-bottom-divider {
+  color: #cfcfcf;
+  text-align: center;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  margin-top: 12px;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+}
+
+/* Time area */
+.scoreboard-time {
+  text-align: right;
+}
+
+.scoreboard-time-label {
+  color: #fff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+  font-size: 38px;
+  letter-spacing: 2px;
+  line-height: 1.05;
+}
+
+.scoreboard-time-value {
+  color: #fff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+  font-size: 60px;
+  letter-spacing: 2px;
+  line-height: 1.05;
+}
+
+/* Left feed panel */
+.sb-panel {
+  background: #000;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+}
+
+.sb-feed {
+  height: 100%;
+  min-height: 640px;
+}
+
+.sb-feed-row {
+  margin-bottom: 12px;
+}
+
+.sb-team {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.sb-meta {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+.sb-valid {
+  margin-top: 2px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.sb-valid-label {
+  color: #00ff00;
+  font-weight: 900;
+}
+
+.sb-valid-red {
+  color: #ff0000;
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+.sb-valid-green {
+  color: #00ff00;
+  margin-left: 8px;
+  font-weight: 700;
+}
+
+/* Divider lines like the mock */
+.sb-divider {
+  border-top: 3px solid #ffffff;
+  margin-top: 10px;
+}
+
+.sb-dots {
+  color: #ffffff;
+  font-size: 36px;
+  letter-spacing: 6px;
+  margin: 10px 0 16px 0;
+}
+
+/* Bottom notes */
+.sb-notes {
+  margin-top: 6px;
+}
+
+.sb-note-line {
+  color: #ff0000;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}

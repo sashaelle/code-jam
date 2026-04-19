@@ -1,0 +1,112 @@
+/* =========================
+   JUDGE PAGE (terminal UI)
+   ========================= */
+
+.judge-page {
+  background: #000;
+  min-height: 100vh;
+}
+
+/* Header bar */
+.judge-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 3px solid #ffffff;
+}
+
+.judge-header-left {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.judge-header-right {
+  color: #ff0000;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* Content spacing */
+.judge-content {
+  padding: 16px 16px 24px 16px;
+}
+
+/* Panel */
+.judge-panel {
+  background: #000;
+  border: 3px solid #ffffff;
+  padding: 12px 14px;
+}
+
+.judge-panel-title {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 1px;
+  text-transform: none;
+  margin-bottom: 6px;
+}
+
+.judge-panel-sub {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.judge-code-box {
+  width: 100%;
+  flex: 1;
+  min-height: 240px;
+  background: #000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  outline: none;
+  resize: none;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Left column panel heights (tune to taste) */
+.judge-panel-code .judge-panel-body {
+  min-height: 240px;
+}
+
+.judge-panel-io .judge-panel-body {
+  min-height: 240px;
+}
+
+/* Queue list with scrollbar */
+.judge-queue {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+/* Feedback textarea */
+.judge-feedback {
+  width: 100%;
+  background: #000;
+  color: #ffffff;
+  border: 0;
+  outline: none;
+  resize: none;
+  padding: 0;
+  margin: 0;
+}

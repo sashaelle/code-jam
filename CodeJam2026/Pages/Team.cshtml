@@ -1,15 +1,18 @@
-@page "{teamName}"
+@page
 @model TeamModel
 @{
-    Layout = "_AppLayout";
     ViewData["Title"] = "Team";
+    Layout = "_AppLayout";
 }
 
-<link rel="stylesheet" href="http://localhost:5001/static/xterm.css">
+@section Styles {
+    <link rel="stylesheet" href="~/css/team/xterm.css" />
+    <link rel="stylesheet" href="~/css/team/team.css" asp-append-version="true" />
+}
 
 <div class="team-page">
     <div class="container-fluid team-content">
-        <div class="row h-100">
+        <div class="row h-100 gx-0">
             <div class="col-12 col-lg-9 d-flex flex-column">
                 <section class="panel panel-tall">
                     <div class="problem-header">
@@ -70,7 +73,7 @@
 </div>
 
 @section Scripts {
-    <script src="http://localhost:5001/static/xterm.js"></script>
+    <script src="~/js/team/xterm.js"></script>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <script>
@@ -93,9 +96,9 @@
             });
         });
     </script>
-    <script src="http://localhost:5001/static/config.js"></script>
-    <script src="http://localhost:5001/static/getSubmissionCode.js"></script>
-    <script src="http://localhost:5001/static/onSubmission.js"></script>
-    <script src="http://localhost:5001/static/updateProblem.js"></script>
-    <script src="http://localhost:5001/static/socket-code.js"></script>
+    <script src="~/js/team/config.js"></script>
+    <script src="~/js/team/getSubmissionCode.js"></script>
+    <script src="~/js/team/onSubmission.js"></script>
+    <script src="~/js/team/updateProblem.js"></script>
+    <script src="~/js/team/socket-code.js"></script>
 }

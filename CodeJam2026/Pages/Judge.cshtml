@@ -5,6 +5,10 @@
     Layout = "_AppLayout";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/judge.css" asp-append-version="true" />
+}
+
 <div class="judge-page">
 
     <!-- HEADER BAR -->
@@ -12,9 +16,9 @@
         <div class="judge-header-left">JUDGE</div>
         
         <div class="judge-header-right">
-            <a class="judge-navlink" asp-page="/Scoreboard">Scoreboard</a>
-            <span class="judge-sep">|</span>
-            <a class="judge-navlink" asp-page="/Controls">Controls</a>
+            <a class="app-navlink" asp-page="/Scoreboard">Scoreboard</a>
+            <span class="app-navsep">|</span>
+            <a class="app-navlink" asp-page="/Controls">Controls</a>
         </div>
     </header>
 
@@ -114,13 +118,13 @@ CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
 
                     <div class="row g-2 mt-3">
                         <div class="col-4">
-                            <button id="judge-run-btn" class="btn judge-btn w-100" type="button">Run</button>
+                            <button id="judge-run-btn" class="btn app-btn w-100" type="button">Run</button>
                         </div>
                         <div class="col-4">
-                            <button class="btn judge-btn w-100" type="button">Score</button>
+                            <button class="btn app-btn w-100" type="button">Score</button>
                         </div>
                         <div class="col-4">
-                            <button class="btn judge-btn w-100" type="button">Send</button>
+                            <button class="btn app-btn w-100" type="button">Send</button>
                         </div>
                     </div>
                 </section>

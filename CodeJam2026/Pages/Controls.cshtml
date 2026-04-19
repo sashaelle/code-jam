@@ -5,15 +5,19 @@
     Layout = "_AppLayout";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/controls.css" asp-append-version="true" />
+}
+
 <div class="controls-page">
 
     <!-- TOP BAR -->
     <header class="controls-header">
         <div class="controls-header-left">ADMIN OPTIONS/DEBUG</div>
-        <div class="judge-header-right">
-            <a class="judge-navlink" asp-page="/Judge">&lt;&lt; BACK TO JUDGE</a>
-            <span class="judge-sep">|</span>
-            <a class="judge-navlink" asp-page="/Scoreboard">SCOREBOARD</a>
+        <div class="controls-header-right">
+            <a class="app-navlink" asp-page="/Judge">&lt;&lt; BACK TO JUDGE</a>
+            <span class="app-navsep">|</span>
+            <a class="app-navlink" asp-page="/Scoreboard">SCOREBOARD</a>
         </div>
     </header>
 
@@ -29,7 +33,7 @@
                             <label class="controls-generate-label mono" asp-for="TeamCount">Number of teams</label>
                             <input asp-for="TeamCount" class="controls-generate-input mono" type="number" min="1" max="100" />
                         </div>
-                        <button class="btn judge-btn controls-generate-btn" type="submit">Generate Teams</button>
+                        <button class="btn app-btn controls-generate-btn" type="submit">Generate Teams</button>
                         <div asp-validation-summary="All" class="controls-generate-error mt-2"></div>
                     </form>
                     @if (!string.IsNullOrWhiteSpace(Model.GenerateTeamsStatusMessage))
@@ -94,7 +98,7 @@
                                 <input asp-for="NewPassword" class="controls-generate-input controls-password-input mono" type="text" autocomplete="new-password" />
                             </div>
 
-                            <button class="btn judge-btn controls-generate-btn controls-password-btn" type="submit">
+                            <button class="btn app-btn controls-generate-btn controls-password-btn" type="submit">
                                 Change Password
                             </button>
 
