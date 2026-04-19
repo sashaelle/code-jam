@@ -8,6 +8,8 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Judge");
 });
 
+builder.Services.AddSingleton<ITeamSessionStore, InMemoryTeamSessionStore>();
+
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -26,11 +28,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-var enableHttpsRedirection = app.Configuration.GetValue("EnableHttpsRedirection", !app.Environment.IsDevelopment());
-if (enableHttpsRedirection)
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
