@@ -1,0 +1,277 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# db.py (inlined)
+# ─────────────────────────────────────────────────────────────────────────────
+import os
+import psycopg2
+import psycopg2.extras
+from contextlib import contextmanager
+
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@localhost:5432/codejam_dev"
+)
+
+def get_conn():
+    return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+
+@contextmanager
+def db_cursor():
+    conn = get_conn()
+    try:
+        with conn:
+            with conn.cursor() as cur:
+                yield cur
+    finally:
+        conn.close()
+
+_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS public.problems (
+    problem_id  SERIAL PRIMARY KEY,
+    problem_num INTEGER NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS public.test_cases (
+    test_case_id   SERIAL PRIMARY KEY,
+    problem_id     INTEGER NOT NULL REFERENCES public.problems(problem_id) ON DELETE CASCADE,
+    test_case_num  INTEGER NOT NULL,
+    input_text     TEXT,
+    expected_output TEXT,
+    UNIQUE (problem_id, test_case_num)
+);
+
+CREATE TABLE IF NOT EXISTS public.submissions (
+    submission_id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    team_id         INTEGER NOT NULL REFERENCES public.teams(team_id) ON DELETE CASCADE,
+    problem_id      INTEGER NOT NULL REFERENCES public.problems(problem_id) ON DELETE CASCADE,
+    submission_code TEXT NOT NULL,
+    judge_feedback  TEXT,
+    points          NUMERIC(6,2),
+    language        VARCHAR(50),
+    status          VARCHAR(20) NOT NULL DEFAULT 'pending'
+        CHECK (status IN ('pending', 'correct', 'incorrect', 'partial')),
+    timestamp       TIMESTAMP WITHOUT TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.contest_timer (
+    id              SERIAL PRIMARY KEY,
+    duration_seconds INTEGER NOT NULL,
+    started_at      TIMESTAMP WITHOUT TIME ZONE
+);
+
+INSERT INTO public.contest_timer (duration_seconds)
+SELECT 10800
+WHERE NOT EXISTS (SELECT 1 FROM public.contest_timer);
+"""
+
+def init_db():
+    with db_cursor() as cur:
+        cur.execute(_SCHEMA_SQL)
+    print("[db] Schema initialised.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# auth.py (session + decorator)
+# ─────────────────────────────────────────────────────────────────────────────
+import functools
+from flask import request, jsonify, g
+
+_active_sessions: dict[str, dict] = {}
+
+def create_session(token: str, account_id: str, judge_id: int):
+    _active_sessions[token] = {"account_id": account_id, "judge_id": judge_id}
+
+def revoke_session(token: str):
+    _active_sessions.pop(token, None)
+
+def lookup_session(token: str):
+    return _active_sessions.get(token)
+
+def judge_required(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        auth_header = request.headers.get("Authorization", "")
+        if not auth_header.startswith("Bearer "):
+            return jsonify({"error": "Missing or invalid Authorization header"}), 401
+        token = auth_header.removeprefix("Bearer ").strip()
+        session = lookup_session(token)
+        if not session:
+            return jsonify({"error": "Invalid or expired token"}), 401
+        g.session = session
+        return f(*args, **kwargs)
+    return wrapper
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# routes/auth.py (login endpoint)
+# ─────────────────────────────────────────────────────────────────────────────
+import secrets
+from flask import Blueprint
+
+auth_bp = Blueprint("auth", __name__)
+
+@auth_bp.route("/login", methods=["POST"])
+def judge_login():
+    body = request.get_json(silent=True) or {}
+    username = body.get("username", "").strip()
+    password = body.get("password", "")
+
+    if not username or not password:
+        return jsonify({"error": "username and password are required"}), 400
+
+    with db_cursor() as cur:
+        cur.execute(
+            """
+            SELECT a.account_id, a.password_hash, a.role, a.is_active,
+                   j.judge_id, j.display_name
+            FROM   public.accounts a
+            JOIN   public.judges   j ON j.account_id = a.account_id
+            WHERE  a.username = %s
+            """,
+            (username,),
+        )
+        row = cur.fetchone()
+
+    if not row:
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    if not row["is_active"]:
+        return jsonify({"error": "Account is disabled"}), 403
+
+    if row["role"] != "judge":
+        return jsonify({"error": "Account does not have judge privileges"}), 403
+
+    if password != row["password_hash"]:
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    token = secrets.token_hex(32)
+    create_session(token, str(row["account_id"]), row["judge_id"])
+
+    return jsonify({
+        "token": token,
+        "judge_id": row["judge_id"],
+        "display_name": row["display_name"],
+    }), 200
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# routes/scoreboard.py
+# ─────────────────────────────────────────────────────────────────────────────
+scoreboard_bp = Blueprint("scoreboard", __name__)
+
+@scoreboard_bp.route("/scoreboard", methods=["GET"])
+def get_scoreboard():
+    with db_cursor() as cur:
+        cur.execute(
+            """
+            SELECT
+                t.team_number,
+                t.team_name,
+                COALESCE(SUM(s.points), 0) AS total_points
+            FROM public.teams t
+            LEFT JOIN public.submissions s
+                   ON s.team_id = t.team_id
+                  AND s.status IN ('correct', 'partial')
+            GROUP BY t.team_id, t.team_number, t.team_name
+            ORDER BY total_points DESC, t.team_number
+            """
+        )
+        team_rows = cur.fetchall()
+
+        cur.execute(
+            """
+            WITH ranked AS (
+                SELECT
+                    s.team_id,
+                    t.team_number,
+                    p.problem_num,
+                    s.status,
+                    s.points,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY s.team_id, s.problem_id
+                        ORDER BY
+                            CASE s.status
+                                WHEN 'correct' THEN 1
+                                WHEN 'partial' THEN 2
+                                WHEN 'incorrect' THEN 3
+                                ELSE 4
+                            END,
+                            s.timestamp DESC
+                    ) AS rn
+                FROM public.submissions s
+                JOIN public.teams t ON t.team_id = s.team_id
+                JOIN public.problems p ON p.problem_id = s.problem_id
+                WHERE s.status != 'pending'
+            )
+            SELECT team_number, problem_num, status, points
+            FROM ranked
+            WHERE rn = 1
+            ORDER BY team_number, problem_num
+            """
+        )
+        problem_rows = cur.fetchall()
+
+        cur.execute(
+            """
+            SELECT
+                s.submission_id,
+                t.team_name,
+                p.problem_num,
+                s.status,
+                s.points,
+                s.timestamp
+            FROM public.submissions s
+            JOIN public.teams t ON t.team_id = s.team_id
+            JOIN public.problems p ON p.problem_id = s.problem_id
+            WHERE s.status != 'pending'
+            ORDER BY s.timestamp DESC
+            LIMIT 100
+            """
+        )
+        sub_rows = cur.fetchall()
+
+    problems_by_team = {}
+    for r in problem_rows:
+        problems_by_team.setdefault(r["team_number"], []).append({
+            "problem_num": r["problem_num"],
+            "status": r["status"],
+            "points": float(r["points"]) if r["points"] else 0.0,
+        })
+
+    rankings = []
+    for rank, r in enumerate(team_rows, start=1):
+        rankings.append({
+            "rank": rank,
+            "team_number": r["team_number"],
+            "team_name": r["team_name"],
+            "total_points": float(r["total_points"]),
+            "problems": problems_by_team.get(r["team_number"], []),
+        })
+
+    submissions = [
+        {
+            "submission_id": str(r["submission_id"]),
+            "team_name": r["team_name"],
+            "problem_num": r["problem_num"],
+            "status": r["status"],
+            "points": float(r["points"]) if r["points"] else None,
+            "timestamp": r["timestamp"].isoformat(),
+        }
+        for r in sub_rows
+    ]
+
+    return jsonify({"rankings": rankings, "submissions": submissions}), 200
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# app.py (main entry)
+# ─────────────────────────────────────────────────────────────────────────────
+from flask import Flask
+
+app = Flask(__name__)
+
+app.register_blueprint(auth_bp, url_prefix="/api/judge")
+app.register_blueprint(scoreboard_bp, url_prefix="/api")
+
+if __name__ == "__main__":
+    init_db()
+    app.run(debug=True)
