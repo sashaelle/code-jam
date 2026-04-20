@@ -122,7 +122,11 @@
             <!-- RIGHT SIDE -->
             <div class="col-12 col-lg-4">
                 <div class="controls-right-stack">
-                    <button class="ctrl-big" type="button">HIDE SCOREBOARD</button>
+                    <form method="post" asp-page-handler="ToggleScoreboard">
+                        <button class="ctrl-big" type="submit">
+                            @(Model.IsScoreboardVisible ? "HIDE SCOREBOARD" : "SHOW SCOREBOARD")
+                        </button>
+                    </form>
                     <button class="ctrl-big" type="button">OPTION 1</button>
                     <button class="ctrl-big" type="button">OPTION 2</button>
                     <button class="ctrl-big" type="button">OPTION 3</button>

@@ -1,3 +1,4 @@
+using CodeJam2026.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,15 +10,18 @@ namespace CodeJam2026.Pages;
 public class ScoreboardModel : PageModel
 {
     private readonly IConfiguration _configuration;
+    private readonly ScoreboardVisibilityState _scoreboardVisibilityState;
 
-    public ScoreboardModel(IConfiguration configuration)
+    public ScoreboardModel(IConfiguration configuration, ScoreboardVisibilityState scoreboardVisibilityState)
     {
         _configuration = configuration;
+        _scoreboardVisibilityState = scoreboardVisibilityState;
     }
 
     public List<ScoreboardEntry> Entries { get; private set; } = [];
     public List<SubmissionFeedItem> RecentSubmissions { get; private set; } = [];
     public string CurrentTimeDisplay { get; private set; } = "";
+    public bool IsScoreboardVisible => _scoreboardVisibilityState.IsVisible;
 
     public async Task OnGetAsync()
     {
@@ -31,6 +35,7 @@ public class ScoreboardModel : PageModel
         return new JsonResult(new
         {
             currentTimeDisplay = CurrentTimeDisplay,
+            isScoreboardVisible = IsScoreboardVisible,
             entries = Entries,
             recentSubmissions = RecentSubmissions.Select(item => new
             {

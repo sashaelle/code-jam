@@ -20,70 +20,80 @@
         </div>
     </header>
 
-    <div class="container-fluid scoreboard-content">
-        <div class="row g-3">
+    <div id="scoreboardVisibleContent" style="display:@(Model.IsScoreboardVisible ? "block" : "none");">
 
-            <div class="col-12 col-lg-8">
-                <section class="panel panel-scoreboard">
-                    <div class="scoreboard-title"> SCOREBOARD</div>
-                    <div class="scoreboard-divider">========</div>
+        <div class="container-fluid scoreboard-content">
+            <div class="row g-3">
 
-                    <div id="scoreboardRows" class="scoreboard-rows">
-                        <div class="scoreboard-row highlight-yellow">
-                            TEAM NAME | POINTS
-                        </div>
+                <div class="col-12 col-lg-8">
+                    <section class="panel panel-scoreboard">
+                        <div class="scoreboard-title"> SCOREBOARD</div>
+                        <div class="scoreboard-divider">========</div>
 
-                        @if (Model.Entries.Any())
-                        {
-                            @foreach (var entry in Model.Entries)
+                        <div id="scoreboardRows" class="scoreboard-rows">
+                            <div class="scoreboard-row highlight-yellow">
+                                TEAM NAME | POINTS
+                            </div>
+
+                            @if (Model.Entries.Any())
+                            {
+                                @foreach (var entry in Model.Entries)
+                                {
+                                    <div class="scoreboard-row">
+                                        @entry.TeamName | @entry.TotalPoints
+                                    </div>
+                                }
+                            }
+                            else
                             {
                                 <div class="scoreboard-row">
-                                    @entry.TeamName | @entry.TotalPoints
+                                    NO TEAMS OR SUBMISSIONS FOUND
+                                </div>
+                            }
+                        </div>
+
+                        <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
+
+                        <div class="scoreboard-time">
+                            <div class="scoreboard-time-label">Current Time</div>
+                            <div id="scoreboardTimeValue" class="scoreboard-time-value">@Model.CurrentTimeDisplay</div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="col-12 col-lg-4">
+                    <section id="recentSubmissionsFeed" class="sb-panel sb-feed">
+                        @if (Model.RecentSubmissions.Any())
+                        {
+                            @foreach (var item in Model.RecentSubmissions)
+                            {
+                                <div class="sb-feed-row">
+                                    <div class="sb-team">@item.TeamName&gt;&gt;</div>
+                                    <div class="sb-meta">
+                                        QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm:ss")
+                                    </div>
                                 </div>
                             }
                         }
                         else
                         {
-                            <div class="scoreboard-row">
-                                NO TEAMS OR SUBMISSIONS FOUND
-                            </div>
-                        }
-                    </div>
-
-                    <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
-
-                    <div class="scoreboard-time">
-                        <div class="scoreboard-time-label">Current Time</div>
-                        <div id="scoreboardTimeValue" class="scoreboard-time-value">@Model.CurrentTimeDisplay</div>
-                    </div>
-                </section>
-            </div>
-
-            <div class="col-12 col-lg-4">
-                <section id="recentSubmissionsFeed" class="sb-panel sb-feed">
-                    @if (Model.RecentSubmissions.Any())
-                    {
-                        @foreach (var item in Model.RecentSubmissions)
-                        {
                             <div class="sb-feed-row">
-                                <div class="sb-team">@item.TeamName&gt;&gt;</div>
-                                <div class="sb-meta">
-                                    QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm:ss")
-                                </div>
+                                <div class="sb-team">NO SUBMISSIONS YET</div>
+                                <div class="sb-divider"></div>
                             </div>
                         }
-                    }
-                    else
-                    {
-                        <div class="sb-feed-row">
-                            <div class="sb-team">NO SUBMISSIONS YET</div>
-                            <div class="sb-divider"></div>
-                        </div>
-                    }
-                </section>
-            </div>
+                    </section>
+                </div>
 
+            </div>
         </div>
+
+    </div>
+
+    <div id="scoreboardHiddenMessage"
+        class="scoreboard-hidden-message"
+        style="display:@(Model.IsScoreboardVisible ? "none" : "flex");">
+        SCOREBOARD HIDDEN
     </div>
 </div>
 

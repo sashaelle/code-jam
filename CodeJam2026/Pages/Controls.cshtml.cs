@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using CodeJam2026.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,10 +13,12 @@ public class ControlsModel : PageModel
 {
     private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
+    private readonly ScoreboardVisibilityState _scoreboardVisibilityState;
 
-    public ControlsModel(IConfiguration configuration)
+    public ControlsModel(IConfiguration configuration, ScoreboardVisibilityState scoreboardVisibilityState)
     {
         _configuration = configuration;
+        _scoreboardVisibilityState = scoreboardVisibilityState;
     }
 
     [BindProperty]
@@ -37,10 +40,18 @@ public class ControlsModel : PageModel
     [TempData]
     public string ChangePasswordStatusMessage { get; set; } = "";
 
+    public bool IsScoreboardVisible => _scoreboardVisibilityState.IsVisible;
+
     public async Task OnGetAsync()
     {
         await LoadTeamCredentialsAsync();
         await LoadAllAccountUsernamesAsync();
+    }
+
+    public IActionResult OnPostToggleScoreboard()
+    {
+        _scoreboardVisibilityState.IsVisible = !_scoreboardVisibilityState.IsVisible;
+        return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostGenerateTeamsAsync()
@@ -254,8 +265,6 @@ public class ControlsModel : PageModel
     private static int GetSortNumber(string username)
     {
         var match = TrailingNumberRegex.Match(username);
-        return match.Success && int.TryParse(match.Value, out var number)
-            ? number
-            : int.MaxValue;
+        return match.Success && int.TryParse(match.Value, out var number) ? number : int.MaxValue;
     }
 }

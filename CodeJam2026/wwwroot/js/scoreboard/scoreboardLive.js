@@ -16,11 +16,25 @@ async function refreshScoreboard() {
 
         const data = await response.json();
 
+        renderVisibility(data.isScoreboardVisible);
         renderClock(data.currentTimeDisplay);
         renderScoreboardRows(data.entries);
         renderRecentSubmissions(data.recentSubmissions);
     } catch (err) {
         console.error("Scoreboard refresh failed:", err);
+    }
+}
+
+function renderVisibility(isVisible) {
+    const visibleContent = document.getElementById("scoreboardVisibleContent");
+    const hiddenMessage = document.getElementById("scoreboardHiddenMessage");
+
+    if (visibleContent) {
+        visibleContent.style.display = isVisible ? "block" : "none";
+    }
+
+    if (hiddenMessage) {
+        hiddenMessage.style.display = isVisible ? "none" : "flex";
     }
 }
 
