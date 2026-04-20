@@ -91,11 +91,39 @@
   border: 0;
   padding: 0;
   margin: 0;
-  max-height: 170px;
+  max-height: 250px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.judge-queue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.judge-problem-filter {
+  min-width: 140px;
+  background: #000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  padding: 6px 10px;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.judge-problem-filter option {
+  background: #000;
+  color: #ffffff;
 }
 
 .queue-item {

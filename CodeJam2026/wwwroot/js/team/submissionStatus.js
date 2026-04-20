@@ -56,6 +56,8 @@ ${pointsText}`;
 
 async function checkLatestSubmissionStatus() {
     const problemId = getCurrentProblemId();
+    const storageKey = `problem_${problemId}_status`;
+
     if (!problemId) return;
 
     try {
@@ -73,6 +75,8 @@ async function checkLatestSubmissionStatus() {
         const data = await response.json();
 
         if (!data.hasSubmission) {
+            localStorage.removeItem(storageKey);
+
             setFeedbackMessage(
                 problemId,
                 "Not Submitted",
@@ -86,6 +90,8 @@ async function checkLatestSubmissionStatus() {
         const status = data.status;
 
         if (status === null || status === "pending") {
+            localStorage.setItem(storageKey, "pending");
+
             setFeedbackMessage(
                 problemId,
                 "Pending",
@@ -97,6 +103,8 @@ async function checkLatestSubmissionStatus() {
         }
 
         if (status === "in_progress") {
+            localStorage.setItem(storageKey, "pending");
+
             setFeedbackMessage(
                 problemId,
                 "In Progress",
@@ -108,6 +116,8 @@ async function checkLatestSubmissionStatus() {
         }
 
         if (status === "incorrect") {
+            localStorage.setItem(storageKey, "incorrect");
+
             setFeedbackMessage(
                 problemId,
                 "Incorrect",
@@ -121,6 +131,8 @@ async function checkLatestSubmissionStatus() {
         }
 
         if (status === "correct") {
+            localStorage.setItem(storageKey, "correct");
+
             setFeedbackMessage(
                 problemId,
                 "Correct",
@@ -132,6 +144,8 @@ async function checkLatestSubmissionStatus() {
             setSubmitButtonState("correct");
             return;
         }
+
+        localStorage.removeItem(storageKey);
 
         setFeedbackMessage(
             problemId,

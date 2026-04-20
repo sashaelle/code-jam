@@ -17,7 +17,7 @@ namespace CodeJam2026.Controllers
         }
 
         [HttpGet("pending")]
-        public async Task<IActionResult> GetPendingSubmissions()
+        public async Task<IActionResult> GetPendingSubmissions([FromQuery] int? problemId)
         {
             var submissions = new List<object>();
 
@@ -27,10 +27,21 @@ namespace CodeJam2026.Controllers
             const string sql = @"
                 SELECT submission_id, team_id, problem_id, submission_code, language, status, ""timestamp""
                 FROM submissions
-                WHERE status IS NULL OR status = 'pending' OR status = 'in_progress'
+                WHERE (status IS NULL OR status = 'pending' OR status = 'in_progress')
+                  AND (@problemId IS NULL OR problem_id = @problemId)
                 ORDER BY ""timestamp"" ASC;";
 
             await using var cmd = new NpgsqlCommand(sql, conn);
+            var problemParam = cmd.Parameters.Add("@problemId", NpgsqlTypes.NpgsqlDbType.Integer);
+
+            if (problemId.HasValue)
+            {
+                problemParam.Value = problemId.Value;
+            }
+            else
+            {
+                problemParam.Value = DBNull.Value;
+            }
             await using var reader = await cmd.ExecuteReaderAsync();
 
             while (await reader.ReadAsync())

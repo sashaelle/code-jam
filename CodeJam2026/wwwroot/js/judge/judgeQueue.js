@@ -1,13 +1,61 @@
-document.addEventListener("DOMContentLoaded", () => {
-    loadQueue();
-    setInterval(loadQueue, 3000); // refresh queue every 3 seconds
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadProblemFilterOptions();
+    await loadQueue();
+    setInterval(loadQueue, 3000);
 });
 
 let activeSubmissionId = null;
 window.currentJudgeSubmission = null;
 
+function getSelectedProblemFilter() {
+    const filter = document.getElementById("judge-problem-filter");
+    return filter ? filter.value : "";
+}
+
+async function loadProblemFilterOptions() {
+    const filter = document.getElementById("judge-problem-filter");
+    if (!filter) return;
+
+    try {
+        const res = await fetch(`${window.problemsApiUrl}`, {
+            cache: "no-store"
+        });
+
+        if (!res.ok) {
+            console.error("Failed to load problem filter options.");
+            return;
+        }
+
+        const problems = await res.json();
+
+        filter.innerHTML = `<option value="">All</option>`;
+
+        problems.forEach(problem => {
+            const option = document.createElement("option");
+            option.value = problem.problemId;
+            option.textContent = `Problem ${problem.problemNum}`;
+            filter.appendChild(option);
+        });
+
+        filter.addEventListener("change", async () => {
+            await loadQueue();
+        });
+    } catch (err) {
+        console.error("Failed to initialize problem filter:", err);
+    }
+}
+
 async function loadQueue() {
-    const res = await fetch(`${window.judgeApiUrl}/pending?_=${Date.now()}`, {
+    const selectedProblemId = getSelectedProblemFilter();
+    const query = new URLSearchParams({
+        _: Date.now().toString()
+    });
+
+    if (selectedProblemId) {
+        query.append("problemId", selectedProblemId);
+    }
+
+    const res = await fetch(`${window.judgeApiUrl}/pending?${query.toString()}`, {
         cache: "no-store"
     });
 
@@ -30,7 +78,6 @@ async function loadQueue() {
         const ts = new Date(sub.timestamp).toLocaleString();
         item.textContent = `Team ${sub.teamId} | Problem ${sub.problemId} | ${ts}`;
 
-        // If this judge already has one active, lock everything else
         if (activeSubmissionId !== null) {
             if (sub.submissionId === activeSubmissionId) {
                 item.textContent += " | IN PROGRESS";
@@ -45,9 +92,7 @@ async function loadQueue() {
                     item.classList.add("queue-item-in-progress");
                 }
             }
-        }
-        // No active submission for this judge yet
-        else {
+        } else {
             if (sub.status === "in_progress") {
                 item.textContent += " | IN PROGRESS";
                 item.disabled = true;

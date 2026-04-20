@@ -331,12 +331,6 @@ INSERT INTO public.test_cases (test_case_id, problem_id, test_case_num, input_te
 (4, 4, 1, E'9\n1', '10');
 
 COPY public.submissions (submission_id, team_id, problem_id, submission_code, language, status, judge_feedback, points, "timestamp") FROM stdin;
-3	14	1	code	python	Pass	\N	20	2026-04-16 02:16:49.887056
-4	14	2	code	python	\N	\N	15	2026-04-16 02:16:49.887056
-5	14	3	code	python	Pass	\N	10	2026-04-16 02:16:49.887056
-6	15	1	code	python	\N	\N	20	2026-04-16 02:16:49.887056
-7	15	2	code	python	\N	\N	15	2026-04-16 02:16:49.887056
-8	16	1	code	python	\N	\N	20	2026-04-16 02:16:49.887056
 \.
 
 
