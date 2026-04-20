@@ -25,10 +25,10 @@
 
             <div class="col-12 col-lg-8">
                 <section class="panel panel-scoreboard">
-                    <div class="scoreboard-title">SCORE BOARD</div>
+                    <div class="scoreboard-title"> SCOREBOARD</div>
                     <div class="scoreboard-divider">========</div>
 
-                    <div class="scoreboard-rows">
+                    <div id="scoreboardRows" class="scoreboard-rows">
                         <div class="scoreboard-row highlight-yellow">
                             TEAM NAME | POINTS
                         </div>
@@ -54,14 +54,13 @@
 
                     <div class="scoreboard-time">
                         <div class="scoreboard-time-label">Current Time</div>
-                        <div class="scoreboard-time-value">@Model.CurrentTimeDisplay</div>
+                        <div id="scoreboardTimeValue" class="scoreboard-time-value">@Model.CurrentTimeDisplay</div>
                     </div>
                 </section>
             </div>
 
             <div class="col-12 col-lg-4">
-                <section class="sb-panel sb-feed">
-
+                <section id="recentSubmissionsFeed" class="sb-panel sb-feed">
                     @if (Model.RecentSubmissions.Any())
                     {
                         @foreach (var item in Model.RecentSubmissions)
@@ -69,7 +68,7 @@
                             <div class="sb-feed-row">
                                 <div class="sb-team">@item.TeamName&gt;&gt;</div>
                                 <div class="sb-meta">
-                                    QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm")
+                                    QUESTION @item.ProblemNumber, @item.Timestamp.ToString("MM/dd HH:mm:ss")
                                 </div>
                             </div>
                         }
@@ -87,3 +86,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/scoreboard/scoreboardLive.js" asp-append-version="true"></script>
+}
