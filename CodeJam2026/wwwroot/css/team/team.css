@@ -136,6 +136,7 @@
   border: 2px solid #2b2b2b;
   margin-bottom: 12px;
   overflow: hidden;
+  max-height: 400px;
 }
 
 .team-terminal {
