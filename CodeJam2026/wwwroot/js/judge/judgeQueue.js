@@ -76,7 +76,15 @@ async function loadQueue() {
         item.dataset.submissionId = sub.submissionId;
 
         const ts = new Date(sub.timestamp).toLocaleString();
-        item.textContent = `Team ${sub.teamId} | Problem ${sub.problemId} | ${ts}`;
+        const rawTeamDisplay = sub.teamNumber ?? sub.teamId;
+        let normalizedTeamDisplay = rawTeamDisplay;
+
+        if (typeof rawTeamDisplay === "string") {
+            const numberMatch = rawTeamDisplay.match(/\d+/);
+            normalizedTeamDisplay = numberMatch ? numberMatch[0] : rawTeamDisplay;
+        }
+
+        item.textContent = `Team ${normalizedTeamDisplay} | Problem ${sub.problemId} | ${ts}`;
 
         if (activeSubmissionId !== null) {
             if (sub.submissionId === activeSubmissionId) {
