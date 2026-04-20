@@ -25,7 +25,6 @@ def root():
 
 @socketio.on("connect")
 def handle_connect():
-    print("Client has been connected")
     #Remove after database is connected
     emit("clear_local_storage")
 
@@ -37,7 +36,6 @@ def handle_disconnect():
 
     if process:
         process.terminate()
-    print("Client disconnected")
 
 @socketio.on('my event')
 def handle_my_custom_event(json):
@@ -70,13 +68,9 @@ def compile_button(data):
             if re.search(r"\bpublic\s+class\s+" + re.escape(java_class_name) + r"\b", code):
                 fp = f"submissions/{java_class_name}.java"
 
-    print("File path: ", fp)
-    print("Problem number: ",problem_number)
-
     submission_id = request.sid
     sid = request.sid
 
-    print(code)
     with open(fp, "w", newline="\n") as f:
         f.write(code)
 
@@ -111,30 +105,24 @@ def compile_button(data):
                                    text=True,
                                    bufsize=0)
     elif current_language == ".cpp":
-        # Set up a clean environment with the MinGW bin directory in the PATH
-        clean_env = os.environ.copy()
-        clean_env["PATH"] = r"C:\MinGW\bin;" + clean_env["PATH"]
-
         result = subprocess.run(
-            [r"C:\MinGW\bin\g++.exe", fp, "-o", "submissions/submission"],
+            ["g++", fp, "-o", "submissions/submission"],
             capture_output=True,
-            text=True,
-            env=clean_env
+            text=True
         )
 
         if result.returncode != 0:
             socketio.emit("error-output", result.stderr.replace("\n", "\n\r"), to=sid)
-            socketio.emit("process_done")
+            socketio.emit("process_done", to=sid)
             return
 
         process = subprocess.Popen(
-            ["submissions/submission"],
+            ["./submissions/submission"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=False,
-            bufsize=1,
-            env=clean_env
+            text=True,
+            bufsize=1
         )
 
     processes[submission_id] = process
@@ -144,7 +132,6 @@ def compile_button(data):
     
     process.wait()
 
-    print("PROGRAM STOPPED") # Here is where the program stops
     socketio.emit("process_done", to=sid)
 
 
@@ -161,8 +148,6 @@ def input_added(data):
     process_input = processes.get(sid)
     if process_input is None or process_input.poll() is not None:
         return
-    print("Output Process: ", process_input.stdout)
-    print("Input Process: ", process_input.stdin)
     output_data = data + "\n"
 
     process_input.stdin.write(output_data)
@@ -201,16 +186,15 @@ def stream_output(current_language, p, sid = None):
             break
 
 def stream_error_output(current_language, p, sid = None):
-    print("Current error language: ", current_language)
     char = ""
     if current_language == ".java":
-        process.wait()
+        p.wait()
         char = p.stderr.read()
         char = char.replace("\n", "\n\r")
         if char and is_stopped == False:
             socketio.emit("error-output", char, to=sid)
     elif current_language == ".js":
-        process.wait()
+        p.wait()
         char = p.stderr.read()
         char = char.replace("\n", "\n\r")
         if char and is_stopped == False:
@@ -244,20 +228,17 @@ def stop_process():
     process.kill()
     process.wait()
 
-    print("Process killed.")
     # Clear the submission folder
     path = "submissions"
     shutil.rmtree(path)
     os.makedirs(path)
-    print("Submission folder cleared")
 
 @app.route("/team-facing/close")
 def close():
-    print("Closed file")
+    return jsonify({"ok": True})
 
 @app.route("/team-facing/submit", methods=["POST"])
 def submit():
-    print("Submit")
     return jsonify({"ok": True})
 
 if __name__ == "__main__":

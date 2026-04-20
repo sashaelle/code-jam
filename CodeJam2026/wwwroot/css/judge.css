@@ -142,3 +142,48 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+.judge-testcases {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 2px solid #ffffff;
+  padding: 10px;
+  background: #000;
+}
+
+.judge-testcases-empty {
+  color: #ffffff;
+  opacity: 0.8;
+}
+
+.judge-testcase-card {
+  border: 2px solid #ffffff;
+  padding: 10px;
+  background: #000;
+}
+
+.judge-testcase-title {
+  color: #ffcc00;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.judge-testcase-label {
+  color: #ffffff;
+  font-weight: 700;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.judge-testcase-block {
+  background: #000;
+  color: #ffffff;
+  border: 1px solid #666;
+  padding: 8px;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

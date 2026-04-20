@@ -324,6 +324,12 @@ COPY public.problems (problem_id, problem_num) FROM stdin;
 -- Data for Name: submissions; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public.test_cases (test_case_id, problem_id, test_case_num, input_text, expected_output) VALUES
+(1, 1, 1, E'5\n7', '12'),
+(2, 2, 1, E'2\n3', '5'),
+(3, 3, 1, E'8\n4', '12'),
+(4, 4, 1, E'9\n1', '10');
+
 COPY public.submissions (submission_id, team_id, problem_id, submission_code, language, status, judge_feedback, points, "timestamp") FROM stdin;
 3	14	1	code	python	Pass	\N	20	2026-04-16 02:16:49.887056
 4	14	2	code	python	\N	\N	15	2026-04-16 02:16:49.887056
@@ -403,7 +409,7 @@ SELECT pg_catalog.setval('public.teams_team_id_seq', 25, true);
 -- Name: test_cases_test_case_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.test_cases_test_case_id_seq', 1, false);
+SELECT pg_catalog.setval('public.test_cases_test_case_id_seq', 7, false);
 
 
 --

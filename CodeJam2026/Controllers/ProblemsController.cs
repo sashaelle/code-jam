@@ -38,5 +38,38 @@ namespace CodeJam2026.Controllers
 
             return Ok(problems);
         }
+
+        [HttpGet("{problemId:int}/testcases")]
+        public async Task<IActionResult> GetTestCases(int problemId)
+        {
+            var testCases = new List<object>();
+
+            await using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            const string sql = @"
+                SELECT test_case_id, test_case_num, input_text, expected_output
+                FROM test_cases
+                WHERE problem_id = @problemId
+                ORDER BY test_case_num ASC;";
+
+            await using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@problemId", problemId);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                testCases.Add(new
+                {
+                    testCaseId = reader.GetInt32(0),
+                    testCaseNum = reader.GetInt32(1),
+                    inputText = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                    expectedOutput = reader.IsDBNull(3) ? "" : reader.GetString(3)
+                });
+            }
+
+            return Ok(testCases);
+        }
     }
 }

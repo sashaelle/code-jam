@@ -40,16 +40,28 @@
                     <textarea id="judge-code-box"
                                 class="judge-code-box mono-pre"
                                 spellcheck="false">
-CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
-CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
-CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
-CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
 
-CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
                     </textarea>
+                </section>
+
+                <!-- ASSOCIATED TEST CASES -->
+                <section class="judge-panel judge-panel-tests mt-3">
+                    <div class="judge-panel-title">Associated Test Cases</div>
+                    <div class="judge-panel-sub red">
+                        These are the stored test cases for the selected problem.
+                    </div>
+
+                    <div id="judge-testcases" class="judge-testcases">
+                        <div class="judge-testcases-empty mono-pre">Select a submission to load test cases.</div>
+                    </div>
                 </section>
 
                 <!-- INPUT / OUTPUT WINDOW -->
@@ -59,13 +71,7 @@ CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
                         This is the display for testing the code based on the used cases.
                     </div>
 
-                    <div class="judge-panel-body mono-pre">
-CODE OUTPUT  CODE OUTPUT  CODE OUTPUT
-
-CODE OUTPUT  CODE OUTPUT  CODE OUTPUT
-
-CODE OUTPUT  CODE OUTPUT  CODE OUTPUT
-                    </div>
+                    <div id="judge-output-box" class="judge-panel-body mono-pre"></div>
                 </section>
 
             </div>
@@ -118,6 +124,13 @@ CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
 @section Scripts {
     <script>
         window.judgeApiUrl = '@Url.Content("~/api/Judge")';
+        window.problemsApiUrl = '@Url.Content("~/api/Problems")';
     </script>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="~/js/team/config.js" asp-append-version="true"></script>
+
     <script src="~/js/judge/judgeQueue.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeTestCases.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeRun.js" asp-append-version="true"></script>
 }

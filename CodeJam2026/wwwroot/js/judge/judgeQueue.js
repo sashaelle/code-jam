@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 let activeSubmissionId = null;
+window.currentJudgeSubmission = null;
 
 async function loadQueue() {
     const res = await fetch(`${window.judgeApiUrl}/pending?_=${Date.now()}`, {
@@ -82,9 +83,14 @@ async function selectSubmission(sub) {
     }
 
     activeSubmissionId = sub.submissionId;
+    window.currentJudgeSubmission = sub;
 
     const codeBox = document.getElementById("judge-code-box");
     codeBox.value = sub.code;
+
+    if (window.loadJudgeTestCases) {
+        await window.loadJudgeTestCases(sub.problemId);
+    }
 
     await loadQueue();
 }

@@ -25,7 +25,7 @@ namespace CodeJam2026.Controllers
             await conn.OpenAsync();
 
             const string sql = @"
-                SELECT submission_id, team_id, problem_id, submission_code, status, ""timestamp""
+                SELECT submission_id, team_id, problem_id, submission_code, language, status, ""timestamp""
                 FROM submissions
                 WHERE status IS NULL OR status = 'pending' OR status = 'in_progress'
                 ORDER BY ""timestamp"" ASC;";
@@ -41,8 +41,9 @@ namespace CodeJam2026.Controllers
                     teamId = reader.GetInt32(1),
                     problemId = reader.GetInt32(2),
                     code = reader.GetString(3),
-                    status = reader.IsDBNull(4) ? null : reader.GetString(4),
-                    timestamp = reader.GetDateTime(5)
+                    language = reader.GetString(4),
+                    status = reader.IsDBNull(5) ? null : reader.GetString(5),
+                    timestamp = reader.GetDateTime(6)
                 });
             }
 
