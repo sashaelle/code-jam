@@ -25,11 +25,12 @@ namespace CodeJam2026.Controllers
             await conn.OpenAsync();
 
             const string sql = @"
-                SELECT submission_id, team_id, problem_id, submission_code, language, status, ""timestamp""
-                FROM submissions
+                SELECT s.submission_id, s.team_id, t.team_number, s.problem_id, s.submission_code, s.language, s.status, s.""timestamp""
+                FROM submissions s
+                JOIN teams t ON t.team_id = s.team_id
                 WHERE (status IS NULL OR status = 'pending' OR status = 'in_progress')
                   AND (@problemId IS NULL OR problem_id = @problemId)
-                ORDER BY ""timestamp"" ASC;";
+                ORDER BY s.""timestamp"" ASC;";
 
             await using var cmd = new NpgsqlCommand(sql, conn);
             var problemParam = cmd.Parameters.Add("@problemId", NpgsqlTypes.NpgsqlDbType.Integer);
@@ -50,11 +51,12 @@ namespace CodeJam2026.Controllers
                 {
                     submissionId = reader.GetInt32(0),
                     teamId = reader.GetInt32(1),
-                    problemId = reader.GetInt32(2),
-                    code = reader.GetString(3),
-                    language = reader.GetString(4),
-                    status = reader.IsDBNull(5) ? null : reader.GetString(5),
-                    timestamp = reader.GetDateTime(6)
+                    teamNumber = reader.GetString(2),
+                    problemId = reader.GetInt32(3),
+                    code = reader.GetString(4),
+                    language = reader.GetString(5),
+                    status = reader.IsDBNull(6) ? null : reader.GetString(6),
+                    timestamp = reader.GetDateTime(7)
                 });
             }
 
