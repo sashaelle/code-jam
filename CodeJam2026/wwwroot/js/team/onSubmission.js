@@ -37,14 +37,17 @@ async function submitConfirmedCode() {
             return;
         }
 
-        const now = new Date();
-        const formattedTime = now.toLocaleTimeString([], {
+        const data = await response.json();
+
+        const submittedAt = new Date(data.timestamp);
+        const formattedTime = submittedAt.toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit"
         });
 
         submitTime.textContent = `Submitted at ${formattedTime}`;
+
         localStorage.setItem(`problem_${problemId}_status`, "pending");
     }
     catch (error) {

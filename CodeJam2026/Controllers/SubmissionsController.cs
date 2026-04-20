@@ -61,7 +61,11 @@ namespace CodeJam2026.Controllers
                 INSERT INTO submissions
                 (team_id, problem_id, submission_code, judge_feedback, points, language, status, ""timestamp"")
                 VALUES
-                (@teamId, @problemId, @code, NULL, NULL, @language, NULL, NOW());";
+                (@teamId, @problemId, @code, NULL, NULL, @language, NULL, NOW())
+                RETURNING ""timestamp"";";
+
+
+            DateTime submittedAt;
 
             await using (var insertCmd = new NpgsqlCommand(insertSql, connection))
             {
@@ -70,10 +74,14 @@ namespace CodeJam2026.Controllers
                 insertCmd.Parameters.AddWithValue("@code", request.Code);
                 insertCmd.Parameters.AddWithValue("@language", request.Language);
 
-                await insertCmd.ExecuteNonQueryAsync();
+                submittedAt = (DateTime)(await insertCmd.ExecuteScalarAsync())!;
             }
 
-            return Ok(new { message = "Submission received." });
+            return Ok(new
+            {
+                message = "Submission received.",
+                timestamp = submittedAt
+            });
         }
 
         [HttpGet("latest/{problemId}")]

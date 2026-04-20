@@ -16,7 +16,7 @@ WORKDIR /app
 
 # Install native dependency used by Npgsql on Linux
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # Set container HTTP port

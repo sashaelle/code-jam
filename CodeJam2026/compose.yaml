@@ -7,6 +7,8 @@ services:
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=codejam_dev;Username=postgres;Password=codejam2026
       EnableHttpsRedirection: "false"
+      TZ: America/New_York
+
     ports:
       - "8080:80"
     volumes:
@@ -26,6 +28,9 @@ services:
       POSTGRES_DB: codejam_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: codejam2026
+      TZ: America/New_York
+      PGTZ: America/New_York
+      
     ports:
       - "5432:5432"
     volumes:
