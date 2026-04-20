@@ -34,9 +34,18 @@ def handle_connect():
 def handle_disconnect():
     socket_id = request.sid
     process = processes.pop(socket_id, None)
+    stop_flags.pop(socket_id, None)
 
     if process:
         process.terminate()
+
+    safe_sid = socket_id.replace("-", "_")
+    workdir = os.path.join("submissions", safe_sid)
+    try:
+        if os.path.exists(workdir):
+            shutil.rmtree(workdir)
+    except:
+        pass
 
 @socketio.on('my event')
 def handle_my_custom_event(json):
@@ -47,7 +56,6 @@ current_language = None
 def compile_button(data):
     socketio.emit("compile_process", to=request.sid)
 
-    global current_language
     problem_number = data["problem_number"]
     current_language = data["language"]
 
@@ -56,18 +64,32 @@ def compile_button(data):
     code = data["code"]
     java_class_name = None
 
-    fp = f"submissions/submission{current_language}"
-    if current_language == ".java":
-        class_match = re.search(r"\b(?:public\s+)?class\s+([A-Za-z_][A-Za-z0-9_]*)", code)
-        if class_match:
-            java_class_name = class_match.group(1)
-            if re.search(r"\bpublic\s+class\s+" + re.escape(java_class_name) + r"\b", code):
-                fp = f"submissions/{java_class_name}.java"
-
     submission_id = request.sid
     sid = request.sid
 
     stop_flags[sid] = False
+
+    safe_sid = sid.replace("-", "_")
+    workdir = os.path.join("submissions", safe_sid)
+    os.makedirs(workdir, exist_ok=True)
+
+    if current_language == ".py":
+        fp = os.path.join(workdir, "submission.py")
+
+    elif current_language == ".js":
+        fp = os.path.join(workdir, "submission.js")
+
+    elif current_language == ".cpp":
+        fp = os.path.join(workdir, "submission.cpp")
+
+    elif current_language == ".java":
+        class_match = re.search(r"\b(?:public\s+)?class\s+([A-Za-z_][A-Za-z0-9_]*)", code)
+        if class_match:
+            java_class_name = class_match.group(1)
+            fp = os.path.join(workdir, f"{java_class_name}.java")
+        else:
+            fp = os.path.join(workdir, "Main.java")
+            java_class_name = "Main"
 
     with open(fp, "w", newline="\n") as f:
         f.write(code)
@@ -82,12 +104,12 @@ def compile_button(data):
             return
 
         class_name = java_class_name or os.path.splitext(os.path.basename(fp))[0]
-        process = subprocess.Popen(["java", "-cp", "submissions", class_name],
-                                   stdin=subprocess.PIPE,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE,
-                                   text=True,
-                                   bufsize=0)
+        process = subprocess.Popen(["java", "-cp", workdir, class_name],
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True,
+                                bufsize=0)
     elif current_language == ".py":
         process = subprocess.Popen(["python", "-u", fp],
                                    stdin=subprocess.PIPE,
@@ -103,8 +125,10 @@ def compile_button(data):
                                    text=True,
                                    bufsize=0)
     elif current_language == ".cpp":
+        exe_path = os.path.join(workdir, "submission")
+
         result = subprocess.run(
-            ["g++", fp, "-o", "submissions/submission"],
+            ["g++", fp, "-o", exe_path],
             capture_output=True,
             text=True
         )
@@ -115,7 +139,7 @@ def compile_button(data):
             return
 
         process = subprocess.Popen(
-            ["./submissions/submission"],
+            [exe_path],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -154,6 +178,15 @@ def watch_process(p, sid):
     p.wait()
     processes.pop(sid, None)
     stop_flags.pop(sid, None)
+
+    safe_sid = sid.replace("-", "_")
+    workdir = os.path.join("submissions", safe_sid)
+    try:
+        if os.path.exists(workdir):
+            shutil.rmtree(workdir)
+    except:
+        pass
+
     socketio.emit("process_done", to=sid)
 
 def stream_output(current_language, p, sid = None):
@@ -220,6 +253,13 @@ def stop_process():
 
     process_to_stop = processes.pop(sid, None)
     if process_to_stop is None:
+        safe_sid = sid.replace("-", "_")
+        workdir = os.path.join("submissions", safe_sid)
+        try:
+            if os.path.exists(workdir):
+                shutil.rmtree(workdir)
+        except:
+            pass
         socketio.emit("process_done", to=sid)
         return
 
@@ -246,6 +286,13 @@ def stop_process():
         pass
 
     stop_flags.pop(sid, None)
+    safe_sid = sid.replace("-", "_")
+    workdir = os.path.join("submissions", safe_sid)
+    try:
+        if os.path.exists(workdir):
+            shutil.rmtree(workdir)
+    except:
+        pass
     socketio.emit("process_done", to=sid)
 
 @app.route("/team-facing/close")
