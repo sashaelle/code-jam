@@ -86,6 +86,26 @@ namespace CodeJam2026.Controllers
             return Ok(new { message = "Submission claimed." });
         }
 
+        [HttpPost("release")]
+        public async Task<IActionResult> ReleaseSubmission([FromBody] ReleaseSubmissionRequest request)
+        {
+            await using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            const string sql = @"
+                UPDATE submissions
+                SET status = 'pending'
+                WHERE submission_id = @submissionId
+                AND status = 'in_progress';";
+
+            await using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@submissionId", request.SubmissionId);
+
+            await cmd.ExecuteNonQueryAsync();
+
+            return Ok(new { message = "Submission released." });
+        }
+
         [HttpPost("score")]
         public async Task<IActionResult> ScoreSubmission([FromBody] ScoreSubmissionRequest request)
         {
@@ -233,6 +253,11 @@ namespace CodeJam2026.Controllers
             public int SubmissionId { get; set; }
             public bool Correct { get; set; }
             public string? Feedback { get; set; }
+        }
+
+        public class ReleaseSubmissionRequest
+        {
+            public int SubmissionId { get; set; }
         }
     }
 }

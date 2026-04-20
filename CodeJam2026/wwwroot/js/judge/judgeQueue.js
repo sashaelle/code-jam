@@ -139,3 +139,38 @@ async function selectSubmission(sub) {
 
     await loadQueue();
 }
+
+async function releaseActiveSubmission() {
+    if (activeSubmissionId === null) {
+        return;
+    }
+
+    try {
+        await fetch(`${window.judgeApiUrl}/release`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                submissionId: activeSubmissionId
+            }),
+            keepalive: true
+        });
+    } catch (err) {
+        console.error("Failed to release active submission:", err);
+    }
+}
+
+window.addEventListener("beforeunload", function () {
+    if (activeSubmissionId === null) {
+        return;
+    }
+
+    navigator.sendBeacon(
+        `${window.judgeApiUrl}/release`,
+        new Blob(
+            [JSON.stringify({ submissionId: activeSubmissionId })],
+            { type: "application/json" }
+        )
+    );
+});
