@@ -6,6 +6,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/team/xterm.css" />
     <link rel="stylesheet" href="~/css/judge.css" asp-append-version="true" />
 }
 
@@ -33,22 +34,12 @@
                 <section class="judge-panel judge-panel-code">
                     <div class="judge-panel-title">Submission Code</div>
                     <div class="judge-panel-sub red">
-                        This is the display for the code that the participants write.<br />
-                        Sent
                     </div>
 
                     <textarea id="judge-code-box"
                                 class="judge-code-box mono-pre"
                                 spellcheck="false">
-            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
-
-            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
-
-            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
-
-            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
-
-            CODE WRITTEN BY TEAMS  CODE WRITTEN BY TEAMS
+            Welcome to Code Jam!
                     </textarea>
                 </section>
 
@@ -56,7 +47,6 @@
                 <section class="judge-panel judge-panel-tests mt-3">
                     <div class="judge-panel-title">Associated Test Cases</div>
                     <div class="judge-panel-sub red">
-                        These are the stored test cases for the selected problem.
                     </div>
 
                     <div id="judge-testcases" class="judge-testcases">
@@ -68,10 +58,9 @@
                 <section class="judge-panel judge-panel-io mt-3">
                     <div class="judge-panel-title">INPUT / OUTPUT WINDOW</div>
                     <div class="judge-panel-sub red">
-                        This is the display for testing the code based on the used cases.
                     </div>
 
-                    <div id="judge-output-box" class="judge-panel-body mono-pre"></div>
+                    <div id="judge-terminal" class="judge-panel-body judge-terminal"></div>
                 </section>
 
             </div>
@@ -83,7 +72,6 @@
                 <section class="judge-panel judge-panel-queue">
                     <div class="judge-panel-title">Team Question Selection Window</div>
                     <div class="judge-panel-sub red">
-                        This is the display that the judges use to select the code that they are to test based on submission.
                     </div>
 
                     <div id="submissionQueue" class="judge-queue"></div>
@@ -93,14 +81,11 @@
                 <section class="judge-panel judge-panel-feedback mt-3">
                     <div class="judge-panel-title">FEEDBACK WINDOW</div>
                     <div class="judge-panel-sub red">
-                        This is meant to allow the judges to type out recommendations and fixes to send to the participants.
                     </div>
 
                     <textarea class="judge-feedback mono-pre" rows="7" spellcheck="false">CODE REWORK CRITIQUE  CODE REWORK CRITIQUE
 
-CODE REWORK CRITIQUE  CODE REWORK CRITIQUE
-
-CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
+                    FEEDBACK</textarea>
 
                     <div class="row g-2 mt-3">
                         <div class="col-4">
@@ -127,6 +112,7 @@ CODE REWORK CRITIQUE  CODE REWORK CRITIQUE</textarea>
         window.problemsApiUrl = '@Url.Content("~/api/Problems")';
     </script>
 
+    <script src="~/js/team/xterm.js"></script>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="~/js/team/config.js" asp-append-version="true"></script>
 

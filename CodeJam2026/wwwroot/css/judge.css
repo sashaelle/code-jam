@@ -187,3 +187,11 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+.judge-terminal {
+  min-height: 240px;
+  border: 2px solid #ffffff;
+  padding: 0;
+  overflow: hidden;
+  background: #1e1e1e;
+}

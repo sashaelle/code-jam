@@ -16,6 +16,7 @@ let hasCompiled = false;
 const terminalBox = document.getElementById("terminal");
 
 term.open(terminalBox);
+term.focus();
 
 socket.on("connect", function () {
 
@@ -46,6 +47,8 @@ socket.on("compile_process", function () {
 })
 
 socket.on("process_done", function () {
+    hasCompiled = false;
+    
     // Change button to run
     const compileButton = document.querySelector(".stop-button");
     if (!compileButton) {
@@ -122,28 +125,33 @@ function editorSetup()
     }
 
     const language = localStorage.getItem("language");
-    if(language != null)
-    {
-        console.log("Language not null: ", language);
+    const languageDropdown = document.getElementById("languages");
+
+    if (language != null) {
+        if (languageDropdown) {
+            languageDropdown.value = language;
+        }
+
         monaco.editor.setModelLanguage(window.monacoEditor.getModel(), language);
 
-        // Check for other language
-        if (language == "python")
-        {
+        if (language == "python") {
             window.CURRENT_LANGUAGE = ".py";
         } 
-        else if (language == "java")
-        {
+        else if (language == "java") {
             window.CURRENT_LANGUAGE = ".java";
         } 
-        else if (language == "cpp")
-        {
+        else if (language == "cpp") {
             window.CURRENT_LANGUAGE = ".cpp";
         }
-        else if (language == "javascript")
-        {
+        else if (language == "javascript") {
             window.CURRENT_LANGUAGE = ".js";
         }
+    }
+    else {
+        if (languageDropdown) {
+            languageDropdown.value = "python";
+        }
+        window.CURRENT_LANGUAGE = ".py";
     }
 }
 

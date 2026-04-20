@@ -14,6 +14,7 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 localStorage = localStoragePy('team-facing-namespace', 'text')
 
 processes = {}
+stop_flags = {}
 
 @app.route("/team-facing")
 def index():
@@ -41,19 +42,14 @@ def handle_disconnect():
 def handle_my_custom_event(json):
     emit('my response', json)
 
-
-process = None
-is_stopped = False
 current_language = None
 @socketio.on('compile')
 def compile_button(data):
     socketio.emit("compile_process", to=request.sid)
 
-    global process, is_stopped
     global current_language
     problem_number = data["problem_number"]
     current_language = data["language"]
-    is_stopped = False
 
     # File path for the submission code
     os.makedirs("submissions", exist_ok=True)
@@ -70,6 +66,8 @@ def compile_button(data):
 
     submission_id = request.sid
     sid = request.sid
+
+    stop_flags[sid] = False
 
     with open(fp, "w", newline="\n") as f:
         f.write(code)
@@ -129,10 +127,9 @@ def compile_button(data):
 
     thread = threading.Thread(target=stream_output, args=(current_language, process, sid), daemon=True)
     thread.start()
-    
-    process.wait()
 
-    socketio.emit("process_done", to=sid)
+    watcher = threading.Thread(target=watch_process, args=(process, sid), daemon=True)
+    watcher.start()
 
 
     '''error_lines = []
@@ -143,20 +140,25 @@ def compile_button(data):
 
 @socketio.on('input_added')
 def input_added(data):
-    global current_language
     sid = request.sid
     process_input = processes.get(sid)
+
     if process_input is None or process_input.poll() is not None:
         return
-    output_data = data + "\n"
 
+    output_data = data + "\n"
     process_input.stdin.write(output_data)
     process_input.stdin.flush()
-    stream_output(current_language, process_input, sid)
+
+def watch_process(p, sid):
+    p.wait()
+    processes.pop(sid, None)
+    stop_flags.pop(sid, None)
+    socketio.emit("process_done", to=sid)
 
 def stream_output(current_language, p, sid = None):
     while True:
-        if is_stopped:
+        if stop_flags.get(sid):
             break
         char = ""
         if current_language == ".java":
@@ -176,7 +178,7 @@ def stream_output(current_language, p, sid = None):
             socketio.emit("output", char, to=sid)
         elif current_language == ".cpp":
             char = p.stdout.read(1)
-            if is_stopped:
+            if stop_flags.get(sid):
                 break
             socketio.emit("output", char, to=sid)
         if not char or char == "":
@@ -191,47 +193,60 @@ def stream_error_output(current_language, p, sid = None):
         p.wait()
         char = p.stderr.read()
         char = char.replace("\n", "\n\r")
-        if char and is_stopped == False:
+        if char and not stop_flags.get(sid):
             socketio.emit("error-output", char, to=sid)
     elif current_language == ".js":
         p.wait()
         char = p.stderr.read()
         char = char.replace("\n", "\n\r")
-        if char and is_stopped == False:
+        if char and not stop_flags.get(sid):
             socketio.emit("error-output", char, to=sid)
     while True:
         if current_language == ".cpp":
-            if is_stopped == False:
+            if not stop_flags.get(sid):
                 char = p.stderr.read()
                 socketio.emit("error-output", char, to=sid)
         elif current_language == ".py":
-            if is_stopped == False:
+            if not stop_flags.get(sid):
                 char = p.stderr.read()
                 socketio.emit("error-output", char, to=sid)
         if p.poll() is not None:
             break
 
-@socketio.on('process_done')
-def process_done():
-    process.stdin.flush()
-
 @socketio.on('stop_process')
 def stop_process():
-    global process, is_stopped
-    is_stopped = True
+    sid = request.sid
+    stop_flags[sid] = True
 
-    if process is None:
+    process_to_stop = processes.pop(sid, None)
+    if process_to_stop is None:
+        socketio.emit("process_done", to=sid)
         return
 
-    process.stdin.close()
-    process.stdout.close()
-    process.kill()
-    process.wait()
+    try:
+        if process_to_stop.stdin:
+            process_to_stop.stdin.close()
+    except:
+        pass
 
-    # Clear the submission folder
-    path = "submissions"
-    shutil.rmtree(path)
-    os.makedirs(path)
+    try:
+        if process_to_stop.stdout:
+            process_to_stop.stdout.close()
+    except:
+        pass
+
+    try:
+        process_to_stop.kill()
+    except:
+        pass
+
+    try:
+        process_to_stop.wait(timeout=1)
+    except:
+        pass
+
+    stop_flags.pop(sid, None)
+    socketio.emit("process_done", to=sid)
 
 @app.route("/team-facing/close")
 def close():
@@ -242,4 +257,11 @@ def submit():
     return jsonify({"ok": True})
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5001, debug=True, allow_unsafe_werkzeug=True)
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=5001,
+        debug=False,
+        use_reloader=False,
+        allow_unsafe_werkzeug=True
+    )

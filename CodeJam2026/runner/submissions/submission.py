@@ -1,4 +1,6 @@
-# Write your solution here
+x = int(input("Enter x: "))
+y = int(input("Enter y: "))
 
-print('Hello, Code Jam')
+result = x + y
 
+print("Result:", result)
