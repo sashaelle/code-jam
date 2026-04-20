@@ -75,9 +75,153 @@ namespace CodeJam2026.Controllers
             return Ok(new { message = "Submission claimed." });
         }
 
+        [HttpPost("score")]
+        public async Task<IActionResult> ScoreSubmission([FromBody] ScoreSubmissionRequest request)
+        {
+            await using var conn = new NpgsqlConnection(_connectionString);
+            await conn.OpenAsync();
+
+            int teamId;
+            int problemId;
+            string? currentStatus;
+
+            const string getSubmissionSql = @"
+                SELECT team_id, problem_id, status
+                FROM submissions
+                WHERE submission_id = @submissionId;";
+
+            await using (var getCmd = new NpgsqlCommand(getSubmissionSql, conn))
+            {
+                getCmd.Parameters.AddWithValue("@submissionId", request.SubmissionId);
+
+                await using var reader = await getCmd.ExecuteReaderAsync();
+
+                if (!await reader.ReadAsync())
+                {
+                    return NotFound(new { message = "Submission not found." });
+                }
+
+                teamId = reader.GetInt32(0);
+                problemId = reader.GetInt32(1);
+                currentStatus = reader.IsDBNull(2) ? null : reader.GetString(2);
+            }
+
+            if (currentStatus != null && currentStatus != "pending" && currentStatus != "in_progress")
+            {
+                return Conflict(new { message = "Submission has already been graded." });
+            }
+
+            if (!request.Correct)
+            {
+                const string incorrectSql = @"
+                    UPDATE submissions
+                    SET status = 'incorrect',
+                        judge_feedback = @feedback,
+                        points = 0
+                    WHERE submission_id = @submissionId;";
+
+                await using var incorrectCmd = new NpgsqlCommand(incorrectSql, conn);
+                incorrectCmd.Parameters.AddWithValue("@submissionId", request.SubmissionId);
+                incorrectCmd.Parameters.AddWithValue("@feedback", (object?)request.Feedback ?? DBNull.Value);
+
+                await incorrectCmd.ExecuteNonQueryAsync();
+
+                return Ok(new
+                {
+                    message = "Submission scored as incorrect.",
+                    result = "incorrect",
+                    points = 0
+                });
+            }
+
+            const string alreadySolvedSql = @"
+                SELECT COUNT(*)
+                FROM submissions
+                WHERE team_id = @teamId
+                  AND problem_id = @problemId
+                  AND status = 'correct';";
+
+            await using (var alreadySolvedCmd = new NpgsqlCommand(alreadySolvedSql, conn))
+            {
+                alreadySolvedCmd.Parameters.AddWithValue("@teamId", teamId);
+                alreadySolvedCmd.Parameters.AddWithValue("@problemId", problemId);
+
+                var alreadySolvedCount = Convert.ToInt32(await alreadySolvedCmd.ExecuteScalarAsync());
+
+                if (alreadySolvedCount > 0)
+                {
+                    return Conflict(new { message = "This team has already solved this problem." });
+                }
+            }
+
+            int wrongAttempts;
+            const string wrongAttemptsSql = @"
+                SELECT COUNT(*)
+                FROM submissions
+                WHERE team_id = @teamId
+                  AND problem_id = @problemId
+                  AND status = 'incorrect';";
+
+            await using (var wrongCmd = new NpgsqlCommand(wrongAttemptsSql, conn))
+            {
+                wrongCmd.Parameters.AddWithValue("@teamId", teamId);
+                wrongCmd.Parameters.AddWithValue("@problemId", problemId);
+
+                wrongAttempts = Convert.ToInt32(await wrongCmd.ExecuteScalarAsync());
+            }
+
+            int teamsSolvedBefore;
+            const string solvedBeforeSql = @"
+                SELECT COUNT(DISTINCT team_id)
+                FROM submissions
+                WHERE problem_id = @problemId
+                  AND team_id <> @teamId
+                  AND status = 'correct';";
+
+            await using (var solvedBeforeCmd = new NpgsqlCommand(solvedBeforeSql, conn))
+            {
+                solvedBeforeCmd.Parameters.AddWithValue("@problemId", problemId);
+                solvedBeforeCmd.Parameters.AddWithValue("@teamId", teamId);
+
+                teamsSolvedBefore = Convert.ToInt32(await solvedBeforeCmd.ExecuteScalarAsync());
+            }
+
+            int awardedPoints = Math.Max(0, 20 - wrongAttempts - teamsSolvedBefore);
+
+            const string correctSql = @"
+                UPDATE submissions
+                SET status = 'correct',
+                    judge_feedback = @feedback,
+                    points = @points
+                WHERE submission_id = @submissionId;";
+
+            await using (var correctCmd = new NpgsqlCommand(correctSql, conn))
+            {
+                correctCmd.Parameters.AddWithValue("@submissionId", request.SubmissionId);
+                correctCmd.Parameters.AddWithValue("@feedback", (object?)request.Feedback ?? DBNull.Value);
+                correctCmd.Parameters.AddWithValue("@points", awardedPoints);
+
+                await correctCmd.ExecuteNonQueryAsync();
+            }
+
+            return Ok(new
+            {
+                message = "Submission scored as correct.",
+                result = "correct",
+                points = awardedPoints
+            });
+        }
+
         public class ClaimSubmissionRequest
         {
             public int SubmissionId { get; set; }
+        }
+
+        public class ScoreSubmissionRequest
+        {
+            public int SubmissionId { get; set; }
+            public bool Correct { get; set; }
+            public string? Feedback { get; set; }
         }
     }
 }

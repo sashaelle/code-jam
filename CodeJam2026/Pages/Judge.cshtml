@@ -39,7 +39,8 @@
                     <textarea id="judge-code-box"
                                 class="judge-code-box mono-pre"
                                 spellcheck="false">
-            Welcome to Code Jam!
+Welcome to Code Jam!
+Select a Problem and Submission to get started!
                     </textarea>
                 </section>
 
@@ -83,21 +84,29 @@
                     <div class="judge-panel-sub red">
                     </div>
 
-                    <textarea class="judge-feedback mono-pre" rows="7" spellcheck="false">CODE REWORK CRITIQUE  CODE REWORK CRITIQUE
+                    <textarea id="judge-feedback"
+                            class="judge-feedback mono-pre"
+                            rows="7"
+                            spellcheck="false"
+                            placeholder="Write feedback here"></textarea>
 
-                    FEEDBACK</textarea>
-
-                    <div class="row g-2 mt-3">
+                    <div class="row g-2 mt-3 align-items-end">
                         <div class="col-4">
                             <button id="judge-run-btn" class="btn app-btn w-100" type="button">Run</button>
                         </div>
+
                         <div class="col-4">
-                            <button class="btn app-btn w-100" type="button">Score</button>
+                            <select id="judge-verdict" class="judge-verdict-select w-100">
+                                <option value="incorrect" selected>Incorrect</option>
+                                <option value="correct">Correct</option>
+                            </select>
                         </div>
+
                         <div class="col-4">
-                            <button class="btn app-btn w-100" type="button">Send</button>
+                            <button id="judge-score-btn" class="btn app-btn w-100" type="button">Score</button>
                         </div>
                     </div>
+
                 </section>
 
             </div>
@@ -119,4 +128,5 @@
     <script src="~/js/judge/judgeQueue.js" asp-append-version="true"></script>
     <script src="~/js/judge/judgeTestCases.js" asp-append-version="true"></script>
     <script src="~/js/judge/judgeRun.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeScore.js" asp-append-version="true"></script>
 }

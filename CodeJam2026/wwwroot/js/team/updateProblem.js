@@ -17,6 +17,11 @@ window.updateProblem = function (inc) {
 
     problem.textContent = "Problem " + problemNumber;
     window.problemNumber = problemNumber;
+    localStorage.setItem("selectedProblemId", problemNumber);
+
+    if (window.checkLatestSubmissionStatus) {
+        window.checkLatestSubmissionStatus();
+    }
 
     let codeToAdd = localStorage.getItem("code" + problemNumber);
     if (!codeToAdd) {

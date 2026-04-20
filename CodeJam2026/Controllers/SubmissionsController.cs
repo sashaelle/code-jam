@@ -75,5 +75,78 @@ namespace CodeJam2026.Controllers
 
             return Ok(new { message = "Submission received." });
         }
+
+        [HttpGet("latest/{problemId}")]
+        public async Task<IActionResult> GetLatestSubmissionForProblem(int problemId)
+        {
+            if (problemId <= 0)
+            {
+                return BadRequest("Invalid problem ID.");
+            }
+
+            var username = User.Identity?.Name;
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return Unauthorized();
+            }
+
+            var connString = _configuration.GetConnectionString("DefaultConnection");
+            await using var connection = new NpgsqlConnection(connString);
+            await connection.OpenAsync();
+
+            const string getTeamSql = @"
+                SELECT t.team_id
+                FROM teams t
+                JOIN accounts a ON t.account_id = a.account_id
+                WHERE a.username = @username
+                  AND a.is_active = true;";
+
+            int teamId;
+            await using (var teamCmd = new NpgsqlCommand(getTeamSql, connection))
+            {
+                teamCmd.Parameters.AddWithValue("@username", username);
+                var result = await teamCmd.ExecuteScalarAsync();
+
+                if (result is not int foundTeamId)
+                {
+                    return NotFound("No team found for logged-in account.");
+                }
+
+                teamId = foundTeamId;
+            }
+
+            const string latestSql = @"
+                SELECT submission_id, problem_id, status, judge_feedback, points, ""timestamp""
+                FROM submissions
+                WHERE team_id = @teamId
+                  AND problem_id = @problemId
+                ORDER BY ""timestamp"" DESC
+                LIMIT 1;";
+
+            await using var cmd = new NpgsqlCommand(latestSql, connection);
+            cmd.Parameters.AddWithValue("@teamId", teamId);
+            cmd.Parameters.AddWithValue("@problemId", problemId);
+
+            await using var reader = await cmd.ExecuteReaderAsync();
+
+            if (!await reader.ReadAsync())
+            {
+                return Ok(new
+                {
+                    hasSubmission = false
+                });
+            }
+
+            return Ok(new
+            {
+                hasSubmission = true,
+                submissionId = reader.GetInt32(0),
+                problemId = reader.GetInt32(1),
+                status = reader.IsDBNull(2) ? null : reader.GetString(2),
+                judgeFeedback = reader.IsDBNull(3) ? null : reader.GetString(3),
+                points = reader.IsDBNull(4) ? (int?)null : reader.GetInt32(4),
+                timestamp = reader.GetDateTime(5)
+            });
+        }
     }
 }
