@@ -40,6 +40,9 @@ public class ControlsModel : PageModel
     [TempData]
     public string ChangePasswordStatusMessage { get; set; } = "";
 
+    [TempData]
+    public string ClearSubmissionsStatusMessage { get; set; } = "";
+
     public bool IsScoreboardVisible => _scoreboardVisibilityState.IsVisible;
 
     public async Task OnGetAsync()
@@ -51,6 +54,27 @@ public class ControlsModel : PageModel
     public IActionResult OnPostToggleScoreboard()
     {
         _scoreboardVisibilityState.IsVisible = !_scoreboardVisibilityState.IsVisible;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostClearSubmissionsAsync()
+    {
+        if (!User.IsInRole("Admin"))
+        {
+            ClearSubmissionsStatusMessage = "Only admins can clear submissions.";
+            return RedirectToPage();
+        }
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"TRUNCATE TABLE submissions RESTART IDENTITY;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        ClearSubmissionsStatusMessage = "All submissions were cleared and submission IDs were reset.";
         return RedirectToPage();
     }
 

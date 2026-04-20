@@ -130,7 +130,14 @@
                     <button class="ctrl-big" type="button">OPTION 1</button>
                     <button class="ctrl-big" type="button">OPTION 2</button>
                     <button class="ctrl-big" type="button">OPTION 3</button>
-                    <button class="ctrl-big" type="button">CLEAR DATABASE</button>
+                    <form method="post" asp-page-handler="ClearSubmissions">
+                        <button class="ctrl-big" type="submit">CLEAR SUBMISSIONS</button>
+                    </form>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.ClearSubmissionsStatusMessage))
+                    {
+                        <div class="controls-generate-success mt-2">@Model.ClearSubmissionsStatusMessage</div>
+                    }
                 </div>
 
             </div>
