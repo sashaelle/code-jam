@@ -1,0 +1,139 @@
+@page
+@model JudgeModel
+@{
+    ViewData["Title"] = "Judge";
+    Layout = "_AppLayout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/team/xterm.css" />
+    <link rel="stylesheet" href="~/css/judge.css" asp-append-version="true" />
+}
+
+<div class="judge-page">
+
+    <!-- HEADER BAR -->
+    <header class="judge-header">
+        <div class="judge-header-left">JUDGE</div>
+        
+        <div class="judge-header-right">
+            <a class="app-navlink" href="/Scoreboard">Scoreboard</a>
+            <span class="app-navsep">|</span>
+            <a class="app-navlink" href="/Controls">Controls</a>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="container-fluid judge-content">
+        <div class="row g-3">
+
+            <!-- LEFT COLUMN -->
+            <div class="col-12 col-lg-7">
+
+                <!-- WRITTEN CODE INTERFACE -->
+                <section class="judge-panel judge-panel-code">
+                    <div class="judge-panel-title">Submission Code</div>
+                    <div class="judge-panel-sub red">
+                    </div>
+
+                    <textarea id="judge-code-box"
+                                class="judge-code-box mono-pre"
+                                spellcheck="false">
+Welcome to Code Jam!
+Select a Problem and Submission to get started!
+                    </textarea>
+                </section>
+
+                <!-- ASSOCIATED TEST CASES -->
+                <section class="judge-panel judge-panel-tests mt-3">
+                    <div class="judge-panel-title">Associated Test Cases</div>
+                    <div class="judge-panel-sub red">
+                    </div>
+
+                    <div id="judge-testcases" class="judge-testcases">
+                        <div class="judge-testcases-empty mono-pre">Select a submission to load test cases.</div>
+                    </div>
+                </section>
+
+                <!-- INPUT / OUTPUT WINDOW -->
+                <section class="judge-panel judge-panel-io mt-3">
+                    <div class="judge-panel-title">INPUT / OUTPUT WINDOW</div>
+                    <div class="judge-panel-sub red">
+                    </div>
+
+                    <div id="judge-terminal" class="judge-panel-body judge-terminal"></div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-12 col-lg-5">
+
+                <!-- TEAM QUESTION SELECTION WINDOW -->
+                <section class="judge-panel judge-panel-queue">
+                    <div class="judge-queue-header">
+                        <div class="judge-panel-title">Submissions</div>
+
+                        <select id="judge-problem-filter" class="judge-problem-filter">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+
+                    <div class="judge-panel-sub red">
+                    </div>
+
+                    <div id="submissionQueue" class="judge-queue"></div>
+                </section>
+
+                <!-- FEEDBACK WINDOW -->
+                <section class="judge-panel judge-panel-feedback mt-3">
+                    <div class="judge-panel-title">FEEDBACK WINDOW</div>
+                    <div class="judge-panel-sub red">
+                    </div>
+
+                    <textarea id="judge-feedback"
+                            class="judge-feedback mono-pre"
+                            rows="7"
+                            spellcheck="false"
+                            placeholder="Write feedback here"></textarea>
+
+                    <div class="row g-2 mt-3 align-items-end">
+                        <div class="col-4">
+                            <button id="judge-run-btn" class="btn app-btn w-100" type="button">Run</button>
+                        </div>
+
+                        <div class="col-4">
+                            <select id="judge-verdict" class="judge-verdict-select w-100">
+                                <option value="incorrect" selected>Incorrect</option>
+                                <option value="correct">Correct</option>
+                            </select>
+                        </div>
+
+                        <div class="col-4">
+                            <button id="judge-score-btn" class="btn app-btn w-100" type="button">Score</button>
+                        </div>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.judgeApiUrl = '@Url.Content("~/api/Judge")';
+        window.problemsApiUrl = '@Url.Content("~/api/Problems")';
+    </script>
+
+    <script src="~/js/team/xterm.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="~/js/team/config.js" asp-append-version="true"></script>
+
+    <script src="~/js/judge/judgeQueue.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeTestCases.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeRun.js" asp-append-version="true"></script>
+    <script src="~/js/judge/judgeScore.js" asp-append-version="true"></script>
+}

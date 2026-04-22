@@ -1,0 +1,62 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Extensions;
+using CodeJam2026.Models;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizePage("/Team");
+    options.Conventions.AuthorizePage("/Judge");
+});
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login";
+        options.AccessDeniedPath = "/Error";
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+builder.Services.AddSingleton<ScoreboardVisibilityState>();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+var enableHttpsRedirection = app.Configuration.GetValue("EnableHttpsRedirection", !app.Environment.IsDevelopment());
+if (enableHttpsRedirection)
+{
+    app.UseHttpsRedirection();
+}
+
+app.Use(async (ctx, next) =>
+{
+    Console.WriteLine($"BEFORE PathBase='{ctx.Request.PathBase}' Path='{ctx.Request.Path}' Raw='{ctx.Request.GetDisplayUrl()}'");
+    await next();
+});
+
+app.UsePathBase("/~codejam");
+app.Use(async (ctx, next) =>
+{
+    Console.WriteLine($"AFTER PathBase='{ctx.Request.PathBase}' Path='{ctx.Request.Path}' Raw='{ctx.Request.GetDisplayUrl()}'");
+    await next();
+});
+
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.Run();

@@ -1,6 +1,4 @@
-const judgeSocket = io(window.location.origin, {
-    path: "/~codejam/runner/socket.io"
-});
+const judgeSocket = io(window.HOST_ADDRESS);
 
 const judgeRunBtn = document.getElementById("judge-run-btn");
 const judgeTerminalBox = document.getElementById("judge-terminal");

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function refreshScoreboard() {
     try {
-        const response = await fetch("/Scoreboard?handler=Data", {
+        const response = await fetch("Scoreboard?handler=Data", {
             cache: "no-store"
         });
 

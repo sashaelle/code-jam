@@ -93,18 +93,18 @@ public class ScoreboardModel : PageModel
         await using var connection = new NpgsqlConnection(connString);
         await connection.OpenAsync();
 
-        const string sql = @"
+        const string sql = """
             SELECT
                 t.team_name,
                 p.problem_num,
                 s.timestamp,
-	        COALESCE(s.status = 'correct', false) AS is_correct
+                s.status = 'correct' AS is_correct
             FROM submissions s
             INNER JOIN teams t ON s.team_id = t.team_id
             INNER JOIN problems p ON s.problem_id = p.problem_id
             ORDER BY s.timestamp DESC
             LIMIT 10;
-            ";
+            """;
 
         await using var cmd = new NpgsqlCommand(sql, connection);
         await using var reader = await cmd.ExecuteReaderAsync();
