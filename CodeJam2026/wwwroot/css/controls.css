@@ -1,0 +1,283 @@
+/* =========================
+   CONTROLS / DEBUG PAGE
+   ========================= */
+
+.controls-page {
+  background: #000;
+  min-height: 100vh;
+  padding: 12px;
+}
+
+.controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 3px solid #ffffff;
+}
+
+.controls-header-left {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.controls-header-right {
+  color: #ff0000;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 40px;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.controls-content {
+  padding: 22px 16px 24px 16px;
+}
+
+/* Left blocks */
+.controls-block {
+  padding: 8px 0;
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Arrow buttons */
+.ctrl-arrow {
+  width: 54px;
+  height: 54px;
+  background: #bfbfbf;
+  border: 3px solid #ffffff;
+  color: #111;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Middle display box */
+.ctrl-display {
+  flex: 1;
+  height: 54px;
+  background: #bfbfbf;
+  border: 3px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ctrl-display-text {
+  color: #111;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: 2px;
+}
+
+/* Small +/- buttons */
+.ctrl-small {
+  width: 220px;
+  height: 44px;
+  background: #bfbfbf;
+  border: 3px solid #ffffff;
+  color: #111;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+/* Center divider */
+.controls-divider {
+  width: 6px;
+  background: #ffffff;
+  border-radius: 2px;
+  height: 520px;
+  margin-top: 12px;
+}
+
+/* Right big buttons */
+.controls-right-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 8px;
+}
+
+.ctrl-big {
+  width: 100%;
+  height: 92px;
+  background: #bfbfbf;
+  border: 3px solid #ffffff;
+  color: #111;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  font-size: 34px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Generate Team Passwords section */
+.controls-generate-block,
+.controls-accounts-block {
+  border: 3px solid #ffffff;
+  background: #050505;
+  padding: 14px;
+}
+
+.controls-password-block {
+  border: 3px solid #ffffff;
+  background: #050505;
+  padding: 14px;
+}
+
+.controls-generate-form {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.controls-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controls-generate-input-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  gap: 6px;
+}
+
+.controls-password-input-wrap {
+  width: 100%;
+  min-width: 0;
+}
+
+.controls-generate-label {
+  color: #ffffff;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 800;
+}
+
+.controls-generate-input {
+  height: 44px;
+  border: 3px solid #ffffff;
+  background: #bfbfbf;
+  color: #111;
+  padding: 6px 10px;
+  border-radius: 0;
+}
+
+.controls-generate-input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #ffffff;
+}
+
+.controls-password-select {
+  width: 100%;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #111 50%),
+    linear-gradient(135deg, #111 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 4px),
+    calc(100% - 12px) calc(50% - 4px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.controls-password-input {
+  width: 100%;
+}
+
+.controls-generate-btn {
+  height: 44px;
+  padding: 0 18px;
+}
+
+.controls-password-btn {
+  align-self: flex-start;
+}
+
+.controls-password-success {
+  width: 100%;
+  margin-top: -2px;
+}
+
+.controls-generate-error {
+  width: 100%;
+  color: #ff5757;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  margin-bottom: 0;
+}
+
+.controls-generate-success {
+  color: #66ff99;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  letter-spacing: 0.5px;
+}
+
+.controls-accounts-title-row {
+  margin-bottom: 10px;
+}
+
+.controls-accounts-title {
+  color: #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.controls-accounts-empty {
+  color: #d7d7d7;
+  margin: 0;
+}
+
+.controls-accounts-table {
+  margin-bottom: 0;
+  border: 2px solid #ffffff;
+}
+
+.controls-accounts-table thead th {
+  background: #111;
+  color: #ffffff;
+  border-bottom: 2px solid #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.controls-accounts-table tbody td {
+  background: #1a1a1a;
+  color: #f4f4f4;
+  border-top: 1px solid #2f2f2f;
+}
+
+.controls-accounts-table tbody tr:nth-child(even) td {
+  background: #131313;
+}
