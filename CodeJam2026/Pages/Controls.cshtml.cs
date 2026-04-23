@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using CodeJam2026.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,10 +13,12 @@ public class ControlsModel : PageModel
 {
     private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
+    private readonly ScoreboardVisibilityState _scoreboardVisibilityState;
 
-    public ControlsModel(IConfiguration configuration)
+    public ControlsModel(IConfiguration configuration, ScoreboardVisibilityState scoreboardVisibilityState)
     {
         _configuration = configuration;
+        _scoreboardVisibilityState = scoreboardVisibilityState;
     }
 
     [BindProperty]
@@ -37,10 +40,42 @@ public class ControlsModel : PageModel
     [TempData]
     public string ChangePasswordStatusMessage { get; set; } = "";
 
+    [TempData]
+    public string ClearSubmissionsStatusMessage { get; set; } = "";
+
+    public bool IsScoreboardVisible => _scoreboardVisibilityState.IsVisible;
+
     public async Task OnGetAsync()
     {
         await LoadTeamCredentialsAsync();
         await LoadAllAccountUsernamesAsync();
+    }
+
+    public IActionResult OnPostToggleScoreboard()
+    {
+        _scoreboardVisibilityState.IsVisible = !_scoreboardVisibilityState.IsVisible;
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostClearSubmissionsAsync()
+    {
+        if (!User.IsInRole("Admin"))
+        {
+            ClearSubmissionsStatusMessage = "Only admins can clear submissions.";
+            return RedirectToPage();
+        }
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"TRUNCATE TABLE submissions RESTART IDENTITY;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await cmd.ExecuteNonQueryAsync();
+
+        ClearSubmissionsStatusMessage = "All submissions were cleared and submission IDs were reset.";
+        return RedirectToPage();
     }
 
     public async Task<IActionResult> OnPostGenerateTeamsAsync()
@@ -55,20 +90,6 @@ public class ControlsModel : PageModel
         var connString = _configuration.GetConnectionString("DefaultConnection");
         await using var connection = new NpgsqlConnection(connString);
         await connection.OpenAsync();
-
-        const string ensureTableSql = @"
-            CREATE TABLE IF NOT EXISTS accounts (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(100) NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                role VARCHAR(20) NOT NULL,
-                is_active BOOLEAN NOT NULL DEFAULT true
-            );";
-
-        await using (var ensureCmd = new NpgsqlCommand(ensureTableSql, connection))
-        {
-            await ensureCmd.ExecuteNonQueryAsync();
-        }
 
         await using var transaction = await connection.BeginTransactionAsync();
 
@@ -97,7 +118,7 @@ public class ControlsModel : PageModel
             insertAccountCmd.Parameters.AddWithValue("@password", password);
 
             var accountIdObj = await insertAccountCmd.ExecuteScalarAsync();
-            if (accountIdObj is not Guid accountId)
+            if (accountIdObj is not int accountId)
             {
                 throw new InvalidOperationException($"Failed to create account ID for {username}.");
             }
@@ -268,8 +289,6 @@ public class ControlsModel : PageModel
     private static int GetSortNumber(string username)
     {
         var match = TrailingNumberRegex.Match(username);
-        return match.Success && int.TryParse(match.Value, out var number)
-            ? number
-            : int.MaxValue;
+        return match.Success && int.TryParse(match.Value, out var number) ? number : int.MaxValue;
     }
 }
