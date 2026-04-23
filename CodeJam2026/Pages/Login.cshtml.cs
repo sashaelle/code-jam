@@ -121,9 +121,13 @@ public class LoginModel : PageModel
             SELECT username
             FROM accounts
             WHERE is_active = true
-              AND role IN ('team', 'admin')
+              AND role IN ('team', 'admin', 'judge')
             ORDER BY
-              CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
+              CASE
+                  WHEN role = 'admin' THEN 0
+                  WHEN role = 'judge' THEN 1
+                  ELSE 2
+              END,
               regexp_replace(username, '\d+$', ''),
               COALESCE(NULLIF(substring(username from '\d+$'), '')::int, 2147483647),
               username;";
