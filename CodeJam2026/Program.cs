@@ -10,6 +10,8 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Judge");
 });
 
+builder.Services.AddSingleton<ITeamSessionStore, InMemoryTeamSessionStore>();
+
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
