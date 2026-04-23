@@ -279,7 +279,7 @@
 
 #judge-terminal .xterm {
   height: 100%;
-  padding: 0;
+  padding: 10px;
   box-sizing: border-box;
 }
 

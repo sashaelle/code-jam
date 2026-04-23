@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using System.Text.RegularExpressions;
+using CodeJam2026;
+using CodeJam2026.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +14,12 @@ public class LoginModel : PageModel
 {
     private static readonly Regex TrailingNumberRegex = new(@"(\d+)$", RegexOptions.Compiled);
     private readonly IConfiguration _configuration;
+    private readonly ITeamSessionStore _teamSessionStore;
 
-    public LoginModel(IConfiguration configuration)
+    public LoginModel(IConfiguration configuration, ITeamSessionStore teamSessionStore)
     {
         _configuration = configuration;
+	_teamSessionStore = teamSessionStore;
     }
 
     [BindProperty]
@@ -85,6 +89,18 @@ public class LoginModel : PageModel
         {
             claims.Add(new Claim(ClaimTypes.Role, "Team"));
             claims.Add(new Claim("TeamName", username));
+
+	    var sessionId = Guid.NewGuid().ToString();
+	    var timeout = TimeSpan.FromSeconds(90);
+	    
+	    if (!_teamSessionStore.TryStartSession(username, sessionId, timeout))
+	    {
+		ModelState.AddModelError("", "This team is already signed in on another device.");
+		await LoadLoginUsersAsync();
+		return Page();
+	    }
+		
+	    claims.Add(new Claim(AuthClaims.AppSessionId, sessionId));
         }
         else if (role.Equals("judge", StringComparison.OrdinalIgnoreCase))
         {
@@ -96,6 +112,8 @@ public class LoginModel : PageModel
             CookieAuthenticationDefaults.AuthenticationScheme);
 
         var principal = new ClaimsPrincipal(identity);
+
+	await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         await HttpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
@@ -121,7 +139,7 @@ public class LoginModel : PageModel
             SELECT username
             FROM accounts
             WHERE is_active = true
-              AND role IN ('team', 'admin')
+              AND role IN ('team', 'admin', 'judge')
             ORDER BY
               CASE WHEN role = 'admin' THEN 0 ELSE 1 END,
               regexp_replace(username, '\d+$', ''),

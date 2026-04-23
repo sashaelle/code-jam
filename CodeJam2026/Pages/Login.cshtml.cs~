@@ -103,10 +103,10 @@ public class LoginModel : PageModel
 
         if (role.Equals("admin", StringComparison.OrdinalIgnoreCase) || role.Equals("judge", StringComparison.OrdinalIgnoreCase)) 
         {
-            return LocalRedirect(Url.Content("~/Judge"));
+            return RedirectToPage("/Judge");
         }
 
-        return LocalRedirect(Url.Content($"~/Team/{username}"));
+        return RedirectToPage("/Team", new { teamName = username });
     }
 
     private async Task LoadLoginUsersAsync()

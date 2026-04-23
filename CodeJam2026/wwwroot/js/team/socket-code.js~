@@ -1,6 +1,6 @@
 // Socket
 const socket = io(window.location.origin, {
-    path: "/codejam/runner/socket.io"
+    path: "/~codejam/runner/socket.io"
 });
 
 // Terminal
@@ -36,13 +36,17 @@ socket.on("clear_local_storage", () => {
 });
 
 socket.on("output", function (line) {
-    term.write(line);
-})
+    term.write(line, () => {
+	term.scrollToBottom();
+    });
+});
 
 socket.on("error-output", function (line) {
     console.log("ERROR LINE: ", line);
-    term.write("\x1b[31m" + line + "\x1b[0m");
-})
+    term.write("\x1b[31m" + line + "\x1b[0m", () => {
+	term.scrollToBottom();
+    });
+});
 
 socket.on("compile_process", function () {
     hasCompiled = true;
@@ -50,6 +54,7 @@ socket.on("compile_process", function () {
 
 socket.on("process_done", function () {
     hasCompiled = false;
+    term.scrollToBottom();
     
     // Change button to run
     const compileButton = document.querySelector(".stop-button");
@@ -90,6 +95,7 @@ function handleTerminalInput()
                 }
                 else {
                     term.write(data);
+		    term.scrollToBottom();
                     inputStr += data;
                 }
             }
@@ -98,6 +104,7 @@ function handleTerminalInput()
                 socket.emit("input_added", inputStr);
                 inputStr = "";
                 term.write("\r\n"); // Newline
+		term.scrollToBottom();
             }
         }
     });
@@ -116,7 +123,14 @@ function editorSetup()
      if (!window.monacoEditor) {
         setTimeout(() => editorSetup(), 100); // Retry until Monaco is ready
         return;
+     }
+
+    const problemLabel = document.querySelector(".problem-text");
+    if (problemLabel) {
+	problemLabel.textContent = "Problem 1";
     }
+    window.problemNumber = 1;
+    
     const storedCode = localStorage.getItem("code" + window.problemNumber)
     if(storedCode != null && storedCode != "")
     {

@@ -5,10 +5,8 @@ const HOST_ADDRESS = `${window.location.origin}/~codejam/runner`;
 window.HOST_ADDRESS = HOST_ADDRESS;
 
 window.problemNumber = 1;
+localStorage.setItem("selectedProblemId", 1);
 
-if (!localStorage.getItem("selectedProblemId")) {
-    localStorage.setItem("selectedProblemId", 1);
-}
 
 window.DEFAULT_CODE = `print("Hello Game Jam!")`;
 

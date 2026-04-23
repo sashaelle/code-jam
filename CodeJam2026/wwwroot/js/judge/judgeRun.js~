@@ -1,4 +1,6 @@
-const judgeSocket = io(window.HOST_ADDRESS);
+const judgeSocket = io(window.location.origin, {
+    path: "/~codejam/runner/socket.io"
+});
 
 const judgeRunBtn = document.getElementById("judge-run-btn");
 const judgeTerminalBox = document.getElementById("judge-terminal");
@@ -13,12 +15,36 @@ const judgeTerm = new Terminal({
 
 judgeTerm.open(judgeTerminalBox);
 
+function fitJudgeTermina() {
+    if (!judgeTerm.element || !judgeTerm._core || !judgeTerm._core._renderService) {
+	return;
+    }
+
+    const dims = judgeTerm._core._renderService.dimensions;
+    if (!dims || !dims.css || !dims.css.cell.width || !dims.css.cell.height) {
+	return;
+    }
+
+    const availableWidth = judgeTerm.element.clientWidth;
+    const availableHeight = judgeTerm.element.clientHeight;
+
+    const cols = Math.max(2, Math.floor(availableWidth / dims.css.cell.width));
+    const rows = Math.max(1, Math.floor(availableHeight / dims.css.cell.height));
+
+    judgeTerm.resize(cols, rows);
+    judgeTerm.scrollToBottom();
+}
+
+setTimeout(fitJudgeTerminal, 0);
+window.addEventListener("resize", fitJudgeTerminal);
+
 let judgeProcessRunning = false;
 let judgeInputStr = "";
 
 window.clearJudgeTerminal = function () {
     judgeInputStr = "";
     judgeTerm.reset();
+    setTimeout(fitJudgeTerminal, 0);
 };
 
 judgeSocket.on("connect", function () {
@@ -26,11 +52,15 @@ judgeSocket.on("connect", function () {
 });
 
 judgeSocket.on("output", function (line) {
-    judgeTerm.write(line);
+    judgeTerm.write(line, () => {
+	judgeTerm.scrollToBottom();
+    });
 });
 
 judgeSocket.on("error-output", function (line) {
-    judgeTerm.write("\x1b[31m" + line + "\x1b[0m");
+    judgeTerm.write("\x1b[31m" + line + "\x1b[0m", () => {
+	judgeTerm.scrollToBottom();
+    });
 });
 
 judgeSocket.on("compile_process", function () {
@@ -45,6 +75,7 @@ judgeSocket.on("compile_process", function () {
 judgeSocket.on("process_done", function () {
     judgeProcessRunning = false;
     judgeInputStr = "";
+    judgeTerm.scrollToBottom();
 
     if (judgeRunBtn) {
         judgeRunBtn.textContent = "Run";

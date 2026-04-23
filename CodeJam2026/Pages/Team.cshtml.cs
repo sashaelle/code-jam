@@ -15,7 +15,7 @@ public class TeamModel : PageModel
         var loggedInTeam = User.FindFirst("TeamName")?.Value;
 
         if (string.IsNullOrWhiteSpace(loggedInTeam))
-            return Forbid();
+            return RedirectToPage("/Login");
 
         if (!string.Equals(loggedInTeam, teamName, StringComparison.OrdinalIgnoreCase))
             return Forbid();

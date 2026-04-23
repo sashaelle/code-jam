@@ -20,6 +20,29 @@ const terminalBox = document.getElementById("terminal");
 term.open(terminalBox);
 term.focus();
 
+function fitTeamTerminal() {
+    if (!term.element || !term._core || !term._core._renderService) {
+	return;
+    }
+
+    const dims = term._core._renderService.dimensions;
+    if (!dims || !dims.css || !dims.css.cell.width || !dims.css.cell.height) {
+	return;
+    }
+
+    const availableWidth = term.element.clientWidth;
+    const availableHeight = term.element.clientHeight;
+
+    const cols = Math.max(2, Math.floor(availableWidth / dims.css.cell.width));
+    const rows = Math.max(1, Math.floor(availableHeight / dims.css.cell.height));
+
+    term.resize(cols, rows);
+    term.scrollToBottom();
+}
+
+setTimeout(fitTeamTerminal, 0);
+window.addEventListener("resize", fitTeamTerminal);
+
 socket.on("connect", function () {
 
     console.log("Connected");
@@ -36,13 +59,17 @@ socket.on("clear_local_storage", () => {
 });
 
 socket.on("output", function (line) {
-    term.write(line);
-})
+    term.write(line, () => {
+	term.scrollToBottom();
+    });
+});
 
 socket.on("error-output", function (line) {
     console.log("ERROR LINE: ", line);
-    term.write("\x1b[31m" + line + "\x1b[0m");
-})
+    term.write("\x1b[31m" + line + "\x1b[0m", () => {
+	term.scrollToBottom();
+    });
+});
 
 socket.on("compile_process", function () {
     hasCompiled = true;
@@ -50,6 +77,7 @@ socket.on("compile_process", function () {
 
 socket.on("process_done", function () {
     hasCompiled = false;
+    term.scrollToBottom();
     
     // Change button to run
     const compileButton = document.querySelector(".stop-button");
@@ -90,6 +118,7 @@ function handleTerminalInput()
                 }
                 else {
                     term.write(data);
+		    term.scrollToBottom();
                     inputStr += data;
                 }
             }
@@ -98,6 +127,7 @@ function handleTerminalInput()
                 socket.emit("input_added", inputStr);
                 inputStr = "";
                 term.write("\r\n"); // Newline
+		term.scrollToBottom();
             }
         }
     });
@@ -107,6 +137,7 @@ window.clearTerminal = function()
 {
     inputStr = "";
     term.reset();
+    setTimeout(fitTeamTerminal, 0);
 }
 
 function editorSetup()
@@ -116,7 +147,14 @@ function editorSetup()
      if (!window.monacoEditor) {
         setTimeout(() => editorSetup(), 100); // Retry until Monaco is ready
         return;
+     }
+
+    const problemLabel = document.querySelector(".problem-text");
+    if (problemLabel) {
+	problemLabel.textContent = "Problem 1";
     }
+    window.problemNumber = 1;
+    
     const storedCode = localStorage.getItem("code" + window.problemNumber)
     if(storedCode != null && storedCode != "")
     {
@@ -155,6 +193,8 @@ function editorSetup()
         }
         window.CURRENT_LANGUAGE = ".py";
     }
+
+    setTimeout(fitTeamTerminal, 0);
 }
 
 window.setEditorValue = function(code) {

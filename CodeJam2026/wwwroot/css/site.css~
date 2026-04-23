@@ -1,0 +1,150 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow:
+    0 0 0 0.1rem white,
+    0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+html, body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  margin-bottom: 0px;
+  background: #0b0b0b;
+}
+
+.panel {
+  background: #070707;
+  border: 3px solid #e6e6e6;
+  padding: 10px 10px 8px 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.panel-title {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.panel-title.center {
+  text-align: center;
+}
+
+.panel-text {
+  font-size: 18px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  text-transform: none;
+}
+
+.red {
+  color: #ff2b2b;
+}
+
+.mono {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+.mono-pre {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  white-space: pre-wrap;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.panel-body {
+  margin-top: 10px;
+  padding-top: 6px;
+}
+
+.panel-tall {
+  flex: 1;
+  min-height: 0;
+}
+
+.panel-short {
+  height: auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Shared component classes */
+.font-terminal {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.app-navlink {
+  color: #ff0000;
+  text-decoration: none;
+  opacity: 0.95;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.app-navlink:hover {
+  color: #ff0000;
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.app-navsep {
+  color: #ffffff;
+  margin: 0 10px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 900;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.app-btn {
+  background: #000;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+  letter-spacing: 1px;
+  border-radius: 0;
+}
+
+.app-btn:hover {
+  background: #111;
+  color: #ffffff;
+  border-color: #ffffff;
+}

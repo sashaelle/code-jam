@@ -17,9 +17,9 @@
         <div class="judge-header-left">JUDGE</div>
         
         <div class="judge-header-right">
-            <a class="app-navlink" href="/Scoreboard">Scoreboard</a>
+            <a class="app-navlink" asp-page="/Scoreboard">Scoreboard</a>
             <span class="app-navsep">|</span>
-            <a class="app-navlink" href="/Controls">Controls</a>
+            <a class="app-navlink" asp-page="/Controls">Controls</a>
         </div>
     </header>
 

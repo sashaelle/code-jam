@@ -296,6 +296,8 @@ ALTER TABLE ONLY public.test_cases ALTER COLUMN test_case_id SET DEFAULT nextval
 
 COPY public.accounts (account_id, username, password_hash, role, is_active, created_at) FROM stdin;
 1	admin	codejamadmin	admin	t	2026-04-16 00:33:37.523929
+2	Judge1	k9#mPx$2vLQw	judge	t	2026-04-16 02:12:17.927904
+3	Judge2	Hn4@Rz8wY!eT	judge	t	2026-04-16 02:12:17.927904
 21	Team1	3JiE%u8YrFM$	team	t	2026-04-16 02:12:17.927904
 22	Team2	dF4QX#bvyT%L	team	t	2026-04-16 02:12:17.927904
 23	Team3	8JmjtbYWV7sf	team	t	2026-04-16 02:12:17.927904

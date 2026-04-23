@@ -1,6 +1,7 @@
 services:
   web:
     build: .
+    user: "0:0"
     depends_on:
       db:
         condition: service_healthy
@@ -8,13 +9,14 @@ services:
         condition: service_started
     environment:
       ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=codejam_dev;Username=postgres;Password=codejam2026
+      DataProtection__KeysPath: /keys
       EnableHttpsRedirection: "false"
       TZ: America/New_York
 
     ports:
       - "8080:80"
     volumes:
-      - aspnet_keys:/root/.aspnet/DataProtection-Keys
+      - aspnet_keys:/keys
     restart: unless-stopped
 
   runner:
