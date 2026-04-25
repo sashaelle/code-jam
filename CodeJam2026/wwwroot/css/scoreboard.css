@@ -6,6 +6,7 @@
   background: #000;
   min-height: 100vh;
   padding: 12px;
+  overflow: hidden;
 }
 
 /* Top bar */
@@ -40,6 +41,10 @@
 
 .scoreboard-content {
   padding: 16px 16px 24px 16px;
+}
+
+.scoreboard-content > .row {
+  align-items: flex-start;
 }
 
 /* SCOREBOARD PANEL (pixel/terminal style) */
@@ -159,8 +164,9 @@
 }
 
 .sb-feed {
-  height: 100%;
-  min-height: 640px;
+  height: calc(100vh - 1px);
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .sb-feed-row {

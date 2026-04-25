@@ -105,7 +105,7 @@ public class ScoreboardModel : PageModel
             INNER JOIN teams t ON s.team_id = t.team_id
             INNER JOIN problems p ON s.problem_id = p.problem_id
             ORDER BY s.timestamp DESC
-            LIMIT 10;
+            LIMIT 20;
             ";
 
         await using var cmd = new NpgsqlCommand(sql, connection);

@@ -111,6 +111,7 @@
                         </form>
                     </section>
                 }
+	    
 
             </div>
 
@@ -127,11 +128,13 @@
                             @(Model.IsScoreboardVisible ? "HIDE SCOREBOARD" : "SHOW SCOREBOARD")
                         </button>
                     </form>
-                    <button class="ctrl-big" type="button">OPTION 1</button>
-                    <button class="ctrl-big" type="button">OPTION 2</button>
-                    <button class="ctrl-big" type="button">OPTION 3</button>
+                    <button class="ctrl-big" type="button" data-bs-toggle="modal" data-bs-target="#updateTestCasesModal">
+			UPDATE TEST CASES
+		    </button>
+                    <button class="ctrl-big" type="button">|</button>
+                    <button class="ctrl-big" type="button">|</button>
                     <form method="post" asp-page-handler="ClearSubmissions">
-                        <button class="ctrl-big" type="submit">CLEAR SUBMISSIONS</button>
+                        <button class="ctrl-big" type="submit">CLEAR CONTEST DATA</button>
                     </form>
 
                     @if (!string.IsNullOrWhiteSpace(Model.ClearSubmissionsStatusMessage))
@@ -142,6 +145,57 @@
 
             </div>
 
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateTestCasesModal" tabindex="-1" aria-labelledby="updateTestCasesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content controls-modal-content">
+            <div class="modal-header controls-modal-header">
+                <h5 class="modal-title" id="updateTestCasesModalLabel">Update Test Cases</h5>
+                <button type="button" class="btn-close controls-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form method="post" asp-page-handler="SaveTestCase">
+                <div class="modal-body controls-modal-body">
+                    <div class="mb-3">
+                        <label asp-for="TestCaseProblemId" class="form-label mono">Problem</label>
+                        <select asp-for="TestCaseProblemId" class="form-select mono">
+                            <option value="">-- Select problem --</option>
+                            @foreach (var problem in Model.Problems)
+                            {
+                                <option value="@problem.ProblemId">Problem @problem.ProblemNum</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TestCaseNum" class="form-label mono">Test Case Number</label>
+                        <input asp-for="TestCaseNum" class="form-control mono" type="number" min="1" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TestCaseInputText" class="form-label mono">Input Text</label>
+                        <textarea asp-for="TestCaseInputText" class="form-control mono controls-testcase-textarea"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TestCaseExpectedOutput" class="form-label mono">Expected Output</label>
+                        <textarea asp-for="TestCaseExpectedOutput" class="form-control mono controls-testcase-textarea"></textarea>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.TestCaseStatusMessage))
+                    {
+                        <div class="controls-generate-success mt-2">@Model.TestCaseStatusMessage</div>
+                    }
+                </div>
+
+                <div class="modal-footer controls-modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn app-btn">Save Test Case</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

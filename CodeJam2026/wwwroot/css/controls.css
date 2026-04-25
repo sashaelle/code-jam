@@ -281,3 +281,23 @@
 .controls-accounts-table tbody tr:nth-child(even) td {
   background: #131313;
 }
+
+.controls-modal-content {
+  background: #050505;
+  color: #ffffff;
+  border: 3px solid #ffffff;
+}
+
+.controls-modal-header,
+.controls-modal-footer {
+  border-color: #ffffff;
+}
+
+.controls-modal-close {
+  filter: invert(1);
+}
+
+.controls-testcase-textarea {
+  min-height: 120px;
+  resize: vertical;
+}

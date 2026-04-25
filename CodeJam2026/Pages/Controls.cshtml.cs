@@ -28,6 +28,23 @@ public class ControlsModel : PageModel
 
     public List<string> AllAccountUsernames { get; private set; } = [];
 
+    public List<ProblemOption> Problems { get; private set; } = [];
+
+    [BindProperty]
+    public int TestCaseProblemId { get; set; }
+
+    [BindProperty]
+    public int TestCaseNum { get; set; }
+
+    [BindProperty]
+    public string TestCaseInputText { get; set; } = "";
+
+    [BindProperty]
+    public string TestCaseExpectedOutput { get; set; } = "";
+
+    [TempData]
+    public string TestCaseStatusMessage { get; set; } = "";
+
     [BindProperty]
     public string SelectedAccountUsername { get; set; } = "";
 
@@ -49,6 +66,7 @@ public class ControlsModel : PageModel
     {
         await LoadTeamCredentialsAsync();
         await LoadAllAccountUsernamesAsync();
+	await LoadProblemsAsync();
     }
 
     public IActionResult OnPostToggleScoreboard()
@@ -69,12 +87,50 @@ public class ControlsModel : PageModel
         await using var connection = new NpgsqlConnection(connString);
         await connection.OpenAsync();
 
-        const string sql = @"TRUNCATE TABLE submissions RESTART IDENTITY;";
+        const string sql = @"TRUNCATE TABLE submissions, test_cases RESTART IDENTITY;";
 
         await using var cmd = new NpgsqlCommand(sql, connection);
         await cmd.ExecuteNonQueryAsync();
 
-        ClearSubmissionsStatusMessage = "All submissions were cleared and submission IDs were reset.";
+        ClearSubmissionsStatusMessage = "Contest data was cleared. Submissions and test cases were reset.";
+        return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostSaveTestCaseAsync()
+    {
+        if (TestCaseProblemId <= 0)
+        {
+            TestCaseStatusMessage = "Please select a problem.";
+            return RedirectToPage();
+        }
+
+        if (TestCaseNum <= 0)
+        {
+            TestCaseStatusMessage = "Please enter a valid test case number.";
+            return RedirectToPage();
+        }
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            INSERT INTO test_cases (problem_id, test_case_num, input_text, expected_output)
+            VALUES (@problemId, @testCaseNum, @inputText, @expectedOutput)
+            ON CONFLICT (problem_id, test_case_num)
+            DO UPDATE SET
+                input_text = EXCLUDED.input_text,
+                expected_output = EXCLUDED.expected_output;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        cmd.Parameters.AddWithValue("@problemId", TestCaseProblemId);
+        cmd.Parameters.AddWithValue("@testCaseNum", TestCaseNum);
+        cmd.Parameters.AddWithValue("@inputText", TestCaseInputText ?? "");
+        cmd.Parameters.AddWithValue("@expectedOutput", TestCaseExpectedOutput ?? "");
+
+        await cmd.ExecuteNonQueryAsync();
+
+        TestCaseStatusMessage = "Test case saved.";
         return RedirectToPage();
     }
 
@@ -258,6 +314,32 @@ public class ControlsModel : PageModel
         }
     }
 
+    private async Task LoadProblemsAsync()
+    {
+        Problems = [];
+
+        var connString = _configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new NpgsqlConnection(connString);
+        await connection.OpenAsync();
+
+        const string sql = @"
+            SELECT problem_id, problem_num
+            FROM problems
+            ORDER BY problem_num;";
+
+        await using var cmd = new NpgsqlCommand(sql, connection);
+        await using var reader = await cmd.ExecuteReaderAsync();
+
+        while (await reader.ReadAsync())
+        {
+            Problems.Add(new ProblemOption
+            {
+                ProblemId = reader.GetInt32(0),
+                ProblemNum = reader.GetInt32(1)
+            });
+        }
+    }
+
     private static string GeneratePassword(int length)
     {
         const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*";
@@ -277,6 +359,12 @@ public class ControlsModel : PageModel
     {
         public string Username { get; set; } = "";
         public string Password { get; set; } = "";
+    }
+
+    public class ProblemOption
+    {
+        public int ProblemId { get; set; }
+        public int ProblemNum { get; set; }
     }
 
     private static string GetSortPrefix(string username)
