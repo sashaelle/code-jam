@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    setJudgeSubmissionLanguage(null);
     await loadProblemFilterOptions();
     await loadQueue();
     setInterval(loadQueue, 3000);
@@ -6,6 +7,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 let activeSubmissionId = null;
 window.currentJudgeSubmission = null;
+
+function formatJudgeLanguageLabel(language) {
+    if (!language) return "-";
+
+    switch (language.toLowerCase()) {
+        case ".py":
+        case "python":
+            return "Python";
+        case ".java":
+        case "java":
+            return "Java";
+        case ".cpp":
+        case "cpp":
+        case "c++":
+            return "C++";
+        case ".js":
+        case "js":
+        case "javascript":
+            return "JavaScript";
+        default:
+            return language;
+    }
+}
+
+function setJudgeSubmissionLanguage(language) {
+    const languageLabel = document.getElementById("judge-submission-language");
+    if (!languageLabel) return;
+
+    languageLabel.textContent = `Language: ${formatJudgeLanguageLabel(language)}`;
+}
+
+window.setJudgeSubmissionLanguage = setJudgeSubmissionLanguage;
 
 function getSelectedProblemFilter() {
     const filter = document.getElementById("judge-problem-filter");
@@ -140,6 +173,7 @@ async function selectSubmission(sub) {
 
     const codeBox = document.getElementById("judge-code-box");
     codeBox.value = sub.code;
+    setJudgeSubmissionLanguage(sub.language);
 
     if (window.loadJudgeTestCases) {
         await window.loadJudgeTestCases(sub.problemId);

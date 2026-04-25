@@ -15,6 +15,10 @@ function clearJudgeSelection() {
         codeBox.value = "";
     }
 
+    if (window.setJudgeSubmissionLanguage) {
+        window.setJudgeSubmissionLanguage(null);
+    }
+
     const testcases = document.getElementById("judge-testcases");
     if (testcases) {
         testcases.innerHTML = `<div class="judge-testcases-empty mono-pre">Select a submission to load test cases.</div>`;
