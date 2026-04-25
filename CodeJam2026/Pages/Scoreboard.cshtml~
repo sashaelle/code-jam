@@ -30,42 +30,27 @@
                         <div class="scoreboard-title"> SCOREBOARD</div>
                         <div class="scoreboard-divider">========</div>
 
-                        <div id="scoreboardRows" class="scoreboard-rows scoreboard-columns">
+                        <div id="scoreboardRows" class="scoreboard-rows">
+                            <div class="scoreboard-row highlight-yellow">
+                                TEAM NAME | POINTS
+                            </div>
+
                             @if (Model.Entries.Any())
-			    {
-				<div class="scoreboard-column">
-				     <div class="scoreboard-row highlight-yellow">
-				     	  TEAM NAME | POINTS
-				     </div>
-
-				     @foreach (var entry in Model.Entries.Where(e => e.TeamNumberValue <= 10))
-				     {
-					<div class="scoreboard-row">
-					     @entry.TeamName | @entry.TotalPoints
-					</div>
-				     }
-				 </div>
-
-				<div class="scoreboard-column">
-				     <div class="scoreboard-row highlight-yellow">
-				     	  TEAM NAME | POINTS
-				     </div>
-
-				     @foreach (var entry in Model.Entries.Where(e => e.TeamNumberValue >= 11))
-				     {
-					<div class="scoreboard-row">
-					     @entry.TeamName | @entry.TotalPoints
-					</div>
-				     }
-				</div>
-			     }
-			     else
-			     {
-				<div class="scoreboard-row scoreboard-empty">
-				     NO TEAMS OR SUBMISSIONS FOUND
-				</div>
-			     }
-			</div>
+                            {
+                                @foreach (var entry in Model.Entries)
+                                {
+                                    <div class="scoreboard-row">
+                                        @entry.TeamName | @entry.TotalPoints
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="scoreboard-row">
+                                    NO TEAMS OR SUBMISSIONS FOUND
+                                </div>
+                            }
+                        </div>
 
                         <div class="scoreboard-bottom-divider">+-+-+-+-+-+-+-+-+-+-+-+-+-+-</div>
 

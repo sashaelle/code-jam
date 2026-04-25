@@ -25,7 +25,7 @@ function clearJudgeSelection() {
     }
 
     if (judgeVerdictSelect) {
-        judgeVerdictSelect.value = "incorrect";
+        judgeVerdictSelect.value = "";
     }
 
     if (window.clearJudgeTerminal) {

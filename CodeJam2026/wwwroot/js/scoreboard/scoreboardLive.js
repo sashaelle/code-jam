@@ -49,29 +49,53 @@ function renderScoreboardRows(entries) {
     const container = document.getElementById("scoreboardRows");
     if (!container) return;
 
-    let html = `
-        <div class="scoreboard-row highlight-yellow">
-            TEAM NAME | POINTS
-        </div>
-    `;
-
     if (entries && entries.length > 0) {
-        entries.forEach(entry => {
+        const leftEntries = entries.filter(entry => entry.teamNumberValue <= 10);
+        const rightEntries = entries.filter(entry => entry.teamNumberValue >= 11);
+
+        let html = `
+            <div class="scoreboard-column">
+                <div class="scoreboard-row highlight-yellow">
+                    TEAM NAME | POINTS
+                </div>
+        `;
+
+        leftEntries.forEach(entry => {
             html += `
                 <div class="scoreboard-row">
                     ${escapeHtml(entry.teamName)} | ${entry.totalPoints}
                 </div>
             `;
         });
-    } else {
+
         html += `
-            <div class="scoreboard-row">
+            </div>
+            <div class="scoreboard-column">
+                <div class="scoreboard-row highlight-yellow">
+                    TEAM NAME | POINTS
+                </div>
+        `;
+
+        rightEntries.forEach(entry => {
+            html += `
+                <div class="scoreboard-row">
+                    ${escapeHtml(entry.teamName)} | ${entry.totalPoints}
+                </div>
+            `;
+        });
+
+        html += `
+            </div>
+        `;
+
+        container.innerHTML = html;
+    } else {
+        container.innerHTML = `
+            <div class="scoreboard-row scoreboard-empty">
                 NO TEAMS OR SUBMISSIONS FOUND
             </div>
         `;
     }
-
-    container.innerHTML = html;
 }
 
 function renderRecentSubmissions(items) {

@@ -113,6 +113,16 @@
   white-space: pre-line;
 }
 
+.feedback-status-correct {
+  color: #00e676;
+  font-weight: 900;
+}
+
+.feedback-status-incorrect {
+  color: #ff4d4d;
+  font-weight: 900;
+}
+
 .team-editor-toolbar {
   display: flex;
   align-items: center;

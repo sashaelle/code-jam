@@ -81,12 +81,27 @@
   flex: 1;
 }
 
+.scoreboard-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+  align-items: start;
+}
+
+.scoreboard-column {
+  min-width: 0;
+}
+
+.scoreboard-empty {
+  grid-column: 1 / -1;
+}
+
 /* Row styling */
 .scoreboard-row {
   color: #cfcfcf;
   font-family:
     ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-  font-size: 26px;
+  font-size: 22px;
   letter-spacing: 1px;
   padding: 10px 0;
   text-align: center;

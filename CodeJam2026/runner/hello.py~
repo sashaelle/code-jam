@@ -211,8 +211,6 @@ def stream_output(current_language, p, sid = None):
             socketio.emit("output", char, to=sid)
         elif current_language == ".cpp":
             char = p.stdout.read(1)
-            if char == "\n":
-                char = "\n\r"
             if stop_flags.get(sid):
                 break
             socketio.emit("output", char, to=sid)

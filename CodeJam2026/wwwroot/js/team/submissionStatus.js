@@ -41,10 +41,18 @@ function setFeedbackMessage(problemId, statusText, feedbackText, pointsText) {
         feedbackName.textContent = `Problem ${problemId}`;
     }
 
+    let statusClass = "";
+
+    if (statusText === "Correct") {
+        statusClass = "feedback-status-correct";
+    } else if (statusText === "Incorrect") {
+        statusClass = "feedback-status-incorrect";
+    }
+
     if (feedbackMessage) {
-        feedbackMessage.textContent =
+        feedbackMessage.innerHTML =
 `Status
-${statusText}
+<span class="${statusClass}">${statusText}</span>
 
 Feedback
 ${feedbackText}
