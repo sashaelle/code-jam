@@ -1,25 +1,37 @@
 # Code Jam 2026
 
-A web-based coding competition platform that allows teams to submit solutions, judges to review code, and administrators to manage events.
+Welcome to the Desales University Code Jam GitHub.
+
+A web-based coding competition platform that allows teams to submit solutions and judges to review code.
+
+The Code Jam program is located at [DeSales Univeristy Code Jam](http://frankie.desales.edu/~codejam).
+
+### Overview
+
+Code Jam is an annual coding competition hosted by DeSales University. The competition consists
+of teams and judges. Each team must complete 10 problems and submit each for scoring. Feedback
+is provided at the judges’ discretion, and scoring reflects the number of previously incorrect
+submissions and teams that submitted correct solutions beforehand. Judges run and score code
+based on stored test cases set before the event. Admins have the same responsibilities as judges but
+are also responsible for setting test cases before the event and clearing database values afterwards.
 
 ## Features
 
+Login Page
 ![Login](/_docs/images/Login.png)
 
 ### Team
 
-- Team IDE that supports multiple languages
+- Team IDE that supports multiple languages and presents judge feeback
   ![IDE](/_docs/images/TeamIDE.png)
-- Immediate feedback from judges
-  ![Submission Page](/_docs/images/SubmissionPage.png)
 
 ### Judge
 
 - Team submissions with timestamps
   ![Judge Submission](/_docs/images/JudgeSubmission.png)
-- Judge scoring system
+- Judge controls
   ![Judge Controls](/_docs/images/JudgeControls.png)
-- Team account creation and password generation
+- Scorebaord
   ![Judge Scoreboard](/_docs/images/JudgeScoreboard.png)
 
 ## Tech Stack
@@ -61,7 +73,7 @@ This repository was developed as part of a senior seminar course project at DeSa
 
 #### Code Jam Team Facing
 
-- Andrew Presta - **Sub-Team Leader**, IDE
+- Andrew Presta - **Sub-Team Leader**
 - Gabriel Bawden
 - Luigi Corrado
 - Jonathan Eudja
@@ -70,8 +82,8 @@ This repository was developed as part of a senior seminar course project at DeSa
 
 #### Code Jam Judge Facing
 
-- Alyssa Young - **Sub-Team Leader**, Judge Scoreboard Login, Submission Timestamps
-- Sasha Crawford - _Database integration and PostgreSQL data management, Razor Pages development, UI implementation and styling, debugging, and GitHub documentation/version control_
+- Alyssa Young - **Sub-Team Leader**
+- Sasha Crawford
 - Armaan Patel
 
 ---
@@ -101,7 +113,3 @@ This repository was developed as part of a senior seminar course project at DeSa
 
 - Joseph Stocklin - **Sub-Team Leader**
 - Colin Coff
-
-## Acknowledgments
-
-Dr. Pranshu Gupta
