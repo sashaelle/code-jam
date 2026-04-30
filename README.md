@@ -4,7 +4,7 @@ Welcome to the Desales University Code Jam GitHub.
 
 A web-based coding competition platform that allows teams to submit solutions and judges to review code.
 
-The Code Jam program is located at [DeSales Univeristy Code Jam](http://frankie.desales.edu/~codejam).
+The Code Jam program is located at [DeSales Univeristy Code Jam](http://frankie.desales.edu/~codejam/).
 
 ### Overview
 
